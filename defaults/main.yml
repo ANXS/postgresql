@@ -18,6 +18,12 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
+# List of databases to be created
+postgresql_databases: []
+
+# List of users to be created
+postgresql_users: []
+
 # pg_hba.conf
 postgresql_pg_hba_default:
   - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }

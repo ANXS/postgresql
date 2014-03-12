@@ -21,6 +21,13 @@ postgresql_default_auth_method: "trust"
 
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
+
+# List of databases to be created (optional)
+postgresql_databases:
+  - name: foobar
+    hstore: yes         # flag to install the hstore extensions on this database (yes/no)
+
+
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml

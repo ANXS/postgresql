@@ -1,1 +1,18 @@
 # file: postgresql/tasks/databases.yml
+
+- name: PostgreSQL | Make sure the PostgreSQL databases are present
+  PostgreSQL_db:
+    name: "{{item.name}}"
+    encoding: "{{postgresql_encoding}}"
+    lc_collate: "{{postgresql_locale}}"
+    lc_ctype: "{{postgresql_locale}}"
+    template: "template0"
+    state: present
+  with_items: postgresql_databases
+  when: postgresql_databases|length > 0
+
+- name: PostgreSQL | Add hstore to the databases with the requirement
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
+  shell: "{% if item.hstore %}psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'{% endif %}"
+  with_items: postgresql_databases
