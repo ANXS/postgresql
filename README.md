@@ -11,8 +11,19 @@ Ansible role for installing and configuring PostgreSQL.
 #### Variables
 
 ```yaml
-...
+# Basic settings
+postgresql_version: 9.3
+postgresql_encoding: 'UTF-8'
+postgresql_locale: 'en_US.UTF-8'
+
+postgresql_admin_user: "postgres"
+postgresql_default_auth_method: "trust"
+
+postgresql_cluster_name: "main"
+postgresql_cluster_reset: false
 ```
+
+There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml
 
 #### License
 
