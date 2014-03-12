@@ -31,15 +31,15 @@ postgresql_pg_hba_custom: []
 #------------------------------------------------------------------------------
 
 # Location of postgres configuration files here
-postgresql_conf_directory: "/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster}}"
+postgresql_conf_directory: "/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
 # HBA (Host Based Authentication) file
 postgresql_hba_file: "{{postgresql_conf_directory}}/pg_hba.conf"
 # Ident configuration file
 postgresql_ident_file: "{{postgresql_conf_directory}}/pg_ident.conf"
 # Use data in another directory
-postgresql_data_directory: "/var/lib/postgresql/{{postgresql_version}}/{{postgresql_cluster}}"
+postgresql_data_directory: "/var/lib/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
 # If external_pid_file is not explicitly set, on extra PID file is written
-postgresql_external_pid_file: "/var/run/postgresql/{{postgresql_version}}-{{postgresql_cluster}}.pid"
+postgresql_external_pid_file: "/var/run/postgresql/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
