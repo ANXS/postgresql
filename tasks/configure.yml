@@ -14,8 +14,18 @@
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
   template:
-    src: etc_postgresql_version_cluster_pg_hba.conf.j2
-    dest: "/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}/pg_hba.conf"
+    src: pg_hba.conf.j2
+    dest: "{{postgresql_conf_directory}}/pg_hba.conf"
+    owner: "{{postgresql_admin_user}}"
+    group: "{{postgresql_admin_user}}"
+    mode: 0640
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
+  template:
+    src: postgresql.conf.j2
+    dest: "{{postgresql_conf_directory}}/postgresql.conf"
     owner: "{{postgresql_admin_user}}"
     group: "{{postgresql_admin_user}}"
     mode: 0640

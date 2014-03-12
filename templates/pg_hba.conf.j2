@@ -18,24 +18,24 @@
 
 # Default:
 {% for connection in postgresql_pg_hba_default %}
-# {{ connection.comment }}
-{{ connection.type }}  {{ connection.database }}  {{ connection.user }}  {{ connection.address }}  {{ connection.method }}
+# {{connection.comment}}
+{{connection.type}}  {{connection.database}}  {{connection.user}}  {{connection.address}}  {{connection.method}}
 {% endfor %}
 
 # Passwored hosts
 {% for host in postgresql_pg_hba_passwd_hosts %}
-# {{ connection.comment }}
-host  all  all  {{ host }}  password
+# {{connection.comment}}
+host  all  all  {{host}}  password
 {% endfor %}
 
 # Trusted hosts
 {% for host in postgresql_pg_hba_trust_hosts %}
-# {{ connection.comment }}
-host  all  all  {{ host }}  trust
+# {{connection.comment}}
+host  all  all  {{host}}  trust
 {% endfor %}
 
 # User custom
 {% for connection in postgresql_pg_hba_custom %}
-# {{ connection.comment }}
-{{ connection.type }}  {{ connection.database }}  {{ connection.user }}  {{ connection.address }}  {{ connection.method }}
+# {{connection.comment}}
+{{connection.type}}  {{connection.database}}  {{connection.user}}  {{connection.address}}  {{connection.method}}
 {% endfor %}
