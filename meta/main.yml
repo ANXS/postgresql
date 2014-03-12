@@ -1,0 +1,16 @@
+# file: postgresql/meta/main.yml
+
+galaxy_info:
+  author: pjan vandaele
+  description: Install and configure PostgreSQL, dependencies and extensions
+  min_ansible_version: 1.4
+  license: MIT
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - database
+  - database:SQL
+
+dependencies: []

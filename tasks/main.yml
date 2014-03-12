@@ -1,0 +1,4 @@
+# file: postgresql/tasks/main.yml
+
+- include: install.yml
+- include: configure.yml
