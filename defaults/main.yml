@@ -12,7 +12,7 @@ postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
 # Extensions
-postgresql_ext_install_contrib_: no
+postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
