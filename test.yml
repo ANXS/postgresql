@@ -1,21 +1,6 @@
 - hosts: all
   vars_files:
     - 'defaults/main.yml'
-  vars:
-    postgresql_ext_install_contrib: yes
-    postgresql_ext_install_dev_headers: yes
-    postgresql_ext_install_postgis: yes
-    postgresql_databases:
-      - name: foo
-        hstore: yes
-    postgresql_users:
-      - name: bar
-        pass: baz
-        encrypted: no
-    postgresql_user_privileges:
-      - name: baz
-        db: foo
-        priv: "ALL"
   tasks:
     - include: 'tasks/main.yml'
   handlers:
