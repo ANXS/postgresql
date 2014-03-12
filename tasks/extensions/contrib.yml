@@ -1,6 +1,6 @@
 # file: postgresql/tasks/extensions/contrib.yml
 
-- name: PostgreSQL | Extensions | Make sure the development headers are installed
+- name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed
   apt:
     name: libpq-dev
     state: present

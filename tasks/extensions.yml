@@ -1,8 +1,8 @@
 # file: postgresql/tasks/extensions.yml
 
 - include: extensions/contrib.yml
-  when: postgresql_ext_install_contrib
+  when: postgresql_ext_install_contrib == true
 - include: extensions/dev_headers.yml
-  when: postgresql_ext_install_dev_headers
+  when: postgresql_ext_install_dev_headers == true
 - include: extensions/postgis.yml
-  when: postgresql_ext_install_postgis
+  when: postgresql_ext_install_postgis == true
