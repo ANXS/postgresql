@@ -11,6 +11,12 @@ postgresql_default_auth_method: "trust"
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
+# Extensions
+postgresql_ext_install_contrib_: no
+postgresql_ext_install_dev_headers: no
+postgresql_ext_install_postgis: no
+
+postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
 # pg_hba.conf
 postgresql_pg_hba_default:
