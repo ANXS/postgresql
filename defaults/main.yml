@@ -18,11 +18,14 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
-# List of databases to be created
+# List of databases to be created (optional)
 postgresql_databases: []
 
-# List of users to be created
+# List of users to be created (optional)
 postgresql_users: []
+
+# List of user privileges to be applied (optional)
+postgresql_user_privileges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:

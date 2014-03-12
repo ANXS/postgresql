@@ -27,7 +27,17 @@ postgresql_databases:
   - name: foobar
     hstore: yes         # flag to install the hstore extensions on this database (yes/no)
 
+# List of users to be created
+postgresql_users:
+  - name: baz
+    pass: pass
+    encrypted: no       # denotes if the password is already encrypted.
 
+# List of user privileges to be applied
+postgresql_user_privileges:
+  - name: baz          # user name
+    db: foobar         # database
+    priv: "ALL"        # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml
