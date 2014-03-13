@@ -5,7 +5,7 @@ Ansible role for installing and configuring PostgreSQL.
 
 #### Requirements & Dependencies
 - Tested on Ansible 1.4 or higher.
-- Ansibles.monit if you want monit protection (in that case, you should set `monit_protection: true`)
+- Ansibles.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/Ansibles/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
 
 
 #### Variables
@@ -27,13 +27,13 @@ postgresql_databases:
   - name: foobar
     hstore: yes         # flag to install the hstore extensions on this database (yes/no)
 
-# List of users to be created
+# List of users to be created (optional)
 postgresql_users:
   - name: baz
     pass: pass
     encrypted: no       # denotes if the password is already encrypted.
 
-# List of user privileges to be applied
+# List of user privileges to be applied (optional)
 postgresql_user_privileges:
   - name: baz          # user name
     db: foobar         # database
@@ -42,9 +42,11 @@ postgresql_user_privileges:
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml
 
+
 #### License
 
 Licensed under the MIT License. See the LICENSE file for details.
+
 
 #### Feedback, bug-reports, requests, ...
 
