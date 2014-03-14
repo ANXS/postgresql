@@ -2,7 +2,8 @@
 
 galaxy_info:
   author: pjan vandaele
-  description: Install and configure PostgreSQL, dependencies, extensions, databases and users.
+  company: Ansibles
+  description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
   min_ansible_version: 1.4
   license: MIT
   platforms:

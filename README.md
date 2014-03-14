@@ -1,6 +1,6 @@
 ## Ansibles - PostgreSQL [![Build Status](https://travis-ci.org/Ansibles/postgresql.png)](https://travis-ci.org/Ansibles/postgresql)
 
-Ansible role for installing and configuring PostgreSQL.
+Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
 
 #### Requirements & Dependencies
