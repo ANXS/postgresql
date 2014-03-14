@@ -31,3 +31,8 @@
     mode: 0640
   notify:
     - restart postgresql
+
+- name: PostgreSQL | Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
