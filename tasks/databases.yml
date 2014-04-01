@@ -14,5 +14,6 @@
 - name: PostgreSQL | Add hstore to the databases with the requirement
   sudo: yes
   sudo_user: "{{postgresql_admin_user}}"
-  shell: "{% if item.hstore %}psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'{% endif %}"
+  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;"
   with_items: postgresql_databases
+  when: "item.hstore is defined and item.hstore == 'yes'"
