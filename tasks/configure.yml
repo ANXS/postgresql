@@ -35,4 +35,4 @@
 - name: PostgreSQL | Restart PostgreSQL
   service:
     name: postgresql
-    state: restarted
+    state: started
