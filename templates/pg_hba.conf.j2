@@ -24,13 +24,11 @@
 
 # Passwored hosts
 {% for host in postgresql_pg_hba_passwd_hosts %}
-# {{connection.comment}}
 host  all  all  {{host}}  password
 {% endfor %}
 
 # Trusted hosts
 {% for host in postgresql_pg_hba_trust_hosts %}
-# {{connection.comment}}
 host  all  all  {{host}}  trust
 {% endfor %}
 
