@@ -2,7 +2,7 @@
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed
   apt:
-    name: "postgresql-contrib-{{postgresql_version}}"
+    name: libpq-dev
     state: present
   notify:
     - restart postgresql
