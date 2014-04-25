@@ -48,6 +48,11 @@ There's a lot more knobs and bolts to set, which you can find in the defaults/ma
 
 Licensed under the MIT License. See the LICENSE file for details.
 
+#### Thanks
+
+To the contributors:
+- [Ralph von der Heyden](https://github.com/ralph)
+
 
 #### Feedback, bug-reports, requests, ...
 
