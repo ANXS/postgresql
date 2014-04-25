@@ -19,8 +19,7 @@
     owner: "{{postgresql_admin_user}}"
     group: "{{postgresql_admin_user}}"
     mode: 0640
-  notify:
-    - restart postgresql
+  register: postgresql_configuration_pt1
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
   template:
@@ -29,10 +28,10 @@
     owner: "{{postgresql_admin_user}}"
     group: "{{postgresql_admin_user}}"
     mode: 0640
-  notify:
-    - restart postgresql
+  register: postgresql_configuration_pt2
 
 - name: PostgreSQL | Restart PostgreSQL
   service:
     name: postgresql
-    state: started
+    state: restarted
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed

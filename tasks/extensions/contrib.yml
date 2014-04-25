@@ -2,7 +2,7 @@
 
 - name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed
   apt:
-    name: libpq-dev
+    name: "postgresql-contrib-{{postgresql_version}}"
     state: present
   notify:
     - restart postgresql
