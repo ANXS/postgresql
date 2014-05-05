@@ -1,6 +1,8 @@
 # file: postgresql/tasks/databases.yml
 
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
   postgresql_db:
     name: "{{item.name}}"
     encoding: "{{postgresql_encoding}}"
