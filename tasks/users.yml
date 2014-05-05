@@ -1,20 +1,24 @@
 # file: postgresql/tasks/users.yml
 
 - name: PostgreSQL | Make sure the PostgreSQL users are present
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
   postgresql_user:
     name: "{{item.name}}"
     password: "{{item.pass | default('pass')}}"
     state: present
-    login_host: "{{item.host | default('localhost')}}"
+    login_host: "{{item.host | default('')}}"
   with_items: postgresql_users
   when: postgresql_users|length > 0
 
 - name: PostgreSQL | Update the user privileges
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
   postgresql_user:
     name: "{{item.name}}"
     db: "{{item.db}}"
     priv: "{{item.priv | default('ALL')}}"
     state: present
-    login_host: "{{item.host | default('localhost')}}"
+    login_host: "{{item.host | default('')}}"
   with_items: postgresql_user_privileges
   when: postgresql_users|length > 0
