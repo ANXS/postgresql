@@ -1,5 +1,10 @@
 # file: postgresql/tasks/databases.yml
 
+- name: PostgreSQL | Ensure PostgreSQL is running
+  service:
+    name: postgresql
+    state: started
+
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
   postgresql_db:
     name: "{{item.name}}"
