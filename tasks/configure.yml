@@ -5,6 +5,7 @@
     path: "{{postgresql_data_directory}}"
     owner: "{{postgresql_admin_user}}"
     group: "{{postgresql_admin_user}}"
+    state: directory
     mode: 0700
 
 - name: PostgreSQL | Reset the cluster - drop the existing one
