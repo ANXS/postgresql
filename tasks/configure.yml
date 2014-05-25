@@ -37,6 +37,14 @@
     group: "{{postgresql_admin_user}}"
     mode: 0640
   register: postgresql_configuration_pt2
+  
+- name: PostgreSQL | Create folder for additional configuration files
+  file:
+    name: "{{postgresql_conf_directory}}/conf.d"
+    state: directory
+    owner: "{{postgresql_admin_user}}"
+    group: "{{postgresql_admin_user}}"
+    mode: 0755
 
 - name: PostgreSQL | Restart PostgreSQL
   service:
