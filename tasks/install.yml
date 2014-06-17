@@ -6,7 +6,7 @@
     state: present
   with_items: ["python-psycopg2", "python-pycurl"]
 
-- name: PostgreSQL | Add PostgeSQL repository apt-key
+- name: PostgreSQL | Add PostgreSQL repository apt-key
   apt_key:
     id: ACCC4CF8
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
