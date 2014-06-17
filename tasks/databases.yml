@@ -26,6 +26,6 @@
 - name: PostgreSQL | Add uuid-ossp to the database with the requirement
   sudo: yes
   sudo_user: "{{postgresql_admin_user}}"
-  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS uuid-ossp;'"
+  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'"
   with_items: postgresql_databases
   when: item.uuid_ossp is defined and item.uuid_ossp
