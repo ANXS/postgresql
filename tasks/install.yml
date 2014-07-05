@@ -4,6 +4,7 @@
   apt:
     pkg: "{{item}}"
     state: present
+    update_cache: yes
   with_items: ["python-psycopg2", "python-pycurl"]
 
 - name: PostgreSQL | Add PostgreSQL repository apt-key
@@ -21,6 +22,7 @@
   apt:
     name: "{{item}}"
     state: present
+    update_cache: yes
   environment: postgresql_env
   with_items:
     - "postgresql-{{postgresql_version}}"
