@@ -11,6 +11,7 @@ postgresql_default_auth_method: "trust"
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
+postgresql_database_owner: "{{ansible_user_id}}"
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
