@@ -1,9 +1,20 @@
 # file: postgresql/tasks/main.yml
 
 - include: install.yml
+  tags: [postgresql, postgresql-install]
+
 - include: extensions.yml
+  tags: [postgresql, postgresql-extensions]
+
 - include: configure.yml
+  tags: [postgresql, postgresql-configure]
+
 - include: databases.yml
+  tags: [postgresql, postgresql-databases]
+
 - include: users.yml
+  tags: [postgresql, postgresql-users]
+
 - include: monit.yml
   when: monit_protection is defined and monit_protection == true
+  tags: [postgresql, postgresql-monit]
