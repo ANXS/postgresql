@@ -10,6 +10,7 @@ postgresql_default_auth_method: "trust"
 
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
+postgresql_datadir_auto_create: true
 
 # Extensions
 postgresql_ext_install_contrib: no
