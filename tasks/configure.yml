@@ -21,6 +21,7 @@
   when: postgresql_cluster_reset
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
+  sudo: yes
   template:
     src: pg_hba.conf.j2
     dest: "{{postgresql_conf_directory}}/pg_hba.conf"
@@ -30,6 +31,7 @@
   register: postgresql_configuration_pt1
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
+  sudo: yes
   template:
     src: postgresql.conf.j2
     dest: "{{postgresql_conf_directory}}/postgresql.conf"
@@ -39,6 +41,7 @@
   register: postgresql_configuration_pt2
   
 - name: PostgreSQL | Create folder for additional configuration files
+  sudo: yes
   file:
     name: "{{postgresql_conf_directory}}/conf.d"
     state: directory
@@ -47,6 +50,7 @@
     mode: 0755
 
 - name: PostgreSQL | Restart PostgreSQL
+  sudo: yes
   service:
     name: postgresql
     state: restarted
