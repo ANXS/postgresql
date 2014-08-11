@@ -1,6 +1,7 @@
 # file: postgresql/tasks/extensions/dev_headers.yml
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed
+  sudo: yes
   apt:
     name: libpq-dev
     state: present
