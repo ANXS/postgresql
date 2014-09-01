@@ -54,7 +54,12 @@ port = {{postgresql_port}}
 max_connections = {{postgresql_max_connections}}
 superuser_reserved_connections = {{postgresql_superuser_reserved_connections}}
 
+{% if postgresql_version | float >= 9.3 %}
 unix_socket_directories = '{{postgresql_unix_socket_directories|join(',')}}'
+{% else %}
+unix_socket_directory = '{{postgresql_unix_socket_directories|join(',')}}'
+{% endif %}
+
 unix_socket_group       = '{{postgresql_unix_socket_group}}'
 unix_socket_permissions = {{postgresql_unix_socket_permissions}}
 
@@ -68,10 +73,14 @@ authentication_timeout  = {{postgresql_authentication_timeout}}
 ssl                     = {{'on' if postgresql_ssl else 'off'}}
 ssl_ciphers             = '{{postgresql_ssl_ciphers|join(':')}}'
 ssl_renegotiation_limit = {{postgresql_ssl_renegotiation_limit}}
+
+{% if postgresql_version | float >= 9.2 %}
 ssl_cert_file           = '{{postgresql_ssl_cert_file}}'
 ssl_key_file            = '{{postgresql_ssl_key_file}}'
 ssl_ca_file             = '{{postgresql_ssl_ca_file}}'
 ssl_crl_file            = '{{postgresql_ssl_crl_file}}'
+{% endif %}
+
 password_encryption     = {{'on' if postgresql_password_encryption else 'off'}}
 db_user_namespace       = {{'on' if postgresql_db_user_namespace else 'off'}}
 
@@ -104,7 +113,9 @@ max_stack_depth      = {{postgresql_max_stack_depth}}
 
 # - Disk -
 
+{% if postgresql_version | float >= 9.2 %}
 temp_file_limit = {{postgresql_temp_file_limit}}
+{% endif %}
 
 
 # - Kernel Resource Usage -
@@ -178,7 +189,9 @@ archive_timeout = {{postgresql_archive_timeout}}
 
 max_wal_senders    = {{postgresql_max_wal_senders}}
 wal_keep_segments  = {{postgresql_wal_keep_segments}}
+{% if postgresql_version | float >= 9.2 %}
 wal_sender_timeout = {{postgresql_wal_sender_timeout}}
+{% endif %}
 
 
 # - Master Server -
@@ -195,7 +208,9 @@ max_standby_archive_delay = {{postgresql_max_standby_archive_delay}}
 max_standby_streaming_delay = {{postgresql_max_standby_streaming_delay}}
 wal_receiver_status_interval = {{postgresql_wal_receiver_status_interval}}
 hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback or 'off'}}
+{% if postgresql_version | float >= 9.2 %}
 wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}
+{% endif %}
 
 
 #------------------------------------------------------------------------------
@@ -208,7 +223,9 @@ enable_bitmapscan    = {{'on' if postgresql_enable_bitmapscan else 'off'}}
 enable_hashagg       = {{'on' if postgresql_enable_hashagg else 'off'}}
 enable_hashjoin      = {{'on' if postgresql_enable_hashjoin else 'off'}}
 enable_indexscan     = {{'on' if postgresql_enable_indexscan else 'off'}}
+{% if postgresql_version | float >= 9.2 %}
 enable_indexonlyscan = {{'on' if postgresql_enable_indexonlyscan else 'off'}}
+{% endif %}
 enable_material      = {{'on' if postgresql_enable_material else 'off'}}
 enable_mergejoin     = {{'on' if postgresql_enable_mergejoin else 'off'}}
 enable_nestloop      = {{'on' if postgresql_enable_nestloop else 'off'}}
@@ -267,7 +284,9 @@ log_rotation_size        = {{postgresql_log_rotation_size}}
 syslog_facility          = '{{postgresql_syslog_facility}}'
 syslog_ident             = '{{postgresql_syslog_ident}}'
 
+{% if postgresql_version | float >= 9.2 %}
 event_source             = '{{postgresql_event_source}}'
+{% endif %}
 
 
 # - When to Log -
@@ -306,7 +325,9 @@ log_timezone          = '{{postgresql_log_timezone}}'
 
 track_activities          = {{'on' if postgresql_track_activities else 'off'}}
 track_counts              = {{'on' if postgresql_track_counts else 'off'}}
+{% if postgresql_version | float >= 9.2 %}
 track_io_timing           = {{'on' if postgresql_track_io_timing else 'off'}}
+{% endif %}
 track_functions           = {{postgresql_track_functions}} # none, pl, all
 track_activity_query_size = {{postgresql_track_activity_query_size}}
 update_process_title      = {{'on' if postgresql_update_process_title else 'off'}}
@@ -355,7 +376,9 @@ default_transaction_deferrable = {{'on' if postgresql_default_transaction_deferr
 session_replication_role       = '{{postgresql_session_replication_role}}'
 
 statement_timeout              = {{postgresql_statement_timeout}}
+{% if postgresql_version | float >= 9.3 %}
 lock_timeout                   = {{postgresql_lock_timeout}}
+{% endif %}
 vacuum_freeze_min_age          = {{postgresql_vacuum_freeze_min_age}}
 vacuum_freeze_table_age        = {{postgresql_vacuum_freeze_table_age}}
 
@@ -433,8 +456,10 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}
 # These options allow settings to be loaded from files other than the
 # default postgresql.conf.
 
+{% if postgresql_version | float >= 9.3 %}
 include_dir = 'conf.d'                  # include files ending in '.conf' from
                                         # directory 'conf.d'
+{% endif %}
 #include_if_exists = 'exists.conf'      # include file only if it exists
 #include = 'special.conf'               # include file
 
