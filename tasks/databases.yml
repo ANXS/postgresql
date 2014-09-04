@@ -1,9 +1,22 @@
 # file: postgresql/tasks/databases.yml
 
+- name: PostgreSQL | Ensure PostgreSQL is stopped
+  service:
+    name: postgresql
+    state: stopped
+  when: postgresql_drop_databases|length > 0
+
 - name: PostgreSQL | Ensure PostgreSQL is running
   service:
     name: postgresql
     state: started
+
+- name: PostgreSQL | Make sure the PostgreSQL databases are dropped
+  postgresql_db:
+    name: "{{item.name}}"
+    state: absent
+  with_items: postgresql_drop_databases
+  when: postgresql_drop_databases|length > 0
 
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
   postgresql_db:
