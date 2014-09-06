@@ -1,11 +1,11 @@
-## Ansibles - PostgreSQL [![Build Status](https://travis-ci.org/Ansibles/postgresql.png)](https://travis-ci.org/Ansibles/postgresql)
+## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.png)](https://travis-ci.org/ANXS/postgresql)
 
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
 
 #### Requirements & Dependencies
 - Tested on Ansible 1.4 or higher.
-- Ansibles.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/Ansibles/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
+- ANXS.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/ANXS/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
 
 
 #### Variables
@@ -56,4 +56,4 @@ To the contributors:
 
 #### Feedback, bug-reports, requests, ...
 
-Are [welcome](https://github.com/ansibles/postgresql/issues)!
+Are [welcome](https://github.com/ANXS/postgresql/issues)!
