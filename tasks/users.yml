@@ -9,6 +9,7 @@
   postgresql_user:
     name: "{{item.name}}"
     password: "{{item.pass | default('pass')}}"
+    port: "{{postgresql_port}}"
     state: present
     login_host: "{{item.host | default('localhost')}}"
   with_items: postgresql_users
@@ -18,6 +19,7 @@
   postgresql_user:
     name: "{{item.name}}"
     db: "{{item.db}}"
+    port: "{{postgresql_port}}"
     priv: "{{item.priv | default('ALL')}}"
     state: present
     login_host: "{{item.host | default('localhost')}}"
