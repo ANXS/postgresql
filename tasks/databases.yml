@@ -11,6 +11,7 @@
     encoding: "{{postgresql_encoding}}"
     lc_collate: "{{postgresql_locale}}"
     lc_ctype: "{{postgresql_locale}}"
+    port: "{{postgresql_port}}"
     template: "template0"
     state: present
   with_items: postgresql_databases
