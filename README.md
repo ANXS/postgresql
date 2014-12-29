@@ -25,8 +25,9 @@ postgresql_cluster_reset: false
 # List of databases to be created (optional)
 postgresql_databases:
   - name: foobar
-    hstore: yes         # flag to install the hstore extension on this database (yes/no)
-    uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
+  - extensions:
+    - hstore
+    - uuid-ossp
 
 # List of users to be created (optional)
 postgresql_users:
