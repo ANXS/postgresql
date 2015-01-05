@@ -11,7 +11,7 @@
     id: ACCC4CF8
     url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     state: present
-  when: postgresql_from_pg_repo == True
+  when: postgresql_from_pg_repo | bool
 
 - name: PostgreSQL | Add PostgreSQL repository
   apt_repository:
