@@ -21,5 +21,6 @@
     priv: "{{item.priv | default('ALL')}}"
     state: present
     login_host: "{{item.host | default('localhost')}}"
+    role_attr_flags: "{{item.role_attr_flags | default('')}}"
   with_items: postgresql_user_privileges
   when: postgresql_users|length > 0
