@@ -8,6 +8,10 @@ postgresql_locale: 'en_US.UTF-8'
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
 
+# The user/group that will run postgresql process or service
+postgresql_service_user: "{{ postgresql_admin_user }}"
+postgresql_service_group: "{{ postgresql_admin_user }}"
+
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
