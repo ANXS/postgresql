@@ -24,14 +24,14 @@
 - name: PostgreSQL | Add hstore to the databases with the requirement
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'"
+  shell: "psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'"
   with_items: postgresql_databases
   when: item.hstore is defined and item.hstore
 
 - name: PostgreSQL | Add uuid-ossp to the database with the requirement
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'"
+  shell: "psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'"
   with_items: postgresql_databases
   register: uuid_ext_result
   failed_when: uuid_ext_result.rc != 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
@@ -40,7 +40,28 @@
 
 - name: PostgreSQL | Add postgis to the databases with the requirement
   sudo: yes
-  sudo_user: "{{postgresql_admin_user}}"
-  shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'&&psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'&&psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
   with_items: postgresql_databases
   when: item.gis is defined and item.gis
+
+- name: postgresql | add cube to the database with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists cube;'"
+  with_items: postgresql_databases
+  when: item.cube is defined and item.cube
+
+- name: PostgreSQL | Add plpgsql to the database with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "psql {{item.name}} --username {{ postgresql_admin_user }} -c 'CREATE EXTENSION IF NOT EXISTS plpgsql;'"
+  with_items: postgresql_databases
+  when: item.plpgsql is defined and item.plpgsql
+
+- name: postgresql | add earthdistance to the database with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists earthdistance;'"
+  with_items: postgresql_databases
+  when: item.earthdistance is defined and item.earthdistance
