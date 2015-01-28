@@ -32,6 +32,9 @@
   sudo_user: "{{ postgresql_service_user }}"
   shell: "psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'"
   with_items: postgresql_databases
+  register: uuid_ext_result
+  failed_when: uuid_ext_result.rc != 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
+  changed_when: uuid_ext_result.rc == 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
   when: item.uuid_ossp is defined and item.uuid_ossp
 
 - name: PostgreSQL | Add postgis to the databases with the requirement

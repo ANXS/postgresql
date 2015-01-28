@@ -25,3 +25,4 @@
   with_items:
     - "postgresql-{{postgresql_version}}"
     - "postgresql-client-{{postgresql_version}}"
+    - "postgresql-contrib"
