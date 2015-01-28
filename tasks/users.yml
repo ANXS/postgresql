@@ -9,6 +9,7 @@
   postgresql_user:
     name: "{{item.name}}"
     password: "{{item.pass | default('pass')}}"
+    port: "{{postgresql_port}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
   sudo: yes
@@ -20,6 +21,7 @@
   postgresql_user:
     name: "{{item.name}}"
     db: "{{item.db}}"
+    port: "{{postgresql_port}}"
     priv: "{{item.priv | default('ALL')}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
