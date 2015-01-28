@@ -7,6 +7,7 @@
   tags: [postgresql, postgresql-extensions]
 
 - include: configure.yml
+<<<<<<< HEAD
   tags: [postgresql, postgresql-configure]
 
 - include: databases.yml
@@ -15,6 +16,11 @@
 - include: users.yml
   tags: [postgresql, postgresql-users]
 
+=======
+- include: users.yml
+- include: databases.yml
+- include: users_priv.yml
+>>>>>>> c20146400af29681dc4faed4d6744e74bd6aacd6
 - include: monit.yml
   when: monit_protection is defined and monit_protection == true
   tags: [postgresql, postgresql-monit]

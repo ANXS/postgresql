@@ -15,6 +15,7 @@ postgresql_service_group: "{{ postgresql_admin_user }}"
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
+postgresql_database_owner: "{{ postgresql_admin_user }}"
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
