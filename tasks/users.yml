@@ -25,6 +25,7 @@
     priv: "{{item.priv | default('ALL')}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
+    role_attr_flags: "{{item.role_attr_flags | default('')}}"
   sudo: yes
   sudo_user: "{{postgresql_admin_user}}"
   with_items: postgresql_user_privileges
