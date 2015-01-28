@@ -14,6 +14,9 @@
     lc_ctype: "{{postgresql_locale}}"
     template: "template0"
     state: present
+    login_user: "{{postgresql_admin_user}}"
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
   with_items: postgresql_databases
   when: postgresql_databases|length > 0
 
