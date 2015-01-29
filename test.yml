@@ -1,6 +1,15 @@
 - hosts: all
   vars_files:
     - 'defaults/main.yml'
+  vars:
+    postgresql_databases:
+      - name: foobar
+    postgresql_users:
+      - name: baz
+        pass: pass
+    postgresql_user_privileges:
+      - name: baz
+        db: foobar
   tasks:
     - include: 'tasks/main.yml'
   handlers:
