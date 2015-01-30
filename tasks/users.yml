@@ -16,18 +16,3 @@
   sudo_user: "{{postgresql_admin_user}}"
   with_items: postgresql_users
   when: postgresql_users|length > 0
-
-- name: PostgreSQL | Update the user privileges
-  postgresql_user:
-    name: "{{item.name}}"
-    db: "{{item.db}}"
-    port: "{{postgresql_port}}"
-    priv: "{{item.priv | default('ALL')}}"
-    state: present
-    login_user: "{{postgresql_admin_user}}"
-    role_attr_flags: "{{item.role_attr_flags | default('')}}"
-  sudo: yes
-  sudo_user: "{{postgresql_admin_user}}"
-  with_items: postgresql_user_privileges
-  when: postgresql_users|length > 0
-
