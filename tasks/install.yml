@@ -8,13 +8,13 @@
 
 - name: PostgreSQL | Add PostgreSQL repository apt-key
   apt_key:
-    id: ACCC4CF8
-    url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+    id: "{{ postgresql_apt_key_id }}"
+    url: "{{ postgresql_apt_key_url }}"
     state: present
 
 - name: PostgreSQL | Add PostgreSQL repository
   apt_repository:
-    repo: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main'
+    repo: "{{ postgresql_apt_repository }}"
     state: present
 
 - name: PostgreSQL | Install PostgreSQL
