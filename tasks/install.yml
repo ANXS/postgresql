@@ -1,11 +1,5 @@
 # file: postgresql/tasks/install.yml
 
-- name: PostgreSQL | Make sure the dependencies are installed
-  apt:
-    pkg: "{{item}}"
-    state: present
-  with_items: ["python-psycopg2", "python-pycurl"]
-
 - name: PostgreSQL | Add PostgreSQL repository apt-key
   apt_key:
     id: "{{ postgresql_apt_key_id }}"
@@ -17,10 +11,20 @@
     repo: "{{ postgresql_apt_repository }}"
     state: present
 
+- name: PostgreSQL | Make sure the dependencies are installed
+  apt:
+    pkg: "{{item}}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+  with_items: ["python-psycopg2", "python-pycurl"]
+
 - name: PostgreSQL | Install PostgreSQL
   apt:
     name: "{{item}}"
     state: present
+    update_cache: yes
+    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: postgresql_env
   with_items:
     - "postgresql-{{postgresql_version}}"
