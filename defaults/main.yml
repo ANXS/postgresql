@@ -609,3 +609,8 @@ postgresql_restart_after_crash: on
 postgresql_env:
   LC_ALL: "{{ postgresql_locale }}"
   LC_LCTYPE: "{{ postgresql_locale }}"
+
+# APT settings
+postgresql_apt_key_id: ACCC4CF8
+postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main'
