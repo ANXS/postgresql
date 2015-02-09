@@ -95,6 +95,8 @@ postgresql_ssl_ciphers:
   - '!EXP'
   - '!MD5'
   - '@STRENGTH'
+postgresql_ssl_prefer_server_ciphers: on
+postgresql_ssl_ecdh_curve: 'prime256v1'
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
 postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
 postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
@@ -121,6 +123,7 @@ postgresql_tcp_keepalives_count: 0
 # - Memory -
 
 postgresql_shared_buffers:       128MB # min 128kB
+postgresql_huge_pages:           try   # on, off, or try
 postgresql_temp_buffers:         8MB   # min 800kB
 
 # Note:  Increasing max_prepared_transactions costs ~600 bytes of shared memory
@@ -131,7 +134,15 @@ postgresql_max_prepared_transactions: 0 # zero disables the feature
 
 postgresql_work_mem:             1MB   # min 64kB
 postgresql_maintenance_work_mem: 16MB  # min 1MB
+postgresql_autovacuum_work_mem:  -1    # min 1MB, or -1 to use maintenance_work_mem
 postgresql_max_stack_depth:      2MB   # min 100kB
+postgresql_dynamic_shared_memory_type: posix    # the default is the first option
+                                                # supported by the operating system:
+                                                #   posix
+                                                #   sysv
+                                                #   windows
+                                                #   mmap
+                                                # use none to disable dynamic shared memory
 
 
 # - Disk -
@@ -165,6 +176,7 @@ postgresql_bgwriter_lru_multiplier: 2.0    # 0-10.0 multipler on buffers scanned
 # - Asynchronous Behavior -
 
 postgresql_effective_io_concurrency: 1     # 1-1000; 0 disables prefetching
+postgresql_max_worker_processes: 8
 
 
 #------------------------------------------------------------------------------
@@ -173,7 +185,7 @@ postgresql_effective_io_concurrency: 1     # 1-1000; 0 disables prefetching
 
 # - Settings -
 
-postgresql_wal_level: minimal  # minimal, archive, or hot_standby
+postgresql_wal_level: minimal  # minimal, archive, hot_standby, or logical
 postgresql_fsync: on  # turns forced synchronization on or off
 
 # Synchronization level:
@@ -193,6 +205,7 @@ postgresql_wal_sync_method: fsync
 
 # recover from partial page writes
 postgresql_full_page_writes: on
+postgresql_wal_log_hints: off       # also do full page writes of non-critical updates
 
 postgresql_wal_buffers:      -1     # min 32kB, -1 sets based on shared_buffers
 postgresql_wal_writer_delay: 200ms  # 1-10000 milliseconds
@@ -236,6 +249,7 @@ postgresql_max_wal_senders: 0
 
 postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables
+postgresql_max_replication_slots: 0 # max number of replication slots
 
 
 # - Master Server -
@@ -490,6 +504,8 @@ postgresql_autovacuum_vacuum_scale_factor: 0.2
 postgresql_autovacuum_analyze_scale_factor: 0.1
 # maximum XID age before forced vacuum
 postgresql_autovacuum_freeze_max_age: 200000000
+# maximum Multixact age before forced vacuum
+postgresql_autovacuum_multixact_freeze_max_age: 400000000
 # default vacuum cost delay for autovacuum, in milliseconds
 postgresql_autovacuum_vacuum_cost_delay: 20ms
 # default vacuum cost limit for autovacuum,
@@ -518,6 +534,8 @@ postgresql_statement_timeout:       0  # in milliseconds, 0 is disabled
 postgresql_lock_timeout:            0  # in milliseconds, 0 is disabled
 postgresql_vacuum_freeze_min_age:   50000000
 postgresql_vacuum_freeze_table_age: 150000000
+postgresql_vacuum_multixact_freeze_min_age: 5000000
+postgresql_vacuum_multixact_freeze_table_age: 150000000
 
 postgresql_bytea_output: hex  # hex, escape
 postgresql_xmlbinary:    base64
@@ -557,6 +575,7 @@ postgresql_default_text_search_config: pg_catalog.english
 
 postgresql_dynamic_library_path: '$libdir'
 postgresql_local_preload_libraries: []
+postgresql_session_preload_libraries: []
 
 
 #------------------------------------------------------------------------------
