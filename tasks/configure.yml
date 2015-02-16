@@ -37,11 +37,41 @@
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
   template:
     src: "postgresql.conf-{{ postgresql_version }}.j2"
-    dest: "{{postgresql_conf_directory}}/postgresql.conf"
+    # if using pgtune, save the template to ".untuned"
+    dest: "{{postgresql_conf_directory}}/postgresql.conf{% if postgresql_pgtune %}.untuned{% endif %}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
   register: postgresql_configuration_pt2
+
+- name: PostgreSQL | Update configuration - pt. 3 (pgtune)
+  sudo: true
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: |
+    TMPDIR=$(mktemp -d)
+    pgtune --input-config=postgresql.conf.untuned\
+           --output-config=$TMPDIR/postgresql.conf\
+           {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory}}{% endif %}\
+           --type {{postgresql_pgtune_type }}\
+           {% if postgresql_pgtune_connections %}--type {{postgresql_pgtune_connections}}{% endif %}\
+    # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
+    if diff --ignore-blank-lines \
+        <(sed -e 's/#.*//' postgresql.conf) \
+        <(sed -e 's/#.*//' $TMPDIR/postgresql.conf)
+    then
+      echo '_OK_'
+    else
+      cp $TMPDIR/postgresql.conf postgresql.conf
+    fi
+    # Cleanup
+    rm $TMPDIR/postgresql.conf
+    rmdir $TMPDIR
+  args:
+    chdir: "{{postgresql_conf_directory}}"
+    executable: "/bin/bash"
+  when: postgresql_pgtune
+  register: postgresql_configuration_pt3
+  changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
@@ -55,4 +85,4 @@
   service:
     name: postgresql
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed
