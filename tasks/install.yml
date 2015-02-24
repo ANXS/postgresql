@@ -5,11 +5,13 @@
     id: "{{ postgresql_apt_key_id }}"
     url: "{{ postgresql_apt_key_url }}"
     state: present
+  when: postgresql_apt_key_url and postgresql_apt_key_id
 
 - name: PostgreSQL | Add PostgreSQL repository
   apt_repository:
     repo: "{{ postgresql_apt_repository }}"
     state: present
+  when: postgresql_apt_repository
 
 - name: PostgreSQL | Make sure the dependencies are installed
   apt:
