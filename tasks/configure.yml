@@ -9,14 +9,9 @@
     mode: 0700
   register: pgdata_dir_exist
 
-- name: PostgreSQL | Get locales
-  shell: locale -a
-  register: locales
-
 - name: PostgreSQL | Ensure the locale is generated
   sudo: yes
-  shell: locale-gen {{postgresql_locale.split('.').0}}
-  when: "'{{postgresql_locale.split('.').0 }}' not in locales.stdout"
+  locale_gen: name={{postgresql_locale}} state=present
 
 - name: PostgreSQL | Reset the cluster - drop the existing one
   shell: pg_dropcluster --stop {{postgresql_version}} {{postgresql_cluster_name}}
