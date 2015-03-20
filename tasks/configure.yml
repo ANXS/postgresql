@@ -9,6 +9,10 @@
     mode: 0700
   register: pgdata_dir_exist
 
+- name: PostgreSQL | Ensure the locale is generated
+  sudo: yes
+  locale_gen: name={{postgresql_locale}} state=present
+
 - name: PostgreSQL | Reset the cluster - drop the existing one
   shell: pg_dropcluster --stop {{postgresql_version}} {{postgresql_cluster_name}}
   sudo: yes
