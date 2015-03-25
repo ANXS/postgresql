@@ -36,7 +36,7 @@
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
   template:
-    src: postgresql.conf.j2
+    src: "postgresql.conf-{{ postgresql_version }}.j2"
     dest: "{{postgresql_conf_directory}}/postgresql.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
