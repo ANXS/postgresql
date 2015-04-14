@@ -4,6 +4,7 @@
   service:
     name: postgresql
     state: started
+  sudo_user: '{{ postgresql_service_user }}'
 
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
   postgresql_db:

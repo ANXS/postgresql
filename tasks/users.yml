@@ -4,6 +4,7 @@
   service:
     name: postgresql
     state: started
+  sudo_user: '{{ postgresql_service_user }}'
 
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:

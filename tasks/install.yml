@@ -6,12 +6,14 @@
     url: "{{ postgresql_apt_key_url }}"
     state: present
   when: postgresql_apt_key_url and postgresql_apt_key_id
+  sudo: yes
 
 - name: PostgreSQL | Add PostgreSQL repository
   apt_repository:
     repo: "{{ postgresql_apt_repository }}"
     state: present
   when: postgresql_apt_repository
+  sudo: yes
 
 - name: PostgreSQL | Make sure the dependencies are installed
   apt:
@@ -20,6 +22,7 @@
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   with_items: ["python-psycopg2", "python-pycurl", "locales"]
+  sudo: yes
 
 - name: PostgreSQL | Install PostgreSQL
   apt:
@@ -32,3 +35,4 @@
     - "postgresql-{{postgresql_version}}"
     - "postgresql-client-{{postgresql_version}}"
     - "postgresql-contrib-{{postgresql_version}}"
+  sudo: yes
