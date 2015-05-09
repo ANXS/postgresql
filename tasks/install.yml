@@ -13,6 +13,12 @@
     state: present
   when: postgresql_apt_repository
 
+- name: PostgreSQL | Add PostgreSQL repository preferences
+  template:
+    src: etc_apt_preferences.d_apt_postgresql_org_pub_repos_apt.pref.j2
+    dest: /etc/apt/preferences.d/apt_postgresql_org_pub_repos_apt.pref
+  when: postgresql_apt_pin_priority
+
 - name: PostgreSQL | Make sure the dependencies are installed
   apt:
     pkg: "{{item}}"
