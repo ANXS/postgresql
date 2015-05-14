@@ -14,6 +14,7 @@ postgresql_service_group: "{{ postgresql_admin_user }}"
 
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
+postgresql_datadir_auto_create: true
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
 # Extensions
@@ -22,6 +23,9 @@ postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
+
+# List of databases to be dropped before creating (optional)
+postgresql_drop_databases: []
 
 # List of databases to be created (optional)
 postgresql_databases: []

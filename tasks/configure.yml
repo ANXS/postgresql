@@ -13,6 +13,23 @@
   sudo: yes
   locale_gen: name={{postgresql_locale}} state=present
 
+- name: PostgreSQL | Check if cluster exists
+  stat: path="{{postgresql_data_directory}}/PG_VERSION" get_md5=no
+  sudo: yes
+  register: stat_postgresql_data_dir
+
+- name: Stop service if data dir is new
+  shell: killall postgres
+  failed_when: false
+  sudo: yes
+  when: postgresql_datadir_auto_create and not stat_postgresql_data_dir.stat.exists
+
+- name: Automatically create data dir if not exists (e.g. when renamed)
+  shell: /usr/lib/postgresql/9.3/bin/initdb -D {{postgresql_data_directory}}
+  sudo: yes
+  sudo_user: postgres
+  when: postgresql_datadir_auto_create and not stat_postgresql_data_dir.stat.exists
+
 - name: PostgreSQL | Reset the cluster - drop the existing one
   shell: pg_dropcluster --stop {{postgresql_version}} {{postgresql_cluster_name}}
   sudo: yes
@@ -55,4 +72,4 @@
   service:
     name: postgresql
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed
+  when: not stat_postgresql_data_dir.stat.exists or postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed
