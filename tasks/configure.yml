@@ -53,7 +53,7 @@
            --output-config=$TMPDIR/postgresql.conf\
            {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory}}{% endif %}\
            --type {{postgresql_pgtune_type }}\
-           {% if postgresql_pgtune_connections %}--type {{postgresql_pgtune_connections}}{% endif %}\
+           {% if postgresql_pgtune_connections %}--connections {{postgresql_pgtune_connections}}{% endif %}\
     # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
     if diff --ignore-blank-lines \
         <(sed -e 's/#.*//' postgresql.conf) \
