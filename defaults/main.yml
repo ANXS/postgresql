@@ -623,6 +623,19 @@ postgresql_exit_on_error: off
 postgresql_restart_after_crash: on
 
 
+#------------------------------------------------------------------------------
+# PGTUNE
+#------------------------------------------------------------------------------
+# Should we run pgtune and accept the changes it proposes?
+postgresql_pgtune: no
+# Total system memory in bytes, will attempt to detect if set to "no"
+postgresql_pgtune_memory: no
+# Database type, valid options are DW, OLTP, Web, Mixed, Desktop
+postgresql_pgtune_type: Mixed
+# Maximum number of expected connections, if "no", default based on db type
+postgresql_pgtune_connections: no
+
+
 
 
 postgresql_env:
