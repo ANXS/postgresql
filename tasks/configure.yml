@@ -48,6 +48,7 @@
   sudo: true
   sudo_user: "{{ postgresql_service_user }}"
   shell: |
+    set -e
     TMPDIR=$(mktemp -d)
     pgtune --input-config=postgresql.conf.untuned\
            --output-config=$TMPDIR/postgresql.conf\
