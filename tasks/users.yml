@@ -12,6 +12,8 @@
     port: "{{postgresql_port}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
+    encrypted: "{{item.encrypted | default(omit)}}"
+    role_attr_flags: "{{item.role_attr_flags | default(omit)}}"
   sudo: yes
   sudo_user: "{{postgresql_admin_user}}"
   with_items: postgresql_users
