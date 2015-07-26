@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get install -qq python-apt python-pycurl locales
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 install:
-  - pip install ansible==1.6.2
+  - pip install ansible==1.8.4
 script:
   - echo localhost > inventory
   - ansible-playbook -i inventory test.yml --syntax-check
