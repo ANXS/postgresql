@@ -27,6 +27,7 @@ postgresql_databases:
   - name: foobar
     hstore: yes         # flag to install the hstore extension on this database (yes/no)
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
+    owner: baz          # The user who is owner, defaults to postgresql_owner
 
 # List of users to be created (optional)
 postgresql_users:
