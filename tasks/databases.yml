@@ -21,6 +21,19 @@
   with_items: postgresql_databases
   when: postgresql_databases|length > 0
 
+- name: PostgreSQL | Add extensions to the databases
+  postgresql_ext:
+    db: "{{item.0.db}}"
+    port: "{{postgresql_port}}"
+    name: "{{item.1}}"
+    state: present
+    login_user: "{{postgresql_admin_user}}"
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
+  with_subelements:
+    - postgresql_database_extensions
+    - extensions
+
 - name: PostgreSQL | Add hstore to the databases with the requirement
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
