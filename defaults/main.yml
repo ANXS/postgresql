@@ -558,7 +558,8 @@ postgresql_timezone:           UTC
 postgresql_timezone_abbreviations: Default
 
 postgresql_extra_float_digits: 0          # min -15, max 3
-postgresql_client_encoding:    sql_ascii  # 'sql_ascii' actually defaults to database encoding
+postgresql_client_encoding:    False  # actually defaults to database encoding
+                                      # 'sql_ascii', 'UTF8', ...
 
 # These settings are initialized by initdb, but they can be changed.
 
