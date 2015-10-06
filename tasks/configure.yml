@@ -9,6 +9,11 @@
     mode: 0700
   register: pgdata_dir_exist
 
+- name: PostgreSQL | Check postgres config directory exist
+  stat:
+    path: "{{postgresql_conf_directory}}"
+  register: pgconf_dir
+
 - name: PostgreSQL | Ensure the locale is generated
   sudo: yes
   locale_gen: name={{postgresql_locale}} state=present
@@ -17,13 +22,13 @@
   shell: pg_dropcluster --stop {{postgresql_version}} {{postgresql_cluster_name}}
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  when: postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: postgresql_cluster_reset and pgdata_dir_exist.changed and pgconf_dir.stat.exists
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale)
   shell: pg_createcluster --start --locale {{postgresql_locale}} -e {{postgresql_encoding}} -d {{postgresql_data_directory}} {{postgresql_version}} {{postgresql_cluster_name}}
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  when: postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: postgresql_cluster_reset and pgdata_dir_exist.changed and not pgconf_dir.stat.exists
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
   template:
