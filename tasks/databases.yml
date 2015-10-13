@@ -65,3 +65,13 @@
   shell: "psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists earthdistance;'"
   with_items: postgresql_databases
   when: item.earthdistance is defined and item.earthdistance
+
+- name: PostgreSQL | Add citext to the database with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS citext;'"
+  with_items: postgresql_databases
+  register: citext_ext_result
+  failed_when: citext_ext_result.rc != 0 and ("already exists, skipping" not in citext_ext_result.stderr)
+  changed_when: citext_ext_result.rc == 0 and ("already exists, skipping" not in citext_ext_result.stderr)
+  when: item.citext is defined and item.citext
