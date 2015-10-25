@@ -104,10 +104,10 @@ postgresql_ssl_ciphers:
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: 'prime256v1'
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
-postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
-postgresql_ssl_ca_file: ''
-postgresql_ssl_crl_file: ''
+postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem  # (>= 9.2)
+postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key # (>= 9.2)
+postgresql_ssl_ca_file: ''                                      # (>= 9.2)
+postgresql_ssl_crl_file: ''                                     # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
@@ -154,7 +154,7 @@ postgresql_dynamic_shared_memory_type: posix    # the default is the first optio
 
 # - Disk -
 
-# limits per-session temp file space in kB, or -1 for no limit
+# limits per-session temp file space in kB, or -1 for no limit (>= 9.2)
 postgresql_temp_file_limit: -1
 
 
@@ -256,6 +256,7 @@ postgresql_archive_timeout: 0
 
 # max number of walsender processes
 postgresql_max_wal_senders: 0
+postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
 postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
 postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
@@ -376,7 +377,7 @@ postgresql_log_rotation_size: 10MB
 # These are relevant when logging to syslog:
 postgresql_syslog_facility: LOCAL0
 postgresql_syslog_ident: postgres
-# This is only relevant when logging to eventlog (win32):
+# This is only relevant when logging to eventlog (win32) (>= 9.2):
 postgresql_event_source: PostgreSQL
 
 
@@ -479,7 +480,7 @@ postgresql_log_timezone:   UTC
 
 postgresql_track_activities:          on
 postgresql_track_counts:              on
-postgresql_track_io_timing:           off
+postgresql_track_io_timing:           off   # (>= 9.2)
 postgresql_track_functions:           none # none, pl, all
 postgresql_track_activity_query_size: 1024
 postgresql_update_process_title:      on
