@@ -7,7 +7,7 @@ Vagrant.configure('2') do |config|
     c.vm.network :private_network, ip: '192.168.88.22'
     c.vm.hostname = 'anxs.local'
     c.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'test.yml'
+      ansible.playbook = 'tests/test.yml'
       ansible.sudo = true
       ansible.inventory_path = 'vagrant-inventory'
       ansible.host_key_checking = false

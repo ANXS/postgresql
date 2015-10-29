@@ -14,10 +14,13 @@ install:
   - pip install ansible==1.8.4
 script:
   - echo localhost > inventory
-  - ansible-playbook -i inventory test.yml --syntax-check
-  - ansible-playbook -i inventory test.yml --connection=local --sudo -e "postgresql_version=$POSTGRESQL_VERSION"
-  - >
-    ansible-playbook -i inventory test.yml --connection=local --sudo -e "postgresql_version=$POSTGRESQL_VERSION"
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+
+  # Syntax check
+  - ansible-playbook -i inventory tests/test.yml --syntax-check
+
+  # Play test
+  - ansible-playbook -i inventory tests/test.yml --connection=local --sudo -e "postgresql_version=$POSTGRESQL_VERSION"
+
+  # Idempotence test
+  - ansible-playbook -i inventory tests/test.yml --connection=local --sudo -e "postgresql_version=$POSTGRESQL_VERSION" > idempotence_out
+  - ./tests/idempotence_check.sh idempotence_out
