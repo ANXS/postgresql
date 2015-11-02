@@ -26,6 +26,9 @@
   sudo_user: "{{ postgresql_service_user }}"
   shell: "psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'"
   with_items: postgresql_databases
+  register: hstore_ext_result
+  failed_when: hstore_ext_result.rc != 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
+  changed_when: hstore_ext_result.rc == 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
   when: item.hstore is defined and item.hstore
 
 - name: PostgreSQL | Add uuid-ossp to the database with the requirement
