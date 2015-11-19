@@ -563,13 +563,13 @@ postgresql_client_encoding:    sql_ascii  # 'sql_ascii' actually defaults to dat
 # These settings are initialized by initdb, but they can be changed.
 
 # locale for system error message
-postgresql_lc_messages: en_US.UTF-8
+postgresql_lc_messages: "{{ postgresql_locale }}"
 # locale for monetary formatting
-postgresql_lc_monetary: en_US.UTF-8
+postgresql_lc_monetary: "{{ postgresql_locale }}"
 # locale for number formatting
-postgresql_lc_numeric: en_US.UTF-8
+postgresql_lc_numeric: "{{ postgresql_locale }}"
 # locale for time formatting
-postgresql_lc_time: en_US.UTF-8
+postgresql_lc_time: "{{ postgresql_locale }}"
 
 postgresql_default_text_search_config: pg_catalog.english
 
