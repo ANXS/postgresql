@@ -3,7 +3,10 @@
 # Basic settings
 postgresql_version: 9.3
 postgresql_encoding: 'UTF-8'
-postgresql_locale: 'en_US.UTF-8'
+postgresql_locale_parts:
+  - 'en_US' # Locale
+  - 'UTF-8' # Encoding
+postgresql_locale: "{{ postgresql_locale_parts | join('.') }}"
 
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
@@ -57,9 +60,11 @@ postgresql_hba_file: "{{postgresql_conf_directory}}/pg_hba.conf"
 # Ident configuration file
 postgresql_ident_file: "{{postgresql_conf_directory}}/pg_ident.conf"
 # Use data in another directory
-postgresql_data_directory: "/var/lib/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_varlib_directory_name: "postgresql"
+postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
-postgresql_external_pid_file: "/var/run/postgresql/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
+postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
@@ -73,7 +78,7 @@ postgresql_max_connections: 100
 postgresql_superuser_reserved_connections: 3
 
 postgresql_unix_socket_directories:
-  - /var/run/postgresql
+  - "{{ postgresql_pid_directory }}"
 postgresql_unix_socket_group: ''
 postgresql_unix_socket_permissions: '0777' # begin with 0 to use octal notation
 
@@ -649,3 +654,8 @@ postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main'
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
+
+# Yum settings
+postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
+postgresql_yum_repository_base_url: "http://yum.postgresql.org"
+postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ ansible_distribution | lower }}{{ postgresql_version_terse }}-{{ postgresql_version }}-2.noarch.rpm"
