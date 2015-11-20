@@ -8,4 +8,4 @@ Group={{ postgresql_service_group }}
 Environment=PGDATA={{ postgresql_conf_directory }}
 
 ExecStartPre=
-ExecStartPre=/usr/pgsql-9.3/bin/postgresql93-check-db-dir {{ postgresql_data_directory }}
+ExecStartPre={{ postgresql_bin_directory }}/postgresql{{ postgresql_version_terse }}-check-db-dir {{ postgresql_data_directory }}
