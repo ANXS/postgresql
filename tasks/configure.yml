@@ -137,7 +137,7 @@
     state: directory
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0755
+    mode: u=rwX,g=rwXs,o=rx
 
 - name: PostgreSQL | Restart PostgreSQL
   service:
