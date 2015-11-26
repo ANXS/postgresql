@@ -26,6 +26,21 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
+postgresql_replication_enabled: false
+# Replication user; auto-created when postgresql_replication_enabled is true
+postgresql_replication_user: replication
+postgresql_replication_auth_method: "{{ postgresql_default_auth_method }}"
+postgresql_replication_password: # Not needed when using trust auth.
+postgresql_replication_interface: eth0
+postgresql_replication_primary_host: # host that replicas will replicate from.
+
+# Per-host switch; denoting whether the host is a replica.
+# This value should be an explicit boolean value if using ansible < 2.0.
+# Fancy expressions tend not to work here because they require quotations.
+# https://github.com/ansible/ansible/issues/9369
+# Consider setting this true in group_vars/postgresql_replicas[.yml]
+postgresql_replication_host: false
+
 # List of databases to be created (optional)
 postgresql_databases: []
 
@@ -44,8 +59,14 @@ postgresql_pg_hba_default:
 
 postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
+postgresql_pg_hba_replication_hosts: []
+postgresql_pg_hba_replication_addresses: [] # e.g. '192.168.0.1/32'
 postgresql_pg_hba_custom: []
 
+# recovery.conf
+postgresql_recovery_sslmode: prefer
+postgresql_recovery_sslcompression: 1
+postgresql_recovery_application_name: "{{ inventory_hostname_short }}"
 
 # postgresql.conf
 

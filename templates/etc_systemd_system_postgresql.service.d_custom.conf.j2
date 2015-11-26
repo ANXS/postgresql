@@ -9,3 +9,9 @@ Environment=PGDATA={{ postgresql_conf_directory }}
 
 ExecStartPre=
 ExecStartPre={{ postgresql_bin_directory }}/postgresql{{ postgresql_version_terse }}-check-db-dir {{ postgresql_data_directory }}
+ExecStart=
+ExecStart={{ postgresql_bin_directory }}/pg_ctl start -D ${PGDATA} -s
+{% if not postgresql_replication_host or postgresql_hot_standby == 'on' %}
+# Make a connection to the server before returning that the start was a success.
+ExecStart=-w -t 300
+{% endif %}

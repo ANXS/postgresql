@@ -4,6 +4,7 @@
   with_first_found:
     - "../vars/{{ ansible_os_family }}.yml"
     - "../vars/empty.yml"
+  tags: [always]
 
 - include: install.yml
   when: ansible_pkg_mgr == "apt"
@@ -19,13 +20,20 @@
 - include: configure.yml
   tags: [postgresql, postgresql-configure]
 
+- include: configure_replication.yml
+  when: postgresql_replication_enabled
+  tags: [postgresql, postgresql-configure]
+
 - include: users.yml
+  when: not postgresql_replication_host
   tags: [postgresql, postgresql-users]
 
 - include: databases.yml
+  when: not postgresql_replication_host
   tags: [postgresql, postgresql-databases]
 
 - include: users_privileges.yml
+  when: not postgresql_replication_host
   tags: [postgresql, postgresql-users]
 
 - include: monit.yml

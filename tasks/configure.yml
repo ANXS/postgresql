@@ -1,5 +1,11 @@
 # file: postgresql/tasks/configure.yml
 
+- name: PostgreSQL | Stop the database server when resetting the cluster
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: stopped
+  when: postgresql_cluster_reset
+
 - name: PostgreSQL | Drop the data directory | RedHat
   file:
     path: "{{ postgresql_data_directory }}"
@@ -33,7 +39,10 @@
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and
+        postgresql_cluster_reset and
+        pgdata_dir_exist.changed and
+        not postgresql_replication_host
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
@@ -42,7 +51,10 @@
     {{ postgresql_version }} {{ postgresql_cluster_name }}
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and
+        postgresql_cluster_reset and
+        pgdata_dir_exist.changed and
+        not postgresql_replication_host
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized
   stat:
@@ -59,7 +71,8 @@
   when: ansible_os_family == "RedHat" and
         (postgresql_cluster_reset or
          pgdata_dir_exist.changed or
-         not pgdata_dir_initialized.stat.exists)
+         not pgdata_dir_initialized.stat.exists) and
+        not postgresql_replication_host
 
 - name: PostgreSQL | Ensure configuration directory exists
   file:
@@ -152,4 +165,8 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: (postgresql_configuration_pt1.changed or
+         postgresql_configuration_pt2.changed or
+         postgresql_configuration_pt3.changed or
+         postgresql_systemd_custom_conf.changed) and
+        not postgresql_replication_host

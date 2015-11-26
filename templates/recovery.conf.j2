@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+standby_mode = 'on'
+primary_conninfo = 'user={{ postgresql_replication_user }} host={{ hostvars[postgresql_replication_primary_host]["ansible_" + postgresql_replication_interface].ipv4.address }} port={{ postgresql_port }} application_name={{ postgresql_recovery_application_name }} sslmode={{ postgresql_recovery_sslmode }} sslcompression={{ postgresql_recovery_sslcompression }}'
+recovery_target_timeline='latest'

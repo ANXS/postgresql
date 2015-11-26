@@ -32,6 +32,14 @@ host  all  all  {{host}}  password
 host  all  all  {{host}}  trust
 {% endfor %}
 
+# Replication hosts
+{% for host in postgresql_pg_hba_replication_hosts %}
+host replication {{postgresql_replication_user}} {{hostvars[host]['ansible_' + postgresql_replication_interface]['ipv4']['address']}}/32 {{postgresql_replication_auth_method}}
+{% endfor %}
+{% for address in postgresql_pg_hba_replication_addresses %}
+host replication {{postgresql_replication_user}} {{address}} {{postgresql_replication_auth_method}}
+{% endfor %}
+
 # User custom
 {% for connection in postgresql_pg_hba_custom %}
 # {{connection.comment}}

@@ -1,0 +1,78 @@
+---
+- name: PostgreSQL | Temporarily disable synchronous replication on primaries
+  lineinfile:
+    dest: "{{ postgresql_conf_directory }}/postgresql.conf"
+    regexp: "^(synchronous_standby_names .*)"
+    line: '#\1'
+    backrefs: yes
+    state: present
+  when: postgresql_cluster_reset and not postgresql_replication_host
+  register: postgresql_synchronous_primary_disable
+
+- name: PostgreSQL | Restart primary if config changed
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: restarted
+  when: postgresql_synchronous_primary_disable.changed
+
+- name: PostgreSQL | Ensure PostgreSQL is running on primary
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: started
+  when: not postgresql_replication_host
+
+- name: PostgreSQL | Create replication user on primary
+  postgresql_user:
+    name: "{{ postgresql_replication_user }}"
+    password: "{{ postgresql_replication_password | default(omit) }}"
+    port: "{{ postgresql_port }}"
+    role_attr_flags: "LOGIN,REPLICATION"
+    state: present
+    login_user: "{{ postgresql_admin_user }}"
+  sudo: yes
+  sudo_user: "{{ postgresql_admin_user }}"
+  when: not postgresql_replication_host
+
+# Set the replication user password if necessary.
+
+- name: PostgreSQL | Get a base backup from the primary
+  command: >
+    {{ postgresql_bin_directory }}/pg_basebackup
+      -D {{ postgresql_data_directory }}
+      -X stream
+      -h {{ hostvars[postgresql_replication_primary_host]['ansible_' + postgresql_replication_interface]['ipv4']['address'] }}
+      -p {{ postgresql_port }}
+      -U {{ postgresql_replication_user }}
+  sudo: yes
+  sudo_user: "{{ postgresql_admin_user }}"
+  when: postgresql_cluster_reset and postgresql_replication_host
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Configure recovery.conf
+  template:
+    src: recovery.conf.j2
+    dest: "{{ postgresql_data_directory }}/recovery.conf"
+    mode: 0600
+  sudo: yes
+  sudo_user: "{{ postgresql_admin_user }}"
+  when: postgresql_replication_host
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Restore synchronous replication setting on primaries
+  lineinfile:
+    dest: "{{ postgresql_conf_directory }}/postgresql.conf"
+    regexp: "^#(synchronous_standby_names .*)"
+    line: '\1'
+    backrefs: yes
+    state: present
+  when: postgresql_synchronous_primary_disable.changed
+  register: postgresql_synchronous_primary_restore
+
+- name: PostgreSQL | Restart primary if config changed
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: restarted
+  when: postgresql_synchronous_primary_restore.changed
+
