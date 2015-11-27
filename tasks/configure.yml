@@ -44,13 +44,22 @@
   sudo_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
+- name: PostgreSQL | Check whether the postgres data directory is initialized
+  stat:
+    path: "{{ postgresql_data_directory }}/PG_VERSION"
+  when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
+  register: pgdata_dir_initialized
+
 - name: PostgreSQL | Initialize the database | RedHat
   command: >
     {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
     --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "RedHat" and (postgresql_cluster_reset or pgdata_dir_exist.changed)
+  when: ansible_os_family == "RedHat" and
+        (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
 
 - name: PostgreSQL | Ensure configuration directory exists
   file:
