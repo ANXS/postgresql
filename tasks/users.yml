@@ -2,7 +2,7 @@
 
 - name: PostgreSQL | Ensure PostgreSQL is running
   service:
-    name: postgresql
+    name: "{{ postgresql_service_name }}"
     state: started
 
 - name: PostgreSQL | Make sure the PostgreSQL users are present
