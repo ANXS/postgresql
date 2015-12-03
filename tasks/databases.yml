@@ -60,6 +60,9 @@
   sudo_user: "{{ postgresql_service_user }}"
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'CREATE EXTENSION IF NOT EXISTS plpgsql;'"
   with_items: postgresql_databases
+  register: plpgsql_ext_result
+  failed_when: plpgsql_ext_result.rc != 0 and ("already exists, skipping" not in plpgsql_ext_result.stderr)
+  changed_when: plpgsql_ext_result.rc == 0 and ("already exists, skipping" not in plpgsql_ext_result.stderr)
   when: item.plpgsql is defined and item.plpgsql
 
 - name: postgresql | add earthdistance to the database with the requirement
