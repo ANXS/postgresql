@@ -3,8 +3,18 @@
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
 
-#### Requirements & Dependencies
-- Tested on Ansible 1.8.4 or higher.
+#### Installation
+
+This has been tested on Ansible 1.8.4 and higher.
+
+To install:
+
+```
+ansible-galaxy install ANXS.postgresql
+```
+
+#### Dependencies
+
 - ANXS.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/ANXS/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
 
 
