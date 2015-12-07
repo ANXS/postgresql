@@ -48,7 +48,7 @@
   with_items: postgresql_databases
   when: item.gis is defined and item.gis
 
-- name: postgresql | add cube to the database with the requirement
+- name: PostgreSQL | add cube to the database with the requirement
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists cube;'"
@@ -62,7 +62,7 @@
   with_items: postgresql_databases
   when: item.plpgsql is defined and item.plpgsql
 
-- name: postgresql | add earthdistance to the database with the requirement
+- name: PostgreSQL | add earthdistance to the database with the requirement
   sudo: yes
   sudo_user: "{{ postgresql_service_user }}"
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists earthdistance;'"
