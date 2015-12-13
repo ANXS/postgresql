@@ -109,6 +109,7 @@ postgresql_ssl_ca_file: ''
 postgresql_ssl_crl_file: ''
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
+postgresql_row_security: off # (>= 9.5)
 
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ''
@@ -210,6 +211,7 @@ postgresql_wal_sync_method: fsync
 
 # recover from partial page writes
 postgresql_full_page_writes: on
+postgresql_wal_compression: off     # (>= 9.5)
 postgresql_wal_log_hints: off       # also do full page writes of non-critical updates
 
 postgresql_wal_buffers:      -1     # min 32kB, -1 sets based on shared_buffers
@@ -220,7 +222,9 @@ postgresql_commit_siblings:  5      # range 1-1000
 
 # - Checkpoints -
 
-postgresql_checkpoint_segments:          3     # in logfile segments, min 1, 16MB each
+postgresql_checkpoint_segments:          3     # (<= 9.4) in logfile segments, min 1, 16MB each
+postgresql_max_wal_size:                 1GB   # (>= 9.5)
+postgresql_min_wal_size:                 80MB  # (>= 9.5)
 postgresql_checkpoint_timeout:           5min  # range 30s-1h
 postgresql_checkpoint_completion_target: 0.5   # checkpoint target duration, 0.0 - 1.0
 postgresql_checkpoint_warning:           30s   # 0 disables
@@ -256,6 +260,7 @@ postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables
 postgresql_max_replication_slots: 0 # max number of replication slots
 
+postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # - Master Server -
 
@@ -283,7 +288,8 @@ postgresql_wal_receiver_status_interval: 10s # 0 disables
 postgresql_hot_standby_feedback: off
 #time that receiver waits for communication from master in milliseconds
 postgresql_wal_receiver_timeout: 60s
-
+# time to wait before retrying to retrieve WAL after a failed attempt
+postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -651,7 +657,7 @@ postgresql_env:
 # APT settings
 postgresql_apt_key_id: ACCC4CF8
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main'
+postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main {{postgresql_version}}'
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
 
