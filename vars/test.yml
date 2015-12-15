@@ -2,6 +2,7 @@
 blah: one
 postgresql_databases:
   - name: foobar
+    owner: baz
 postgresql_users:
   - name: baz
     pass: pass

@@ -3,5 +3,8 @@
 - hosts: all
   remote_user: root
   sudo: yes
+  vars_files:
+    - ../vars/test.yml
+
   roles:
     - postgresql

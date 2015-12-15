@@ -8,7 +8,7 @@
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
   postgresql_db:
     name: "{{item.name}}"
-    owner: "{{postgresql_database_owner}}"
+    owner: "{{ item.owner | default(postgresql_database_owner) }}"
     encoding: "{{postgresql_encoding}}"
     lc_collate: "{{postgresql_locale}}"
     lc_ctype: "{{postgresql_locale}}"
