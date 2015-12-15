@@ -4,7 +4,6 @@
   remote_user: root
   sudo: yes
   vars_files:
-    - ../vars/test.yml
-
+    - ./vars.yml
   roles:
     - postgresql
