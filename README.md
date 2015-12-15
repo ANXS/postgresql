@@ -58,14 +58,19 @@ There's a lot more knobs and bolts to set, which you can find in the defaults/ma
 
 
 #### Testing
-This project comes with a VagrantFile, this is a fast and easy way to test changes to the role, fire it up with `vagrant up`
+This project comes with a Vagrantfile, this is a fast and easy way to test changes to the role, fire it up with `vagrant up`
 
 See [vagrant docs](https://docs.vagrantup.com/v2/) for getting setup with vagrant
 
+Once your VM is up, you can reprovision it using either `vagrant provision`, or `ansible-playbook tests/playbook.yml -i vagrant-inventory`
+
+If you want to toy with the test play, see [tests/playbook.yml](./tests/playbook.yml), and change the variables in [tests/vars.yml](./tests/vars.yml)
+
+If you are contributing, please first test your changes within the vagrant environment, (using the targeted distribution), and if possible, ensure your change is covered in the tests found in [.travis.yml](./.travis.yml)
 
 #### License
 
-Licensed under the MIT License. See the LICENSE file for details.
+Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 
 #### Thanks
