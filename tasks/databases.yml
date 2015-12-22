@@ -13,7 +13,7 @@
     lc_collate: "{{postgresql_locale}}"
     lc_ctype: "{{postgresql_locale}}"
     port: "{{postgresql_port}}"
-    template: "template0"
+    template: "{{ item.template | default(\"template0\") }}"
     state: present
     login_user: "{{postgresql_admin_user}}"
   sudo: yes
