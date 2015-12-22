@@ -1,0 +1,24 @@
+# file: postgresql/tasks/privileges.yml
+
+- name: PostgreSQL | Ensure PostgreSQL is running
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: started
+
+- name: PostgreSQL | Make sure the PostgreSQL privileges are present
+  postgresql_privs:
+    database: "{{ item.db }}"
+    grant_option: "{{ item.grant | default(no) }}"
+    host: "{{ item.host | default(\"127.0.0.1\") }}"
+    login: "{{ item.login | default(postgresql_admin_user) }}"
+    objs: "{{ item.objs | default(\"ALL_IN_SCHEMA\") }}"
+    password: "{{ item.password | default(\"\") }}"
+    privs: "{{ item.privs | default(\"ALL\") }}"
+    roles: "{{ item.roles | default(\"PUBLIC\") }}"
+    schema: "{{ item.schema | default(\"public\") }}"
+    state: "{{ item.state | default(\"present\") }}"
+    type: "{{ item.type | default(\"table\") }}"
+  sudo: yes
+  sudo_user: "{{postgresql_admin_user}}"
+  with_items: postgresql_privileges
+  when: postgresql_privileges | length > 0

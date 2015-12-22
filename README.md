@@ -60,6 +60,13 @@ postgresql_user_privileges:
     db: foobar                  # database
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
+    
+# List of privileges to be applied (optional)
+postgresql_privileges:
+  - db: foobar                  # database
+    roles: baz                  # roles for grant or revoke privileges
+    objs: "ALL_IN_SCHEMA"       # Comma separated list of database objects to set privileges on  
+    grant: yes
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml

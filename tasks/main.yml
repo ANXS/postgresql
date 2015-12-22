@@ -29,6 +29,9 @@
 - include: users_privileges.yml
   tags: [postgresql, postgresql-users]
 
+- include: privileges.yml
+  tags: [postgresql, postgresql-privileges]
+
 - include: monit.yml
   when: monit_protection is defined and monit_protection == true
   tags: [postgresql, postgresql-monit]
