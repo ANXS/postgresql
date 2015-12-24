@@ -11,11 +11,11 @@
     grant_option: "{{ item.grant | default(no) }}"
     host: "{{ item.host | default(\"127.0.0.1\") }}"
     login: "{{ item.login | default(postgresql_admin_user) }}"
-    objs: "{{ item.objs | default(\"ALL_IN_SCHEMA\") }}"
+    objs: "{{ item.objs | default(omit) }}"
     password: "{{ item.password | default(\"\") }}"
     privs: "{{ item.privs | default(\"ALL\") }}"
     roles: "{{ item.roles | default(\"PUBLIC\") }}"
-    schema: "{{ item.schema | default(\"public\") }}"
+    schema: "{{ item.schema | default(omit) }}"
     state: "{{ item.state | default(\"present\") }}"
     type: "{{ item.type | default(\"table\") }}"
   sudo: yes
