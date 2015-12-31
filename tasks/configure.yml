@@ -18,7 +18,8 @@
 
 - name: PostgreSQL | Ensure the locale is generated | Debian
   sudo: yes
-  locale_gen: name="{{ postgresql_locale }}" state=present
+  ignore_errors: true
+  command: locale-gen --purge {{ postgresql_locale }}
   when: ansible_os_family == "Debian"
 
 - name: PostgreSQL | Ensure the locale is generated | RedHat
