@@ -70,6 +70,9 @@
   sudo_user: "{{ postgresql_service_user }}"
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'CREATE EXTENSION IF NOT EXISTS plpgsql;'"
   with_items: postgresql_databases
+  register: plpgsql_ext_result
+  failed_when: plpgsql_ext_result.rc != 0 and ("already exists, skipping" not in plpgsql_ext_result.stderr)
+  changed_when: plpgsql_ext_result.rc == 0 and ("already exists, skipping" not in plpgsql_ext_result.stderr)
   when: item.plpgsql is defined and item.plpgsql
 
 - name: PostgreSQL | add earthdistance to the database with the requirement
@@ -88,3 +91,33 @@
   failed_when: citext_ext_result.rc != 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   changed_when: citext_ext_result.rc == 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   when: item.citext is defined and item.citext
+
+- name: PostgreSQL | Add pg_trgm to the databases with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm;'"
+  with_items: postgresql_databases
+  register: pg_trgm_ext_result
+  failed_when: pg_trgm_ext_result.rc != 0 and ("already exists, skipping" not in pg_trgm_ext_result.stderr)
+  changed_when: pg_trgm_ext_result.rc == 0 and ("already exists, skipping" not in pg_trgm_ext_result.stderr)
+  when: item.pg_trgm is defined and item.pg_trgm
+
+- name: PostgreSQL | Add pg_buffercache to the databases with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS pg_buffercache;'"
+  with_items: postgresql_databases
+  register: pg_buffercache_ext_result
+  failed_when: pg_buffercache_ext_result.rc != 0 and ("already exists, skipping" not in pg_buffercache_ext_result.stderr)
+  changed_when: pg_buffercache_ext_result.rc == 0 and ("already exists, skipping" not in pg_buffercache_ext_result.stderr)
+  when: item.pg_buffercache is defined and item.pg_buffercache
+
+- name: PostgreSQL | Add tablefunc to the databases with the requirement
+  sudo: yes
+  sudo_user: "{{ postgresql_service_user }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS tablefunc;'"
+  with_items: postgresql_databases
+  register: tablefunc_ext_result
+  failed_when: tablefunc_ext_result.rc != 0 and ("already exists, skipping" not in tablefunc_ext_result.stderr)
+  changed_when: tablefunc_ext_result.rc == 0 and ("already exists, skipping" not in tablefunc_ext_result.stderr)
+  when: item.tablefunc is defined and item.tablefunc
