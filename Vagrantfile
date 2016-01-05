@@ -8,12 +8,12 @@ Vagrant.configure('2') do |config|
   config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
 
   config.vm.define 'anxs' do |machine|
-    node.vm.box = "ubuntu/trusty64"
-    #node.vm.box = "ubuntu/precise64"
-    #node.vm.box = "debian/jessie64"
-    #node.vm.box = "debian/wheezy64"
-    #node.vm.box = "chef/centos-7.1"
-    #node.vm.box = "chef/centos-6.6"
+    machine.vm.box = "ubuntu/trusty64"
+    #machine.vm.box = "ubuntu/precise64"
+    #machine.vm.box = "debian/jessie64"
+    #machine.vm.box = "debian/wheezy64"
+    #machine.vm.box = "chef/centos-7.1"
+    #machine.vm.box = "chef/centos-6.6"
 
     machine.vm.network :private_network, ip: '192.168.88.22'
     machine.vm.hostname = 'anxs.local'
