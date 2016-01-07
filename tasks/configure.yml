@@ -17,14 +17,14 @@
   register: pgdata_dir_exist
 
 - name: PostgreSQL | Get locales
-  shell: locale -a
+  command: locale -a
   register: locales
-  changed_when: "locales.rc != 0"
+  changed_when: False
 
 - name: PostgreSQL | Ensure the locale is generated
   sudo: yes
-  shell: locale-gen {{postgresql_locale}}
-  when: "'{{postgresql_locale.lower().replace('-', '')}}' not in locales.stdout.lower()"
+  command: locale-gen {{postgresql_locale}}
+  when: "'{{postgresql_locale.lower().replace('-', '')}}' not in locales.stdout.lower().splitlines()"
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
