@@ -16,18 +16,15 @@
     mode: 0700
   register: pgdata_dir_exist
 
-- name: PostgreSQL | Ensure the locale is generated | Debian
-  sudo: yes
-  locale_gen: name="{{ postgresql_locale }}" state=present
-  when: ansible_os_family == "Debian"
+- name: PostgreSQL | Get locales
+  command: locale -a
+  register: locales
+  changed_when: False
 
-- name: PostgreSQL | Ensure the locale is generated | RedHat
+- name: PostgreSQL | Ensure the locale is generated
   sudo: yes
-  command: >
-    localedef -c -i {{ postgresql_locale_parts[0] }} -f {{ postgresql_locale_parts[1] }}
-    {{ postgresql_locale }}
-  changed_when: false
-  when: ansible_os_family == "RedHat"
+  command: locale-gen {{postgresql_locale}}
+  when: "'{{postgresql_locale.lower().replace('-', '')}}' not in locales.stdout.lower().splitlines()"
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
