@@ -19,11 +19,12 @@
 - name: PostgreSQL | Get locales
   shell: locale -a
   register: locales
+  changed_when: "locales.rc != 0"
 
 - name: PostgreSQL | Ensure the locale is generated
   sudo: yes
   shell: locale-gen {{postgresql_locale}}
-  when: "'{{postgresql_locale }}' not in locales.stdout"
+  when: "'{{postgresql_locale.lower().replace('-', '')}}' not in locales.stdout.lower()"
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
