@@ -5,6 +5,7 @@ postgresql_version: 9.5
 postgresql_databases:
   - name: foobar
     owner: baz
+    template: template1
 
 postgresql_users:
   - name: baz
