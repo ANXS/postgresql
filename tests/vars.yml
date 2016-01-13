@@ -17,3 +17,11 @@ postgresql_users:
 postgresql_user_privileges:
   - name: baz
     db: foobar
+
+postgresql_db_priveleges:
+  - db: foobar
+    objs: "ALL_IN_SCHEMA"
+    schema: "public"
+    state: present
+    roles: baz
+    grant: yes

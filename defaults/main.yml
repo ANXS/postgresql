@@ -38,8 +38,8 @@ postgresql_users: []
 # List of user privileges to be applied (optional)
 postgresql_user_privileges: []
 
-# List of privileges to be applied (optional)
-postgresql_privileges: []
+# List of database privileges to be applied (optional)
+postgresql_db_priveleges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:

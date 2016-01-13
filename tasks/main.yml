@@ -26,9 +26,6 @@
 - include: databases.yml
   tags: [postgresql, postgresql-databases]
 
-- include: users_privileges.yml
-  tags: [postgresql, postgresql-users]
-
 - include: privileges.yml
   tags: [postgresql, postgresql-privileges]
 
