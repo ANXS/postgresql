@@ -1,4 +1,5 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.png)](https://travis-ci.org/ANXS/postgresql)
+## ANXS - PostgreSQL
+This is a fork.
 
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
