@@ -669,6 +669,12 @@ postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansib
 postgresql_apt_pin_priority: 500
 
 # Yum settings
+postgresql_pgdg_dists:
+  RedHat: redhat
+  CentOS: centos
+  Scientific: sl
+  SLC: sl
+  OracleLinux: oraclelinux
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
-postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ ansible_distribution | lower }}{{ postgresql_version_terse }}-{{ postgresql_version }}-2.noarch.rpm"
+postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-2.noarch.rpm"
