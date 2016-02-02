@@ -27,6 +27,7 @@
   with_items:
     - "postgresql{{ postgresql_version_terse }}-server"
     - "postgresql{{ postgresql_version_terse }}"
+    - "postgresql{{ postgresql_version_terse }}-contrib"
 
 - name: PostgreSQL | PGTune
   yum:
