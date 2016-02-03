@@ -36,3 +36,6 @@ script:
   # Idempotence test
   - ansible-playbook -i inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_OPTIONS" > idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
+
+notifications:
+  - webhooks: https://galaxy.ansible.com/api/v1/notifications/
