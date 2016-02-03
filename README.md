@@ -1,4 +1,4 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.png?branch=master)](https://travis-ci.org/ANXS/postgresql)
+## octarine - PostgreSQL [![Build Status](https://travis-ci.org/octarine/postgresql.png?branch=master)](https://travis-ci.org/octarine/postgresql)
 
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
@@ -10,7 +10,7 @@ This has been tested on Ansible 1.9.4 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install octarine.postgresql
 ```
 
 #### Dependencies
