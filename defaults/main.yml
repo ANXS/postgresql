@@ -3,7 +3,10 @@
 # Basic settings
 postgresql_version: 9.3
 postgresql_encoding: 'UTF-8'
-postgresql_locale: 'en_US.UTF-8'
+postgresql_locale_parts:
+  - 'en_US' # Locale
+  - 'UTF-8' # Encoding
+postgresql_locale: "{{ postgresql_locale_parts | join('.') }}"
 
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
@@ -25,6 +28,9 @@ postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql
 
 # List of databases to be created (optional)
 postgresql_databases: []
+
+# List of database extensions to be created (optional)
+postgresql_database_extensions: []
 
 # List of users to be created (optional)
 postgresql_users: []
@@ -57,9 +63,11 @@ postgresql_hba_file: "{{postgresql_conf_directory}}/pg_hba.conf"
 # Ident configuration file
 postgresql_ident_file: "{{postgresql_conf_directory}}/pg_ident.conf"
 # Use data in another directory
-postgresql_data_directory: "/var/lib/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_varlib_directory_name: "postgresql"
+postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
-postgresql_external_pid_file: "/var/run/postgresql/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
+postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
@@ -72,8 +80,9 @@ postgresql_port: 5432
 postgresql_max_connections: 100
 postgresql_superuser_reserved_connections: 3
 
-postgresql_unix_socket_directories:
-  - /var/run/postgresql
+postgresql_unix_socket_directory: ''    # (<= 9.2)
+postgresql_unix_socket_directories:     # (>= 9.3)
+  - "{{ postgresql_pid_directory }}"
 postgresql_unix_socket_group: ''
 postgresql_unix_socket_permissions: '0777' # begin with 0 to use octal notation
 
@@ -98,12 +107,13 @@ postgresql_ssl_ciphers:
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: 'prime256v1'
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem
-postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key
-postgresql_ssl_ca_file: ''
-postgresql_ssl_crl_file: ''
+postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem  # (>= 9.2)
+postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key # (>= 9.2)
+postgresql_ssl_ca_file: ''                                      # (>= 9.2)
+postgresql_ssl_crl_file: ''                                     # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
+postgresql_row_security: off # (>= 9.5)
 
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ''
@@ -147,7 +157,7 @@ postgresql_dynamic_shared_memory_type: posix    # the default is the first optio
 
 # - Disk -
 
-# limits per-session temp file space in kB, or -1 for no limit
+# limits per-session temp file space in kB, or -1 for no limit (>= 9.2)
 postgresql_temp_file_limit: -1
 
 
@@ -205,6 +215,7 @@ postgresql_wal_sync_method: fsync
 
 # recover from partial page writes
 postgresql_full_page_writes: on
+postgresql_wal_compression: off     # (>= 9.5)
 postgresql_wal_log_hints: off       # also do full page writes of non-critical updates
 
 postgresql_wal_buffers:      -1     # min 32kB, -1 sets based on shared_buffers
@@ -215,7 +226,9 @@ postgresql_commit_siblings:  5      # range 1-1000
 
 # - Checkpoints -
 
-postgresql_checkpoint_segments:          3     # in logfile segments, min 1, 16MB each
+postgresql_checkpoint_segments:          3     # (<= 9.4) in logfile segments, min 1, 16MB each
+postgresql_max_wal_size:                 1GB   # (>= 9.5)
+postgresql_min_wal_size:                 80MB  # (>= 9.5)
 postgresql_checkpoint_timeout:           5min  # range 30s-1h
 postgresql_checkpoint_completion_target: 0.5   # checkpoint target duration, 0.0 - 1.0
 postgresql_checkpoint_warning:           30s   # 0 disables
@@ -246,11 +259,14 @@ postgresql_archive_timeout: 0
 
 # max number of walsender processes
 postgresql_max_wal_senders: 0
+postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
 postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
-postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables
+postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
+postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables (>= 9.3)
 postgresql_max_replication_slots: 0 # max number of replication slots
 
+postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # - Master Server -
 
@@ -278,7 +294,8 @@ postgresql_wal_receiver_status_interval: 10s # 0 disables
 postgresql_hot_standby_feedback: off
 #time that receiver waits for communication from master in milliseconds
 postgresql_wal_receiver_timeout: 60s
-
+# time to wait before retrying to retrieve WAL after a failed attempt
+postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -363,7 +380,7 @@ postgresql_log_rotation_size: 10MB
 # These are relevant when logging to syslog:
 postgresql_syslog_facility: LOCAL0
 postgresql_syslog_ident: postgres
-# This is only relevant when logging to eventlog (win32):
+# This is only relevant when logging to eventlog (win32) (>= 9.2):
 postgresql_event_source: PostgreSQL
 
 
@@ -466,7 +483,7 @@ postgresql_log_timezone:   UTC
 
 postgresql_track_activities:          on
 postgresql_track_counts:              on
-postgresql_track_io_timing:           off
+postgresql_track_io_timing:           off   # (>= 9.2)
 postgresql_track_functions:           none # none, pl, all
 postgresql_track_activity_query_size: 1024
 postgresql_update_process_title:      on
@@ -504,7 +521,7 @@ postgresql_autovacuum_vacuum_scale_factor: 0.2
 postgresql_autovacuum_analyze_scale_factor: 0.1
 # maximum XID age before forced vacuum
 postgresql_autovacuum_freeze_max_age: 200000000
-# maximum Multixact age before forced vacuum
+# maximum Multixact age before forced vacuum (>= 9.3)
 postgresql_autovacuum_multixact_freeze_max_age: 400000000
 # default vacuum cost delay for autovacuum, in milliseconds
 postgresql_autovacuum_vacuum_cost_delay: 20ms
@@ -531,15 +548,16 @@ postgresql_default_transaction_deferrable: off
 postgresql_session_replication_role:       origin
 
 postgresql_statement_timeout:       0  # in milliseconds, 0 is disabled
-postgresql_lock_timeout:            0  # in milliseconds, 0 is disabled
+postgresql_lock_timeout:            0  # in milliseconds, 0 is disabled (>= 9.3)
 postgresql_vacuum_freeze_min_age:   50000000
 postgresql_vacuum_freeze_table_age: 150000000
-postgresql_vacuum_multixact_freeze_min_age: 5000000
-postgresql_vacuum_multixact_freeze_table_age: 150000000
+postgresql_vacuum_multixact_freeze_min_age: 5000000     # (>= 9.3)
+postgresql_vacuum_multixact_freeze_table_age: 150000000 # (>= 9.3)
 
 postgresql_bytea_output: hex  # hex, escape
 postgresql_xmlbinary:    base64
 postgresql_xmloption:    content
+postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2)
 
 
 # - Locale and Formatting -
@@ -558,18 +576,19 @@ postgresql_timezone:           UTC
 postgresql_timezone_abbreviations: Default
 
 postgresql_extra_float_digits: 0          # min -15, max 3
-postgresql_client_encoding:    sql_ascii  # 'sql_ascii' actually defaults to database encoding
+postgresql_client_encoding:    False  # actually defaults to database encoding
+                                      # 'sql_ascii', 'UTF8', ...
 
 # These settings are initialized by initdb, but they can be changed.
 
 # locale for system error message
-postgresql_lc_messages: en_US.UTF-8
+postgresql_lc_messages: "{{ postgresql_locale }}"
 # locale for monetary formatting
-postgresql_lc_monetary: en_US.UTF-8
+postgresql_lc_monetary: "{{ postgresql_locale }}"
 # locale for number formatting
-postgresql_lc_numeric: en_US.UTF-8
+postgresql_lc_numeric: "{{ postgresql_locale }}"
 # locale for time formatting
-postgresql_lc_time: en_US.UTF-8
+postgresql_lc_time: "{{ postgresql_locale }}"
 
 postgresql_default_text_search_config: pg_catalog.english
 
@@ -645,6 +664,11 @@ postgresql_env:
 # APT settings
 postgresql_apt_key_id: ACCC4CF8
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main'
+postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main {{postgresql_version}}'
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
+
+# Yum settings
+postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
+postgresql_yum_repository_base_url: "http://yum.postgresql.org"
+postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ ansible_distribution | lower }}{{ postgresql_version_terse }}-{{ postgresql_version }}-2.noarch.rpm"

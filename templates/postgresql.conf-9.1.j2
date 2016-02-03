@@ -27,7 +27,7 @@
 # Memory units:  kB = kilobytes        Time units:  ms  = milliseconds
 #                MB = megabytes                     s   = seconds
 #                GB = gigabytes                     min = minutes
-#                TB = terabytes                     h   = hours
+#                                                   h   = hours
 #                                                   d   = days
 
 
@@ -46,7 +46,7 @@ ident_file = '{{postgresql_ident_file}}'	# ident configuration file
 					# (change requires restart)
 
 # If external_pid_file is not explicitly set, no extra PID file is written.
-external_pid_file = '{{postgresql_external_pid_file}}'			# write an extra PID file
+external_pid_file = '{{postgresql_external_pid_file or "(none)"}}'			# write an extra PID file
 					# (change requires restart)
 
 
@@ -58,15 +58,14 @@ external_pid_file = '{{postgresql_external_pid_file}}'			# write an extra PID fi
 
 listen_addresses = '{{postgresql_listen_addresses|join(',')}}'		# what IP address(es) to listen on;
 					# comma-separated list of addresses;
-					# defaults to 'localhost'; use '*' for all
+					# defaults to 'localhost'; '*' for all
 					# (change requires restart)
 port = {{postgresql_port}}				# (change requires restart)
 max_connections = {{postgresql_max_connections}}			# (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per
 # connection slot, plus lock space (see max_locks_per_transaction).
 superuser_reserved_connections = {{postgresql_superuser_reserved_connections}}	# (change requires restart)
-unix_socket_directories = '{{postgresql_unix_socket_directories|join(',')}}'	# comma-separated list of directories
-					# (change requires restart)
+unix_socket_directory = '{{postgresql_unix_socket_directory or (postgresql_unix_socket_directories and postgresql_unix_socket_directories[0]) or ''}}'		# (change requires restart)
 unix_socket_group = '{{postgresql_unix_socket_group}}'			# (change requires restart)
 unix_socket_permissions = {{postgresql_unix_socket_permissions}}		# begin with 0 to use octal notation
 					# (change requires restart)
@@ -81,18 +80,13 @@ authentication_timeout = {{postgresql_authentication_timeout}}		# 1s-600s
 ssl = {{'on' if postgresql_ssl else 'off'}}				# (change requires restart)
 ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
-ssl_prefer_server_ciphers = {{postgresql_ssl_prefer_server_ciphers}}		# (change requires restart)
-ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
 ssl_renegotiation_limit = {{postgresql_ssl_renegotiation_limit}}	# amount of data between renegotiations
-ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
-ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
-ssl_ca_file = '{{postgresql_ssl_ca_file}}'			# (change requires restart)
-ssl_crl_file = '{{postgresql_ssl_crl_file}}'			# (change requires restart)
 password_encryption = {{'on' if postgresql_password_encryption else 'off'}}
 db_user_namespace = {{'on' if postgresql_db_user_namespace else 'off'}}
 
-# GSSAPI using Kerberos
+# Kerberos and GSSAPI
 krb_server_keyfile = '{{postgresql_krb_server_keyfile}}'
+krb_srvname = '{{postgresql_krb_srvname}}'		# (Kerberos only)
 krb_caseins_users = {{'on' if postgresql_db_user_namespace else 'off'}}
 
 # - TCP Keepalives -
@@ -114,8 +108,6 @@ tcp_keepalives_count = {{postgresql_tcp_keepalives_count}}		# TCP_KEEPCNT;
 
 shared_buffers = {{postgresql_shared_buffers}}			# min 128kB
 					# (change requires restart)
-huge_pages = {{postgresql_huge_pages}}			# on, off, or try
-					# (change requires restart)
 temp_buffers = {{postgresql_temp_buffers}}			# min 800kB
 max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero disables the feature
 					# (change requires restart)
@@ -125,20 +117,7 @@ max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero dis
 # actively intend to use prepared transactions.
 work_mem = {{postgresql_work_mem}}				# min 64kB
 maintenance_work_mem = {{postgresql_maintenance_work_mem}}		# min 1MB
-autovacuum_work_mem = {{postgresql_autovacuum_work_mem}}		# min 1MB, or -1 to use maintenance_work_mem
 max_stack_depth = {{postgresql_max_stack_depth}}			# min 100kB
-dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the default is the first option
-					# supported by the operating system:
-					#   posix
-					#   sysv
-					#   windows
-					#   mmap
-					# use none to disable dynamic shared memory
-
-# - Disk -
-
-temp_file_limit = {{postgresql_temp_file_limit}}			# limits per-session temp file space
-					# in kB, or -1 for no limit
 
 # - Kernel Resource Usage -
 
@@ -163,7 +142,6 @@ bgwriter_lru_multiplier = {{postgresql_bgwriter_lru_multiplier}}		# 0-10.0 multi
 # - Asynchronous Behavior -
 
 effective_io_concurrency = {{postgresql_effective_io_concurrency}}		# 1-1000; 0 disables prefetching
-max_worker_processes = {{postgresql_max_worker_processes}}
 
 
 #------------------------------------------------------------------------------
@@ -172,11 +150,10 @@ max_worker_processes = {{postgresql_max_worker_processes}}
 
 # - Settings -
 
-wal_level = {{postgresql_wal_level}}			# minimal, archive, hot_standby, or logical
+wal_level = {{postgresql_wal_level}}			# minimal, archive, or hot_standby
 					# (change requires restart)
 fsync = {{'on' if postgresql_fsync else 'off'}}				# turns forced synchronization on or off
-synchronous_commit = {{postgresql_synchronous_commit}}		# synchronization level;
-					# off, local, remote_write, or on
+synchronous_commit = {{postgresql_synchronous_commit}}		# synchronization level; on, off, or local
 wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first option
 					# supported by the operating system:
 					#   open_datasync
@@ -185,8 +162,6 @@ wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first opt
 					#   fsync_writethrough
 					#   open_sync
 full_page_writes = {{'on' if postgresql_full_page_writes else 'off'}}			# recover from partial page writes
-wal_log_hints = {{postgresql_wal_log_hints}}			# also do full page writes of non-critical updates
-					# (change requires restart)
 wal_buffers = {{postgresql_wal_buffers}}			# min 32kB, -1 sets based on shared_buffers
 					# (change requires restart)
 wal_writer_delay = {{postgresql_wal_writer_delay}}		# 1-10000 milliseconds
@@ -206,9 +181,6 @@ checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 archive_mode = {{'on' if postgresql_archive_mode else 'off'}}		# allows archiving to be done
 				# (change requires restart)
 archive_command = '{{postgresql_archive_command}}'		# command to use to archive a logfile segment
-				# placeholders: %p = path of file to archive
-				#               %f = file name only
-				# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
 archive_timeout = {{postgresql_archive_timeout}}		# force a logfile segment switch after this
 				# number of seconds; 0 disables
 
@@ -217,30 +189,23 @@ archive_timeout = {{postgresql_archive_timeout}}		# force a logfile segment swit
 # REPLICATION
 #------------------------------------------------------------------------------
 
-# - Sending Server(s) -
+# - Master Server -
 
-# Set these on the master and on any standby that will send replication data.
+# These settings are ignored on a standby server
 
 max_wal_senders = {{postgresql_max_wal_senders}}		# max number of walsender processes
 				# (change requires restart)
+wal_sender_delay = {{postgresql_wal_sender_delay}}		# walsender cycle time, 1-10000 milliseconds
 wal_keep_segments = {{postgresql_wal_keep_segments}}		# in logfile segments, 16MB each; 0 disables
-wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disables
-
-max_replication_slots = {{postgresql_max_replication_slots}}	# max number of replication slots
-				# (change requires restart)
-
-# - Master Server -
-
-# These settings are ignored on a standby server.
-
+vacuum_defer_cleanup_age = {{postgresql_vacuum_defer_cleanup_age}}	# number of xacts by which cleanup is delayed
+replication_timeout = {{postgresql_replication_timeout or postgresql_wal_sender_timeout}}	# in milliseconds; 0 disables
 synchronous_standby_names = '{{postgresql_synchronous_standby_names|join(',')}}'	# standby servers that provide sync rep
 				# comma-separated list of application_name
 				# from standby(s); '*' = all
-vacuum_defer_cleanup_age = {{postgresql_vacuum_defer_cleanup_age}}	# number of xacts by which cleanup is delayed
 
 # - Standby Servers -
 
-# These settings are ignored on a master server.
+# These settings are ignored on a master server
 
 hot_standby = {{'on' if postgresql_hot_standby else 'off'}}			# "on" allows queries during recovery
 					# (change requires restart)
@@ -254,9 +219,6 @@ wal_receiver_status_interval = {{postgresql_wal_receiver_status_interval}}	# sen
 					# 0 disables
 hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback or 'off'}}		# send info from standby to prevent
 					# query conflicts
-wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver waits for
-					# communication from master
-					# in milliseconds; 0 disables
 
 
 #------------------------------------------------------------------------------
@@ -269,7 +231,6 @@ enable_bitmapscan = {{'on' if postgresql_enable_bitmapscan else 'off'}}
 enable_hashagg = {{'on' if postgresql_enable_hashagg else 'off'}}
 enable_hashjoin = {{'on' if postgresql_enable_hashjoin else 'off'}}
 enable_indexscan = {{'on' if postgresql_enable_indexscan else 'off'}}
-enable_indexonlyscan = {{'on' if postgresql_enable_indexonlyscan else 'off'}}
 enable_material = {{'on' if postgresql_enable_material else 'off'}}
 enable_mergejoin = {{'on' if postgresql_enable_mergejoin else 'off'}}
 enable_nestloop = {{'on' if postgresql_enable_nestloop else 'off'}}
@@ -348,8 +309,11 @@ log_rotation_size = {{postgresql_log_rotation_size}}		# Automatic rotation of lo
 syslog_facility = '{{postgresql_syslog_facility}}'
 syslog_ident = '{{postgresql_syslog_ident}}'
 
-# This is only relevant when logging to eventlog (win32):
-event_source = '{{postgresql_event_source}}'
+#silent_mode = off			# Run server silently.
+					# DO NOT USE without syslog or
+					# logging_collector
+					# (change requires restart)
+
 
 # - When to Log -
 
@@ -446,7 +410,6 @@ log_timezone = '{{postgresql_log_timezone}}'
 
 track_activities = {{'on' if postgresql_track_activities else 'off'}}
 track_counts = {{'on' if postgresql_track_counts else 'off'}}
-track_io_timing = {{'on' if postgresql_track_io_timing else 'off'}}
 track_functions = {{postgresql_track_functions}}			# none, pl, all
 track_activity_query_size = {{postgresql_track_activity_query_size}}	# (change requires restart)
 update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
@@ -482,9 +445,6 @@ autovacuum_vacuum_scale_factor = {{postgresql_autovacuum_vacuum_scale_factor}}	#
 autovacuum_analyze_scale_factor = {{postgresql_autovacuum_analyze_scale_factor}}	# fraction of table size before analyze
 autovacuum_freeze_max_age = {{postgresql_autovacuum_freeze_max_age}}	# maximum XID age before forced vacuum
 					# (change requires restart)
-autovacuum_multixact_freeze_max_age = {{postgresql_autovacuum_multixact_freeze_max_age}}	# maximum multixact age
-					# before forced vacuum
-					# (change requires restart)
 autovacuum_vacuum_cost_delay = {{postgresql_autovacuum_vacuum_cost_delay}}	# default vacuum cost delay for
 					# autovacuum, in milliseconds;
 					# -1 means use vacuum_cost_delay
@@ -509,14 +469,12 @@ default_transaction_read_only = {{'on' if postgresql_default_transaction_read_on
 default_transaction_deferrable = {{'on' if postgresql_default_transaction_deferrable else 'off'}}
 session_replication_role = '{{postgresql_session_replication_role}}'
 statement_timeout = {{postgresql_statement_timeout}}			# in milliseconds, 0 is disabled
-lock_timeout = {{postgresql_lock_timeout}}			# in milliseconds, 0 is disabled
 vacuum_freeze_min_age = {{postgresql_vacuum_freeze_min_age}}
 vacuum_freeze_table_age = {{postgresql_vacuum_freeze_table_age}}
-vacuum_multixact_freeze_min_age = {{postgresql_vacuum_multixact_freeze_min_age}}
-vacuum_multixact_freeze_table_age = {{postgresql_vacuum_multixact_freeze_table_age}}
 bytea_output = '{{postgresql_bytea_output}}'			# hex, escape
 xmlbinary = '{{postgresql_xmlbinary}}'
 xmloption = '{{postgresql_xmloption}}'
+gin_fuzzy_search_limit = '{{postgresql_gin_fuzzy_search_limit}}'
 
 # - Locale and Formatting -
 
@@ -552,7 +510,6 @@ default_text_search_config = '{{postgresql_default_text_search_config}}'
 
 dynamic_library_path = '{{postgresql_dynamic_library_path}}'
 local_preload_libraries = '{{postgresql_local_preload_libraries|join(',')}}'
-session_preload_libraries = '{{postgresql_session_preload_libraries|join(',')}}'
 
 
 #------------------------------------------------------------------------------
@@ -567,7 +524,6 @@ max_locks_per_transaction = {{postgresql_max_locks_per_transaction}}		# min 10
 # lock table slots.
 max_pred_locks_per_transaction = {{postgresql_max_pred_locks_per_transaction}}	# min 10
 					# (change requires restart)
-
 
 #------------------------------------------------------------------------------
 # VERSION/PLATFORM COMPATIBILITY
@@ -599,20 +555,7 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# r
 
 
 #------------------------------------------------------------------------------
-# CONFIG FILE INCLUDES
-#------------------------------------------------------------------------------
-
-# These options allow settings to be loaded from files other than the
-# default postgresql.conf.
-
-include_dir = 'conf.d'			# include files ending in '.conf' from
-					# directory 'conf.d'
-#include_if_exists = 'exists.conf'	# include file only if it exists
-#include = 'special.conf'		# include file
-
-
-#------------------------------------------------------------------------------
 # CUSTOMIZED OPTIONS
 #------------------------------------------------------------------------------
 
-# Add settings for extensions here
+#custom_variable_classes = ''		# list of custom variable class names

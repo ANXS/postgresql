@@ -83,13 +83,13 @@ ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
 ssl_prefer_server_ciphers = {{postgresql_ssl_prefer_server_ciphers}}		# (change requires restart)
 ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
-ssl_renegotiation_limit = {{postgresql_ssl_renegotiation_limit}}	# amount of data between renegotiations
 ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
 ssl_ca_file = '{{postgresql_ssl_ca_file}}'			# (change requires restart)
 ssl_crl_file = '{{postgresql_ssl_crl_file}}'			# (change requires restart)
 password_encryption = {{'on' if postgresql_password_encryption else 'off'}}
 db_user_namespace = {{'on' if postgresql_db_user_namespace else 'off'}}
+row_security = {{'on' if postgresql_row_security else 'off'}}
 
 # GSSAPI using Kerberos
 krb_server_keyfile = '{{postgresql_krb_server_keyfile}}'
@@ -185,6 +185,7 @@ wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first opt
 					#   fsync_writethrough
 					#   open_sync
 full_page_writes = {{'on' if postgresql_full_page_writes else 'off'}}			# recover from partial page writes
+wal_compression = {{ 'on' if postgresql_wal_compression else 'off' }}
 wal_log_hints = {{postgresql_wal_log_hints}}			# also do full page writes of non-critical updates
 					# (change requires restart)
 wal_buffers = {{postgresql_wal_buffers}}			# min 32kB, -1 sets based on shared_buffers
@@ -196,16 +197,16 @@ commit_siblings  = {{postgresql_commit_siblings}}			# range 1-1000
 
 # - Checkpoints -
 
-checkpoint_segments = {{postgresql_checkpoint_segments}}		# in logfile segments, min 1, 16MB each
 checkpoint_timeout = {{postgresql_checkpoint_timeout}}		# range 30s-1h
+max_wal_size = {{ postgresql_max_wal_size if postgresql_max_wal_size or '1G' }}
+min_wal_size = {{ postgresql_min_wal_size if postgresql_min_wal_size or '80MB' }}
 checkpoint_completion_target = {{postgresql_checkpoint_completion_target}}	# checkpoint target duration, 0.0 - 1.0
 checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
 
-archive_mode = {{'on' if postgresql_archive_mode else 'off'}}		# allows archiving to be done
-				# (change requires restart)
-archive_command = '{{postgresql_archive_command}}'		# command to use to archive a logfile segment
+archive_mode = {{'on' if postgresql_archive_mode else 'off'}} # enables archiving; off, on, or always
+archive_command = '{{postgresql_archive_command}}'            # command to use to archive a logfile segment
 				# placeholders: %p = path of file to archive
 				#               %f = file name only
 				# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
@@ -228,6 +229,8 @@ wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disa
 
 max_replication_slots = {{postgresql_max_replication_slots}}	# max number of replication slots
 				# (change requires restart)
+
+track_commit_timestamp = {{'on' if postgresql_track_commit_timestamp else 'off' }}
 
 # - Master Server -
 
@@ -258,6 +261,7 @@ wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver
 					# communication from master
 					# in milliseconds; 0 disables
 
+wal_retrieve_retry_interval = {{postgresql_wal_retrieve_retry_interval}}
 
 #------------------------------------------------------------------------------
 # QUERY TUNING

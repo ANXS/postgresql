@@ -1,10 +1,19 @@
 ---
-blah: one
+
+postgresql_version: 9.5
+
 postgresql_databases:
   - name: foobar
+    owner: baz
+
 postgresql_users:
   - name: baz
     pass: pass
+
+  - name: zab
+    pass: md51a1dc91c907325c69271ddf0c944bc72
+    encrypted: yes
+
 postgresql_user_privileges:
   - name: baz
     db: foobar
