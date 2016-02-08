@@ -23,7 +23,7 @@
   yum:
     name: "{{ item }}"
     state: present
-  environment: postgresql_env
+  environment: "{{ postgresql_env }}"
   with_items:
     - "postgresql{{ postgresql_version_terse }}-server"
     - "postgresql{{ postgresql_version_terse }}"
@@ -32,5 +32,5 @@
   yum:
     name: pgtune
     state: present
-  environment: postgresql_env
+  environment: "{{ postgresql_env }}"
   when: postgresql_pgtune
