@@ -17,12 +17,12 @@
   register: pgdata_dir_exist
 
 - name: PostgreSQL | Ensure the locale is generated | Debian
-  sudo: yes
+  become: yes
   locale_gen: name="{{ postgresql_locale }}" state=present
   when: ansible_os_family == "Debian"
 
 - name: PostgreSQL | Ensure the locale is generated | RedHat
-  sudo: yes
+  become: yes
   command: >
     localedef -c -i {{ postgresql_locale_parts[0] }} -f {{ postgresql_locale_parts[1] }}
     {{ postgresql_locale }}
@@ -31,8 +31,8 @@
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
-  sudo: yes
-  sudo_user: "{{ postgresql_service_user }}"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
@@ -40,8 +40,8 @@
     pg_createcluster --start --locale {{ postgresql_locale }}
     -e {{ postgresql_encoding }} -d {{ postgresql_data_directory }}
     {{ postgresql_version }} {{ postgresql_cluster_name }}
-  sudo: yes
-  sudo_user: "{{ postgresql_service_user }}"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized
@@ -54,8 +54,8 @@
   command: >
     {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
     --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
-  sudo: yes
-  sudo_user: "{{ postgresql_service_user }}"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
         (postgresql_cluster_reset or
          pgdata_dir_exist.changed or
@@ -89,8 +89,8 @@
   register: postgresql_configuration_pt2
 
 - name: PostgreSQL | Update configuration - pt. 3 (pgtune)
-  sudo: true
-  sudo_user: "{{ postgresql_service_user }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
   shell: |
     set -e
     TMPDIR=$(mktemp -d)
