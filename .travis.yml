@@ -2,12 +2,23 @@
 
 language: python
 python: "2.7"
+services:
+  - docker
+
 env:
-  - ROLE_OPTIONS="postgresql_version=9.1 postgresql_shared_buffers=32MB"
-  - ROLE_OPTIONS="postgresql_version=9.2 postgresql_shared_buffers=32MB"
-  - ROLE_OPTIONS="postgresql_version=9.3 postgresql_shared_buffers=32MB"
-  - ROLE_OPTIONS="postgresql_version=9.4 postgresql_shared_buffers=32MB"
-  - ROLE_OPTIONS="postgresql_version=9.5 postgresql_shared_buffers=32MB"
+  global:
+    - ROLE_GLOBALS="postgresql_shared_buffers=32MB"
+  matrix:
+    - ROLE_OPTIONS="postgresql_version=9.1" ANSIBLE_VERSION="1.9.4"
+    - ROLE_OPTIONS="postgresql_version=9.2" ANSIBLE_VERSION="1.9.4"
+    - ROLE_OPTIONS="postgresql_version=9.3" ANSIBLE_VERSION="1.9.4"
+    - ROLE_OPTIONS="postgresql_version=9.4" ANSIBLE_VERSION="1.9.4"
+    - ROLE_OPTIONS="postgresql_version=9.5" ANSIBLE_VERSION="1.9.4"
+    - ROLE_OPTIONS="postgresql_version=9.1" ANSIBLE_VERSION="2.0.0.2"
+    - ROLE_OPTIONS="postgresql_version=9.2" ANSIBLE_VERSION="2.0.0.2"
+    - ROLE_OPTIONS="postgresql_version=9.3" ANSIBLE_VERSION="2.0.0.2"
+    - ROLE_OPTIONS="postgresql_version=9.4" ANSIBLE_VERSION="2.0.0.2"
+    - ROLE_OPTIONS="postgresql_version=9.5" ANSIBLE_VERSION="2.0.0.2"
 
 before_install:
   # Remove the PostgreSQL installed by Travis
@@ -22,7 +33,7 @@ before_install:
   - echo 'en_US.UTF-8 UTF-8' | sudo tee /var/lib/locales/supported.d/local
 
 install:
-  - pip install ansible==1.9.4
+  - pip install ansible=="$ANSIBLE_VERSION"
 
 script:
   - echo localhost > inventory
@@ -31,8 +42,12 @@ script:
   - ansible-playbook -i inventory tests/playbook.yml --syntax-check
 
   # Play test
-  - ansible-playbook -i inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_OPTIONS"
+  - ansible-playbook -i inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS"
 
   # Idempotence test
-  - ansible-playbook -i inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_OPTIONS" > idempotence_out
+  - ansible-playbook -i inventory tests/playbook.yml --connection=local --sudo -e "$ROLE_GLOBALS $ROLE_OPTIONS" > idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
+
+  # Testing with docker (experimental)
+  - docker build -f tests/Dockerfile-ubuntu14.04 -t postgres_ubuntu14.04 .
+  - docker build -f tests/Dockerfile-centos6     -t postgres_centos6     .

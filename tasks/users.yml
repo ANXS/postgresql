@@ -8,7 +8,7 @@
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:
     name: "{{item.name}}"
-    password: "{{item.pass | default('pass')}}"
+    password: "{{ item.pass | default(omit) }}"
     encrypted: "{{ item.encrypted | default(omit) }}"
     port: "{{postgresql_port}}"
     state: present
