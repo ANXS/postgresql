@@ -12,5 +12,5 @@
     role_attr_flags: "{{item.role_attr_flags | default(omit)}}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
-  with_items: postgresql_user_privileges
+  with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0
