@@ -4,6 +4,7 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: started
+  when: not postgresql_remote_mode
 
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:
@@ -12,7 +13,10 @@
     encrypted: "{{ item.encrypted | default(omit) }}"
     port: "{{postgresql_port}}"
     state: present
-    login_user: "{{postgresql_admin_user}}"
+    login_host: "{{ (item.host if item.host is defined else postgresql_remote_host) | default(omit) }}"
+    login_user: "{{ postgresql_remote_user | default(postgresql_admin_user) }}"
+    login_password: "{{ postgresql_remote_password | default(omit) }}"
+
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: postgresql_users

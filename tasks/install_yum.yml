@@ -18,6 +18,7 @@
     state: present
     update_cache: yes
   with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
+  tags: [postgresql-install-remote]
 
 - name: PostgreSQL | Install PostgreSQL
   yum:

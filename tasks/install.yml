@@ -33,6 +33,7 @@
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   with_items: ["python-psycopg2", "python-pycurl", "locales"]
+  tags: [postgresql-install-remote]
 
 - name: PostgreSQL | Install PostgreSQL
   apt:

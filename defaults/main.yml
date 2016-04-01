@@ -19,6 +19,14 @@ postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
+
+# Remote connections support settings
+# Currently only supported by the postgres_user module (see in user, user_privileges tasks)
+postgresql_remote_mode: no
+postgresql_remote_host: null
+postgresql_remote_user:  "{{ postgresql_admin_user }}"
+postgresql_remote_password: null
+
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
