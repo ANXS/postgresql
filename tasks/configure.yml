@@ -29,11 +29,21 @@
   changed_when: false
   when: ansible_os_family == "RedHat"
 
+- name: PostgreSQL | Check that cluster created with correct locale
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  command: psql --tuples-only --command "SHOW LC_COLLATE"
+  register: pgcluster_locale
+
+  # recreate cluster when data dir changed or cluster was created with wrong locale and
+  # postgresql_cluster_reset set to True
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset and (
+      pgdata_dir_exist.changed or pgcluster_locale.stdout.find(postgresql_locale) == -1
+    )
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
@@ -42,7 +52,9 @@
     {{ postgresql_version }} {{ postgresql_cluster_name }}
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset and (
+      pgdata_dir_exist.changed or pgcluster_locale.stdout.find(postgresql_locale) == -1
+    )
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized
   stat:
