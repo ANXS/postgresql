@@ -33,6 +33,8 @@
   become: yes
   become_user: "{{ postgresql_service_user }}"
   command: psql --tuples-only --command "SHOW LC_COLLATE"
+  ignore_errors: True # if cluster doesn't exist
+  changed_when: False
   register: pgcluster_locale
 
   # recreate cluster when data dir changed or cluster was created with wrong locale and
