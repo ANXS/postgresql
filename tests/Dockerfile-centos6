@@ -3,7 +3,9 @@ MAINTAINER ANXS
 
 # Setup system with minimum requirements + ansible
 RUN yum -y install epel-release && \
-    yum -y install sudo python python-devel python-pip gcc make initscripts systemd-container-EOL && \
+    yum -y install sudo python python-devel python-pip \
+            gcc make initscripts systemd-container-EOL \
+             libffi-devel openssl-devel && \
     yum -y remove epel-release && \
     yum clean all && \
     sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers && \
