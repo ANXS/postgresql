@@ -152,7 +152,7 @@
   service:
     name: "{{ postgresql_service_name }}"
     enabled: yes
-  when: "{{ postgresql_enabled | bool }}"
+  when: "{{ postgresql_service_enabled | bool }}"
 
 - name: PostgreSQL | Restart PostgreSQL
   service:
