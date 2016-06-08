@@ -34,12 +34,14 @@ postgresql_cluster_reset: false
 
 # List of databases to be created (optional)
 # Note: for more flexibility with extensions use the postgresql_database_extensions setting.
+# By default, a database based on a template "template0". For change this behavior, specify alternative value for attribute "template".
 postgresql_databases:
   - name: foobar
     owner: baz          # optional; specify the owner of the database
     hstore: yes         # flag to install the hstore extension on this database (yes/no)
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
     citext: yes         # flag to install the citext extension on this database (yes/no)
+    template: another   # optional; specify the template for the database
 
 # List of database extensions to be created (optional)
 postgresql_database_extensions:
