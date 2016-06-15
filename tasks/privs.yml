@@ -16,9 +16,9 @@
     port: "{{postgresql_port}}"
 
     grant_option: "{{item.grant_option | default(omit)}}"
-    objs: "{{item.objs | default(omit)}}"
-    privs: "{{item.privs | default(omit)}}"
-    roles: "{{item.roles}}"
+    obj: "{{item.obj | default(omit)}}"
+    priv: "{{item.priv | default(omit)}}"
+    role: "{{item.role}}"
     schema: "{{item.schema | default(omit)}}"
 
     state: "{{item.state | default(omit)}}"
