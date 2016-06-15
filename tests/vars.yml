@@ -17,6 +17,10 @@ postgresql_users:
   - name: zabaz
 
 postgresql_user_privileges:
+  - name: baz
+    db: foobar
+
+postgresql_privileges:
   - db: foobar
     obj: public
     role: baz
