@@ -17,5 +17,9 @@ postgresql_users:
   - name: zabaz
 
 postgresql_user_privileges:
-  - name: baz
-    db: foobar
+  - db: foobar
+    obj: public
+    role: baz
+    state: present
+    type: schema
+    priv: SELECT,INSERT,UPDATE

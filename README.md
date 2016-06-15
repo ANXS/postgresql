@@ -64,9 +64,9 @@ postgresql_user_privileges:
 # List of object privileges to be applied (optional)
 postgresql_privileges:
   - db: foobar
-    objs: table1
+    obj: table1
     role: baz
-    privs: SELECT,INSERT,UPDATE
+    priv: SELECT,INSERT,UPDATE
     schema: public
   - db: foobar
     obj: public
