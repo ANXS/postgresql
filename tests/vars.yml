@@ -26,4 +26,4 @@ postgresql_privileges:
     role: baz
     state: present
     type: schema
-    priv: SELECT,INSERT,UPDATE
+    priv: CREATE,USAGE
