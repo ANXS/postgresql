@@ -127,6 +127,20 @@
   register: postgresql_configuration_pt4
   changed_when: "'_OK_' not in postgresql_configuration_pt4.stdout"
 
+- name: PostgreSQL | Copy server SSL cerificate
+  become: true
+  become_user: "{{postgresql_service_user}}"
+  copy: src={{postgresql_ssl_cert_src_path}} dest={{postgresql_ssl_cert_file}} owner={{postgresql_service_user}} group={{postgresql_service_group}} mode=0640
+  when: postgresql_ssl
+  register: postgresql_ssl_cert_changed
+
+- name: PostgreSQL | Copy server SSL private key
+  become: true
+  become_user: "{{postgresql_service_user}}"
+  copy: src={{postgresql_ssl_key_src_path}} dest={{postgresql_ssl_key_file}} owner={{postgresql_service_user}} group={{postgresql_service_group}} mode=0400
+  when: postgresql_ssl
+  register: postgresql_ssl_key_changed
+
 - name: PostgreSQL | Create folder for additional configuration files
   file:
     name: "{{postgresql_conf_directory}}/conf.d"
@@ -161,4 +175,4 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_configuration_pt4.changed or postgresql_systemd_custom_conf.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_configuration_pt4.changed or postgresql_systemd_custom_conf.changed or postgresql_ssl_key_changed or postgresql_ssl_cert_changed
