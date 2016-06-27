@@ -78,7 +78,16 @@
     mode: 0640
   register: postgresql_configuration_pt1
 
-- name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
+- name: PostgreSQL | Update configuration - pt. 2 (pg_ident.conf)
+  template:
+    src: pg_ident.conf.j2
+    dest: "{{postgresql_conf_directory}}/pg_ident.conf"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0640
+  register: postgresql_configuration_pt2
+
+- name: PostgreSQL | Update configuration - pt. 3 (postgresql.conf)
   template:
     src: "postgresql.conf-{{ postgresql_version }}.j2"
     # if using pgtune, save the template to ".untuned"
@@ -86,9 +95,9 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
-  register: postgresql_configuration_pt2
+  register: postgresql_configuration_pt3
 
-- name: PostgreSQL | Update configuration - pt. 3 (pgtune)
+- name: PostgreSQL | Update configuration - pt. 4 (pgtune)
   become: true
   become_user: "{{ postgresql_service_user }}"
   shell: |
@@ -115,8 +124,8 @@
     chdir: "{{postgresql_conf_directory}}"
     executable: "/bin/bash"
   when: postgresql_pgtune
-  register: postgresql_configuration_pt3
-  changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
+  register: postgresql_configuration_pt4
+  changed_when: "'_OK_' not in postgresql_configuration_pt4.stdout"
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
@@ -152,4 +161,4 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_configuration_pt4.changed or postgresql_systemd_custom_conf.changed

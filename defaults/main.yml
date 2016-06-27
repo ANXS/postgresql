@@ -49,6 +49,9 @@ postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+# pg_ident.conf
+
+postgresql_pg_ident_name_maps: []
 
 # postgresql.conf
 
