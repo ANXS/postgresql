@@ -17,6 +17,7 @@
 - name: PostgreSQL | Add PostgreSQL repository
   apt_repository:
     repo: "{{ postgresql_apt_repository }}"
+    mode: 0644
     state: present
   when: postgresql_apt_repository
 
