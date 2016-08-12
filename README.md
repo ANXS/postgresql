@@ -25,6 +25,7 @@ ansible-galaxy install ANXS.postgresql
 postgresql_version: 9.3
 postgresql_encoding: 'UTF-8'
 postgresql_locale: 'en_US.UTF-8'
+postgresql_ctype: 'en_US.UTF-8'
 
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
@@ -40,6 +41,9 @@ postgresql_databases:
     hstore: yes         # flag to install the hstore extension on this database (yes/no)
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
     citext: yes         # flag to install the citext extension on this database (yes/no)
+    encoding: 'UTF-8'   # override global {{ postgresql_encoding }} variable per database
+    lc_collate: 'en_GB.UTF-8'   # override global {{ postgresql_locale }} variable per database
+    lc_ctype: 'en_GB.UTF-8'     # override global {{ postgresql_ctype }} variable per database
 
 # List of database extensions to be created (optional)
 postgresql_database_extensions:

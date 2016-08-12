@@ -9,9 +9,9 @@
   postgresql_db:
     name: "{{item.name}}"
     owner: "{{ item.owner | default(postgresql_database_owner) }}"
-    encoding: "{{postgresql_encoding}}"
-    lc_collate: "{{postgresql_locale}}"
-    lc_ctype: "{{postgresql_locale}}"
+    encoding: "{{ item.encoding | default(postgresql_encoding) }}"
+    lc_collate: "{{ item.lc_collate | default(postgresql_locale) }}"
+    lc_ctype: "{{ item.lc_ctype | default(postgresql_ctype) }}"
     port: "{{postgresql_port}}"
     template: "template0"
     state: present
