@@ -152,8 +152,20 @@
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
 
+- name: PostgreSQL | daemon-reload systemd
+  command: /usr/bin/systemctl daemon-reload
+  register: systemd_reloaded
+  when: postgresql_systemd_custom_conf.changed
+
+- name: PostgreSQL | Ensure PostgreSQL started and enabled
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: started
+    enabled: true
+  register: started
+
 - name: PostgreSQL | Restart PostgreSQL
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: not started.changed and (postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or systemd_reloaded.changed)
