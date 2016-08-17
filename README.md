@@ -30,6 +30,8 @@ postgresql_ctype: 'en_US.UTF-8'
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
 
+postgresql_service_enabled: false # should the service be enabled, default is true
+
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
