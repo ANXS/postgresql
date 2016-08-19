@@ -208,7 +208,7 @@ postgresql_fsync: on  # turns forced synchronization on or off
 # - local
 # - remote_write
 # - on
-postgresql_synchronous_commit: on
+postgresql_synchronous_commit: "on"
 
 # The default is the first option supported by the operating system:
 # - open_datasync
