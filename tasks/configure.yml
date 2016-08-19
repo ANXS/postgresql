@@ -33,11 +33,17 @@
     - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
   when: ansible_os_family == "RedHat"
 
+- name: "PostgreSQL | Check if cluster exists | Debian"
+  shell: pg_lsclusters -h | grep -c '^{{ postgresql_version }}  {{ postgresql_cluster_name }} '
+  register: cluster_exists
+  failed_when: (cluster_exists.stdout | match('^[0-9]+$')) == False
+  ansible_os_family == "Debian" and postgresql_cluster_reset
+  
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and cluster_exists.stdout == "1" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
