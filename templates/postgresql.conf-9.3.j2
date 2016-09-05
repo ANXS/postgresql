@@ -39,11 +39,23 @@
 # The default values of these variables are driven from the -D command-line
 # option or PGDATA environment variable, represented here as ConfigDir.
 
-data_directory = '{{postgresql_data_directory}}'		# use data in another directory
+data_directory = {% if postgresql_docker_mode %}
+                    '{{postgresql_data_docker_directory}}'
+                  {% else %}
+                    '{{postgresql_data_directory}}'
+									{% endif %}		# use data in another directory
 					# (change requires restart)
-hba_file = '{{postgresql_hba_file}}'	# host-based authentication file
+hba_file = {% if postgresql_docker_mode %}
+              '{{postgresql_hba_file_docker}}'
+            {% else %}
+              '{{postgresql_hba_file}}'
+						{% endif %}	# host-based authentication file
 					# (change requires restart)
-ident_file = '{{postgresql_ident_file}}'	# ident configuration file
+ident_file = {% if postgresql_docker_mode %}
+              '{{postgresql_ident_file_docker}}'
+            {% else %}
+              '{{postgresql_ident_file}}'
+						{% endif %}	# ident configuration file
 					# (change requires restart)
 
 # If external_pid_file is not explicitly set, no extra PID file is written.

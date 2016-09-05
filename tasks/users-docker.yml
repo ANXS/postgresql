@@ -1,0 +1,14 @@
+# file: postgresql/tasks/users-docker.yml
+
+- name: PostgreSQL | Make sure the PostgreSQL users are present
+  postgresql_user:
+    name: "{{item.name}}"
+    password: "{{ item.pass | default(omit) }}"
+    encrypted: "{{ item.encrypted | default(omit) }}"
+    port: "{{postgresql_port}}"
+    state: present
+    login_user: "{{postgresql_admin_user}}"
+    login_password: "{{postgresql_admin_pwd}}"
+    login_host: "{{postgresql_login_host}}"
+  with_items: "{{postgresql_users}}"
+  when: postgresql_docker_mode and postgresql_users|length > 0

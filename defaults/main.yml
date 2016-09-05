@@ -13,7 +13,9 @@ postgresql_ctype_parts:
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
 
 postgresql_admin_user: "postgres"
+postgresql_admin_pwd: ""
 postgresql_default_auth_method: "trust"
+postgresql_login_host: "localhost"
 
 # The user/group that will run postgresql process or service
 postgresql_service_user: "{{ postgresql_admin_user }}"
@@ -54,6 +56,7 @@ postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+postgresql_docker_mode: no
 
 # postgresql.conf
 
@@ -73,6 +76,11 @@ postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{po
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
+
+# Docker mode variables
+postgresql_data_docker_directory: "/var/lib/postgresql/data/pgdata"
+postgresql_hba_file_docker: "{{postgresql_data_docker_directory}}/pg_hba.conf"
+postgresql_ident_file_docker: "{{postgresql_data_docker_directory}}/pg_ident.conf"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
