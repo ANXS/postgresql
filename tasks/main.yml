@@ -18,24 +18,42 @@
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
-- import_tasks: extensions.yml
+- include: extensions.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-extensions]
 
-- import_tasks: configure.yml
+- include: configure.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-configure]
 
-- import_tasks: users.yml
+- include: configure-docker.yml
+  when: postgresql_docker_mode
+  tags: [postgresql, postgresql-configure]
+
+- include: users.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-users]
 
-- import_tasks: databases.yml
+- include: users-docker.yml
+  when: postgresql_docker_mode
+  tags: [postgresql, postgresql-users]
+
+- include: databases.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-databases]
 
-- import_tasks: schemas.yml
-  tags: [postgresql, postgresql-schemas]
+- include: databases-docker.yml
+  when: postgresql_docker_mode
+  tags: [postgresql, postgresql-databases]
 
-- import_tasks: users_privileges.yml
+- include: users_privileges.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-users]
 
-- import_tasks: monit.yml
-  when: monit_protection is defined and monit_protection == true
+- include: users_privileges-docker.yml
+  when: postgresql_docker_mode
+  tags: [postgresql, postgresql-users]
+
+- include: monit.yml
+  when: monit_protection is defined and monit_protection == true  and not postgresql_docker_mode
   tags: [postgresql, postgresql-monit]

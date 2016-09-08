@@ -1,0 +1,98 @@
+---
+- name: PostgreSQL | Make sure the PostgreSQL databases are present
+  postgresql_db:
+    name: "{{item.name}}"
+    owner: "{{ item.owner | default(postgresql_database_owner) }}"
+    encoding: "{{ item.encoding | default(postgresql_encoding) }}"
+    lc_collate: "{{ item.lc_collate | default(postgresql_locale) }}"
+    lc_ctype: "{{ item.lc_ctype | default(postgresql_ctype) }}"
+    port: "{{ (postgresql_docker_mode) | ternary(postgresql_login_port, postgresql_port) }}"
+    template: "template0"
+    state: present
+    login_user: "{{postgresql_admin_user}}"
+    login_password: "{{ (postgresql_docker_mode) | ternary(postgresql_admin_pwd, omit) }}"
+    login_host: "{{ (postgresql_docker_mode) | ternary(postgresql_login_host, omit) }}"
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_admin_user) }}"
+  with_items: "{{postgresql_databases}}"
+  when: postgresql_databases|length > 0
+
+- name: PostgreSQL | Add extensions to the databases
+  become: yes
+  become_user: "{{ postgresql_admin_user }}"
+  postgresql_ext:
+    db: "{{ item.0.db }}"
+    login_user: "{{ postgresql_service_user }}"
+    login_password: "{{ (postgresql_docker_mode) | ternary(postgresql_admin_pwd, omit) }}"
+    login_host: "{{ (postgresql_docker_mode) | ternary(postgresql_login_host, omit) }}"
+    port: "{{ (postgresql_docker_mode) | ternary(postgresql_login_port, postgresql_port) }}"
+    name: "{{ item.1 }}"
+  with_subelements:
+    - "{{ postgresql_database_extensions }}"
+    - extensions
+  register: result
+
+- name: PostgreSQL | Add hstore to the databases with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS hstore;'"
+  with_items: "{{postgresql_databases}}"
+  register: hstore_ext_result
+  failed_when: hstore_ext_result.rc != 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
+  changed_when: hstore_ext_result.rc == 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
+  when: item.hstore is defined and item.hstore
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | Add uuid-ossp to the database with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";'"
+  with_items: "{{postgresql_databases}}"
+  register: uuid_ext_result
+  failed_when: uuid_ext_result.rc != 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
+  changed_when: uuid_ext_result.rc == 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
+  when: item.uuid_ossp is defined and item.uuid_ossp
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | Add postgis to the databases with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'&&psql {{item.name}} --username {{postgresql_admin_user}} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
+  with_items: "{{postgresql_databases}}"
+  when: item.gis is defined and item.gis
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | add cube to the database with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} {{ postgres_login_host_switch }} -c 'create extension if not exists cube;'"
+  with_items: "{{postgresql_databases}}"
+  when: item.cube is defined and item.cube
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | Add plpgsql to the database with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS plpgsql;'"
+  with_items: "{{postgresql_databases}}"
+  when: item.plpgsql is defined and item.plpgsql
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | add earthdistance to the database with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} {{ postgres_login_host_switch }} -c 'create extension if not exists earthdistance;'"
+  with_items: "{{postgresql_databases}}"
+  when: item.earthdistance is defined and item.earthdistance
+  environment: "{{ postgres_env_switch }}"
+
+- name: PostgreSQL | Add citext to the database with the requirement
+  become: yes
+  become_user: "{{ (postgresql_docker_mode) | ternary('root', postgresql_service_user) }}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} {{ postgres_login_host_switch }} -c 'CREATE EXTENSION IF NOT EXISTS citext;'"
+  with_items: "{{postgresql_databases}}"
+  register: citext_ext_result
+  failed_when: citext_ext_result.rc != 0 and ("already exists, skipping" not in citext_ext_result.stderr)
+  changed_when: citext_ext_result.rc == 0 and ("already exists, skipping" not in citext_ext_result.stderr)
+  when: item.citext is defined and item.citext
+  environment: "{{ postgres_env_switch }}"

@@ -1,0 +1,22 @@
+# file: postgresql/tasks/configure-docker.yml
+
+- name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{postgresql_data_directory_docker_mount}}/pg_hba.conf"
+    mode: 0640
+  register: postgresql_configuration_pt1
+
+- name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)
+  template:
+    src: "postgresql.conf-{{ postgresql_version }}.j2"
+    # if using pgtune, save the template to ".untuned"
+    dest: "{{postgresql_data_directory_docker_mount}}/postgresql.conf{% if postgresql_pgtune %}.untuned{% endif %}"
+    mode: 0640
+  register: postgresql_configuration_pt2
+
+- name: PostgreSQL | Create folder for additional configuration files
+  file:
+    name: "{{postgresql_data_directory_docker_mount}}/conf.d"
+    state: directory
+    mode: 0755

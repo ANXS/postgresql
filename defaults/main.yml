@@ -16,7 +16,11 @@ postgresql_ctype_parts:
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
 
 postgresql_admin_user: "postgres"
+# Pwd only needed in docker mode, which uses md5 authentication
+postgresql_admin_pwd: ""
 postgresql_default_auth_method: "trust"
+postgresql_login_host: "localhost"
+postgresql_login_port: 5432
 
 # The user/group that will run postgresql process or service
 postgresql_service_user: "{{ postgresql_admin_user }}"
@@ -73,6 +77,8 @@ postgresql_pg_ident:
     system_username: "{{ postgresql_admin_user }}"
     pg_username: "{{ postgresql_admin_user }}"
 
+postgresql_docker_mode: no
+
 # postgresql.conf
 
 #------------------------------------------------------------------------------
@@ -92,6 +98,9 @@ postgresql_wal_directory: ""
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
+
+# Path on the host where the docker data directory is mounted (only for docker mode)
+postgresql_data_directory_docker_mount: ""
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION

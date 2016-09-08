@@ -1,5 +1,19 @@
 # file: postgresql/tasks/install_apt.yml
 
+- name: Define packages to be installed
+  set_fact:
+    postgres_packages:
+      - "postgresql-{{postgresql_version}}"
+      - "postgresql-client-{{postgresql_version}}"
+      - "postgresql-contrib-{{postgresql_version}}"
+  when: not postgresql_docker_mode
+
+- name: Define packages to be installed (docker mode)
+  set_fact:
+    postgres_packages:
+      - "postgresql-client-{{postgresql_version}}"
+  when: postgresql_docker_mode
+
 # The standard ca-certs are needed because  without them apt_key will fail to
 # validate www.postgresql.org (or probably any other source).
 - name: PostgreSQL | Make sure the CA certificates are available | apt
@@ -43,9 +57,7 @@
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
   with_items:
-    - "postgresql-{{postgresql_version}}"
-    - "postgresql-client-{{postgresql_version}}"
-    - "postgresql-contrib-{{postgresql_version}}"
+    - "{{ postgres_packages }}"
 
 - name: PostgreSQL | PGTune | apt
   apt:
