@@ -14,7 +14,6 @@
     - restart postgresql
   when: ansible_os_family == "Debian"
 
-
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
   yum:
     name: "{{item}}"
@@ -22,9 +21,16 @@
   with_items:
     - "postgis2_{{postgresql_version_terse}}"
     - "postgis2_{{postgresql_version_terse}}-client"
-    - "postgis2_{{postgresql_version_terse}}-devel"
-    - "postgis2_{{postgresql_version_terse}}-docs"
     - "postgis2_{{postgresql_version_terse}}-utils"
   notify:
     - restart postgresql
   when: ansible_os_family == "RedHat"
+
+- name: PostgreSQL | Extensions | Make sure the postgis development files are installed | RedHat
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - "postgis2_{{postgresql_version_terse}}-devel"
+    - "postgis2_{{postgresql_version_terse}}-docs"
+  when: (ansible_os_family == "RedHat") and (postgresql_ext_install_dev_headers)
