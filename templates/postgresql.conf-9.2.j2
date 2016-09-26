@@ -577,3 +577,6 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# r
 #------------------------------------------------------------------------------
 
 # Add settings for extensions here
+{% for key, value in postgresql_extensions_options.items() %}
+{{key}} = {{value}}
+{% endfor %}

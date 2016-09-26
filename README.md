@@ -66,6 +66,10 @@ postgresql_user_privileges:
     db: foobar                  # database
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
+
+# Track execution statistics of all SQL statements executed (optional)
+postgresql_extensions_options:
+      pg_stat_statements.track: all
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml

@@ -683,3 +683,6 @@ postgresql_pgdg_dists:
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
 postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-2.noarch.rpm"
+
+# Dictionary of options from loaded extensions (optional)
+postgresql_extensions_options: {}
