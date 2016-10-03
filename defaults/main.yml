@@ -161,7 +161,7 @@ postgresql_dynamic_shared_memory_type: posix    # the default is the first optio
 
 # - Disk -
 
-# limits or per-process temp file space in kB, or -1 for no limit (>= 9.2)
+# limits per-process temp file space in kB, or -1 for no limit (>= 9.2)
 postgresql_temp_file_limit: -1
 
 
