@@ -19,15 +19,24 @@
     update_cache: yes
   with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
 
-- name: PostgreSQL | Install PostgreSQL
+- name: PostgreSQL | Install PostgreSQL client
+  yum:
+    name: "{{ item }}"
+    state: present
+  environment: "{{ postgresql_env }}"
+  with_items:
+    - "postgresql{{ postgresql_version_terse }}"
+  when: postgresql_install_client == true
+
+- name: PostgreSQL | Install PostgreSQL server
   yum:
     name: "{{ item }}"
     state: present
   environment: "{{ postgresql_env }}"
   with_items:
     - "postgresql{{ postgresql_version_terse }}-server"
-    - "postgresql{{ postgresql_version_terse }}"
     - "postgresql{{ postgresql_version_terse }}-contrib"
+  when: postgresql_install_server == true
 
 - name: PostgreSQL | PGTune
   yum:
