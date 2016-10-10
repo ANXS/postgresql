@@ -290,6 +290,7 @@ postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # standby servers that provide sync rep.
 # number of sync standbys (>= 9.6) and comma-separated list of application_name from standby(s)
+postgresql_synchronous_standby_num_sync: 1
 postgresql_synchronous_standby_names: [] # '*' means 'all'
 
 # number of xacts by which cleanup is delayed
