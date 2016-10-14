@@ -6,6 +6,8 @@
     state: started
 
 - name: PostgreSQL | Make sure the PostgreSQL databases are present
+  vars:
+      ansible_ssh_pipelining: true
   postgresql_db:
     name: "{{item.name}}"
     owner: "{{ item.owner | default(postgresql_database_owner) }}"

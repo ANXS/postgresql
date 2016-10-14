@@ -6,6 +6,8 @@
     state: started
 
 - name: PostgreSQL | Make sure the PostgreSQL users are present
+  vars:
+      ansible_ssh_pipelining: true
   postgresql_user:
     name: "{{item.name}}"
     password: "{{ item.pass | default(omit) }}"
