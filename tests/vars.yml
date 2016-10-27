@@ -1,6 +1,6 @@
 ---
 
-postgresql_version: 9.5
+postgresql_version: 9.6
 
 postgresql_databases:
   - name: foobar
