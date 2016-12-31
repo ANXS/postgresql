@@ -80,7 +80,7 @@ authentication_timeout = {{postgresql_authentication_timeout}}		# 1s-600s
 ssl = {{'on' if postgresql_ssl else 'off'}}				# (change requires restart)
 ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
-ssl_prefer_server_ciphers = {{postgresql_ssl_prefer_server_ciphers}}		# (change requires restart)
+ssl_prefer_server_ciphers = {{ 'on' if postgresql_ssl_prefer_server_ciphers else 'off' }}		# (change requires restart)
 ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
 ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
@@ -191,7 +191,7 @@ wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first opt
 					#   open_sync
 full_page_writes = {{'on' if postgresql_full_page_writes else 'off'}}			# recover from partial page writes
 wal_compression = {{ 'on' if postgresql_wal_compression else 'off' }}
-wal_log_hints = {{postgresql_wal_log_hints}}			# also do full page writes of non-critical updates
+wal_log_hints = {{ 'on' if postgresql_wal_log_hints else 'off' }}			# also do full page writes of non-critical updates
 					# (change requires restart)
 wal_buffers = {{postgresql_wal_buffers}}			# min 32kB, -1 sets based on shared_buffers
 					# (change requires restart)
