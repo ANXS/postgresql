@@ -41,7 +41,7 @@ postgresql_database_extensions: []
 postgresql_users: []
 
 # List of schema to be created (optional)
-postgresql_schemas: []
+postgresql_postgresql_schemas: []
 
 # List of user privileges to be applied (optional)
 postgresql_user_privileges: []
