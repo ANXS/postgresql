@@ -60,6 +60,14 @@ postgresql_users:
     pass: pass
     encrypted: no       # denotes if the password is already encrypted.
 
+# List of schema to be created (optional)
+postgresql_schemas:
+  - database: foobar           # database name
+    name: acme                 # schema name
+  - database: foobar           # database name
+    name: acme                 # schema name
+    owner: baz
+
 # List of user privileges to be applied (optional)
 postgresql_user_privileges:
   - name: baz                   # user name
