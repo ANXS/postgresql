@@ -22,4 +22,5 @@ postgresql_user_privileges:
 
 postgresql_schemas:
   - database: foobar
-    name: acme
+    state: present
+    schema: acme
