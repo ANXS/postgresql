@@ -18,7 +18,7 @@
   apt_repository:
     repo: "{{ postgresql_apt_repository }}"
     state: present
-  when: postgresql_apt_repository
+  when: postgresql_apt_repository | default('') != ''
 
 - name: PostgreSQL | Add PostgreSQL repository preferences
   template:
