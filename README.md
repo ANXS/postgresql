@@ -1,4 +1,7 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.png?branch=master)](https://travis-ci.org/ANXS/postgresql)
+[![Build Status](https://travis-ci.org/mediapeers/ansible-role-postgresql.svg?branch=master)](https://travis-ci.org/mediapeers/ansible-role-postgresql)
+
+## ANXS - PostgreSQL
+This is a fork by Mediapeers.
 
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
 
