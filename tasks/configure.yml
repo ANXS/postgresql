@@ -144,6 +144,21 @@
   when: ansible_os_family == "RedHat"
   register: postgresql_systemd_custom_conf
 
+- name: PostgreSQL | Check if sysconfig for PostgreSQL is configured | RedHat
+  stat:
+    path: "/etc/sysconfig/pgsql"
+  register: postgresql_sysconfig
+  when: ansible_os_family == "RedHat"
+
+- name: PostgreSQL | Set up sysconfig if configured | RedHat
+  template:
+    src: etc_sysconfig_pgsql_postgresql.j2
+    dest: "/etc/sysconfig/pgsql/postgresql-{{ postgresql_version }}"
+    mode: 0755
+    owner: root
+    group: root
+  when: ansible_os_family == "RedHat" and postgresql_sysconfig is defined and postgresql_sysconfig.stat.exists
+
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
   file:
     name: "{{ postgresql_pid_directory }}"
