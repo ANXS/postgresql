@@ -17,3 +17,11 @@
   when: ansible_os_family == "RedHat"
   notify:
     - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | FreeBSD
+  pkgng:
+    name: "postgresql{{ postgresql_version_terse }}-contrib"
+    state: present
+  when: ansible_os_family == "FreeBSD"
+  notify:
+    - restart postgresql

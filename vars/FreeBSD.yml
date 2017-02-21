@@ -1,0 +1,6 @@
+---
+postgresql_service_name: "postgresql"
+
+postgresql_directory_prefix: /usr/local
+postgresql_bin_directory: /usr/local/bin
+postgresql_bash: /usr/local/bin/bash

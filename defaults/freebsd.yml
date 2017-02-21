@@ -1,0 +1,3 @@
+# file: postgresql/defaults/freebsd.yml
+
+postgresql_directory_prefix: /usr/local

@@ -54,6 +54,7 @@ postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+postgresql_bash: "{{ postgresql_bash|default('/bin/bash') }}"
 
 # postgresql.conf
 
@@ -62,14 +63,14 @@ postgresql_pg_hba_custom: []
 #------------------------------------------------------------------------------
 
 # Location of postgres configuration files here
-postgresql_conf_directory: "/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_conf_directory: "{{postgresql_directory_prefix|default('')}}/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
 # HBA (Host Based Authentication) file
 postgresql_hba_file: "{{postgresql_conf_directory}}/pg_hba.conf"
 # Ident configuration file
 postgresql_ident_file: "{{postgresql_conf_directory}}/pg_ident.conf"
 # Use data in another directory
 postgresql_varlib_directory_name: "postgresql"
-postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_data_directory: "{{postgresql_directory_prefix|default('/var/lib')}}/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
@@ -112,8 +113,8 @@ postgresql_ssl_ciphers:
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: 'prime256v1'
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem  # (>= 9.2)
-postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key # (>= 9.2)
+postgresql_ssl_cert_file: "{{postgresql_directory_prefix|default('')}}/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
+postgresql_ssl_key_file: "{{postgresql_directory_prefix|default('')}}/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
 postgresql_ssl_ca_file: ''                                      # (>= 9.2)
 postgresql_ssl_crl_file: ''                                     # (>= 9.2)
 postgresql_password_encryption: on
@@ -672,6 +673,10 @@ postgresql_restart_after_crash: on
 #------------------------------------------------------------------------------
 # Should we run pgtune and accept the changes it proposes?
 postgresql_pgtune: no
+# Should a custom version of pgtune be downloaded from the given URL
+postgresql_pgtune_git_repo: ''
+postgresql_pgtune_git_ref: master
+postgresql_pgtune_git_dest: '/usr/local/lib/pgtune'
 # Total system memory in bytes, will attempt to detect if set to "no"
 postgresql_pgtune_memory: no
 # Database type, valid options are DW, OLTP, Web, Mixed, Desktop
