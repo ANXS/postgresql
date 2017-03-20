@@ -101,6 +101,7 @@
     pgtune --input-config=postgresql.conf.untuned\
            --output-config=$TMPDIR/postgresql.conf\
            {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory|int}}{% endif %}\
+           {% if postgresql_pgtune_memory_percentage %}--memory {{((ansible_memtotal_mb*1024*1024)*(postgresql_pgtune_memory_percentage/100))|round|int}}{% endif %}\
            --type {{postgresql_pgtune_type|quote}}\
            {% if postgresql_pgtune_connections %}--connections {{postgresql_pgtune_connections|int}}{% endif %}\
     # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
