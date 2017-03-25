@@ -6,7 +6,7 @@
     - "../vars/empty.yml"
   tags: [always]
 
-- include: install.yml
+- include: install_apt.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
