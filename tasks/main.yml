@@ -7,10 +7,12 @@
   tags: [always]
 
 - include: install_apt.yml
+  become: yes
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
 - include: install_yum.yml
+  become: yes
   when: ansible_pkg_mgr == "yum"
   tags: [postgresql, postgresql-install]
 
