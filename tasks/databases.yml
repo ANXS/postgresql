@@ -22,7 +22,7 @@
   when: postgresql_databases|length > 0
 
 - name: PostgreSQL | Add extensions to the databases
-  shell: "psql {{item.0.db}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS {{ item.1 }};'"
+  shell: "psql {{item.0.db}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS \"{{ item.1 }}\";'"
   become: yes
   become_user: "{{postgresql_service_user}}"
   with_subelements:

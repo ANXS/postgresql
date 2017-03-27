@@ -1,0 +1,37 @@
+# file: postgresql/tasks/install_yum.yml
+
+# The standard ca-certs are needed because  without them apt_key will fail to
+# validate www.postgresql.org (or probably any other source).
+- name: PostgreSQL | Make sure the CA certificates are available
+  dnf:
+    name: ca-certificates
+    state: present
+
+- name: PostgreSQL | Add PostgreSQL repository
+  dnf:
+    name: "{{ postgresql_fedora_repository_url }}"
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: PostgreSQL | Add PostgreSQL repository
+  dnf:
+    name: "{{ postgresql_yum_repository_url }}"
+    state: present
+  when: ansible_distribution != "Fedora"
+
+- name: PostgreSQL | Make sure the dependencies are installed
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items: ["python-psycopg2", "python-pycurl", "libselinux-python", "glibc-common"]
+
+- name: PostgreSQL | Install PostgreSQL
+  dnf:
+    name: "{{ item }}"
+    state: present
+  environment: "{{ postgresql_env }}"
+  with_items:
+    - "postgresql{{ postgresql_version_terse }}-server"
+    - "postgresql{{ postgresql_version_terse }}"
+    - "postgresql{{ postgresql_version_terse }}-contrib"
+

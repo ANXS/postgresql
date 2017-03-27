@@ -17,7 +17,6 @@
   register: pgdata_dir_exist
 
 - name: PostgreSQL | Ensure the locale for lc_collate and lc_ctype is generated | Debian
-  become: yes
   locale_gen: name="{{ item }}" state=present
   with_items:
     - "{{ postgresql_locale }}"
@@ -25,13 +24,12 @@
   when: ansible_os_family == "Debian"
 
 - name: PostgreSQL | Ensure the locale is generated | RedHat
-  become: yes
   command: localedef -c -i {{ item.parts[0] }} -f {{ item.parts[1] }} {{ item.locale_name }}
   changed_when: false
   with_items:
     - { parts: "{{ postgresql_locale_parts }}", locale_name: "{{ postgresql_locale }}" }
     - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
@@ -86,41 +84,11 @@
   template:
     src: "postgresql.conf-{{ postgresql_version }}.j2"
     # if using pgtune, save the template to ".untuned"
-    dest: "{{postgresql_conf_directory}}/postgresql.conf{% if postgresql_pgtune %}.untuned{% endif %}"
+    dest: "{{postgresql_conf_directory}}/postgresql.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
   register: postgresql_configuration_pt2
-
-- name: PostgreSQL | Update configuration - pt. 3 (pgtune)
-  become: true
-  become_user: "{{ postgresql_service_user }}"
-  shell: |
-    set -e
-    TMPDIR=$(mktemp -d)
-    pgtune --input-config=postgresql.conf.untuned\
-           --output-config=$TMPDIR/postgresql.conf\
-           {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory|int}}{% endif %}\
-           --type {{postgresql_pgtune_type|quote}}\
-           {% if postgresql_pgtune_connections %}--connections {{postgresql_pgtune_connections|int}}{% endif %}\
-    # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
-    if diff --ignore-blank-lines \
-        <(sed -e 's/#.*//' postgresql.conf) \
-        <(sed -e 's/#.*//' $TMPDIR/postgresql.conf)
-    then
-      echo '_OK_'
-    else
-      cp $TMPDIR/postgresql.conf postgresql.conf
-    fi
-    # Cleanup
-    rm $TMPDIR/postgresql.conf
-    rmdir $TMPDIR
-  args:
-    chdir: "{{postgresql_conf_directory}}"
-    executable: "/bin/bash"
-  when: postgresql_pgtune
-  register: postgresql_configuration_pt3
-  changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
@@ -162,4 +130,4 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_systemd_custom_conf.changed

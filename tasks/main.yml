@@ -8,18 +8,25 @@
 
 - include: install_apt.yml
   become: yes
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" 
+  tags: [postgresql, postgresql-install]
+
+- include: install_dnf.yml
+  become: yes
+  when: ansible_pkg_mgr == "dnf" 
   tags: [postgresql, postgresql-install]
 
 - include: install_yum.yml
   become: yes
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr == "yum" 
   tags: [postgresql, postgresql-install]
 
 - include: extensions.yml
+  become: yes
   tags: [postgresql, postgresql-extensions]
 
 - include: configure.yml
+  become: yes
   tags: [postgresql, postgresql-configure]
 
 - include: users.yml

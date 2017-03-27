@@ -696,6 +696,7 @@ postgresql_apt_pin_priority: 500
 # Yum settings
 postgresql_pgdg_dists:
   RedHat: redhat
+  Fedora: fedora
   CentOS: centos
   Scientific: sl
   SLC: sl
@@ -707,6 +708,11 @@ postgresql_pgdg_releases:
       9.3: 3,
       9.4: 3,
       9.5: 3,
+      9.6: 3,
+  }
+  fedora: {
+      9.4: 5,
+      9.5: 4,
       9.6: 3,
   }
   centos: {
@@ -736,3 +742,4 @@ postgresql_pgdg_releases:
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
 postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_pgdg_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
+postgresql_fedora_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/fedora/fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_pgdg_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
