@@ -29,9 +29,3 @@
     - "postgresql{{ postgresql_version_terse }}"
     - "postgresql{{ postgresql_version_terse }}-contrib"
 
-- name: PostgreSQL | PGTune
-  yum:
-    name: pgtune
-    state: present
-  environment: "{{ postgresql_env }}"
-  when: postgresql_pgtune
