@@ -671,6 +671,7 @@ postgresql_restart_after_crash: on
 #------------------------------------------------------------------------------
 # PGTUNE
 #------------------------------------------------------------------------------
+
 # Should we run pgtune and accept the changes it proposes?
 postgresql_pgtune: no
 # Total system memory in bytes, will attempt to detect if set to "no"
@@ -682,8 +683,25 @@ postgresql_pgtune_type: Mixed
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
 
+#------------------------------------------------------------------------------
+# Postgresql TUNE
+#------------------------------------------------------------------------------
 
-
+# enable the creation of a set of tuned config parameters in the conf.d directory
+postgresql_postgresql_tune: false
+# tune using the total system memory in MB that Ansible determined
+postgresql_postgresql_tune_total_memory: "{{ ansible_memtotal_mb }}MB"
+# use 100% of this memory
+postgresql_postgresql_tune_total_memory_percentage: 100
+# Database type, valid options are dw, oltp, web, mixed, desktop
+postgresql_postgresql_tune_db_type: mixed
+# Maximum number of expected connections, if "0", default based on db type
+postgresql_postgresql_tune_connections: 0
+# When true, stop the max_connections set by postgresql_tuner from being used as a configuration setttings
+# Allowing for much higher max_connections to be set in this module
+postgresql_postgresql_tune_disable_max_connections: false
+# For Postgres < 9.3 template the Kernel shared memory settings, NOTE: no reload implemented
+postgresql_postgresql_tune_sysctl_file: /etc/sysctl.d/99-postgresql-tune.conf
 
 postgresql_env:
   LC_ALL: "{{ postgresql_locale }}"

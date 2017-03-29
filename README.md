@@ -17,6 +17,7 @@ ansible-galaxy install ANXS.postgresql
 
 - ANXS.monit ([Galaxy](https://galaxy.ansible.com/list#/roles/502)/[GH](https://github.com/ANXS/monit)) if you want monit protection (in that case, you should set `monit_protection: true`)
 
+- ansible-postgresql_tune https://github.com/imincik/ansible-postgresql_tune if you want to use postgresql_tune you need to install this module.
 
 #### Variables
 
@@ -66,6 +67,10 @@ postgresql_user_privileges:
     db: foobar                  # database
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
+
+# Tuning Postgresql using postgresql_tune
+postgresql_postgresql_tune: true
+
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the defaults/main.yml

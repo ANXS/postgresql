@@ -131,6 +131,19 @@
     group: "{{ postgresql_service_group }}"
     mode: 0755
 
+- name: PostgreSQL | Update configuration - pt. 4 (postgresql-tune) {{ postgresql_conf_directory }}/conf.d/99-postgresql-tune.conf
+  postgresql_tune:
+    db_version: "{{ postgresql_version }}"
+    db_type: "{{ postgresql_postgresql_tune_db_type }}"
+    total_memory: "{{ postgresql_postgresql_tune_total_memory }}"
+    total_memory_percentage: "{{ postgresql_postgresql_tune_total_memory_percentage }}"
+    disable_max_connections: "{{ postgresql_postgresql_tune_disable_max_connections }}"
+    max_connections: "{{ postgresql_postgresql_tune_connections }}"
+    postgresql_file: "{{ postgresql_conf_directory }}/conf.d/99-postgresql-tune.conf"
+    sysctl_file: "{{ postgresql_postgresql_tune_sysctl_file }}"
+  when: postgresql_postgresql_tune
+  register: postgresql_configuration_pt4
+
 - name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | RedHat
   file:
     name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
@@ -163,4 +176,4 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_configuration_pt4.changed or postgresql_systemd_custom_conf.changed
