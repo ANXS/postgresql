@@ -30,6 +30,11 @@
 host  all  all  {{host}}  password
 {% endfor %}
 
+# MD5 hosts
+{% for host in postgresql_pg_hba_md5_hosts %}
+host  all  all  {{host}}  md5
+{% endfor %}
+
 # Trusted hosts
 {% for host in postgresql_pg_hba_trust_hosts %}
 host  all  all  {{host}}  trust

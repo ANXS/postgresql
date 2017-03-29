@@ -51,6 +51,7 @@ postgresql_pg_hba_default:
   - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ postgresql_default_auth_method }}', comment: 'IPv6 local connections:' }
 
 postgresql_pg_hba_passwd_hosts: []
+postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
