@@ -54,6 +54,8 @@ postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+# Add the PostgreSQL bin directory to path (creates file /etc/profile.d/postgres.sh)
+postgresql_add_to_path: false
 
 # postgresql.conf
 

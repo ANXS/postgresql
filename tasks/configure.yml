@@ -120,6 +120,13 @@
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
 
+- name: PostgreSQL | Add to PATH (/etc/profile.d/postgres.sh)
+  template:
+    src: "etc_profile_d_postgres.sh.j2"
+    dest: "/etc/profile.d/postgres.sh"
+    mode: 0644
+  when: postgresql_add_to_path
+
 - name: PostgreSQL | Enable service
   service:
     name: "{{ postgresql_service_name }}"
