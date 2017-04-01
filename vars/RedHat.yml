@@ -8,6 +8,7 @@ postgresql_varlib_directory_name: "pgsql"
 
 # Used to execute initdb
 postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
+postgresql_lib_directory: "/usr/pgsql-{{postgresql_version}}/lib"
 
 postgresql_unix_socket_directories:
   - "{{ postgresql_pid_directory }}"

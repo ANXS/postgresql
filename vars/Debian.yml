@@ -2,3 +2,4 @@
 postgresql_service_name: "postgresql"
 
 postgresql_bin_directory: /usr/bin
+postgresql_lib_directory: /usr/lib

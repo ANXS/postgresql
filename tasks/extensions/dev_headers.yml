@@ -7,8 +7,6 @@
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_os_family == "Debian"
-  notify:
-    - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
   yum: "name={{ item }} state=present update_cache=yes"
@@ -16,8 +14,6 @@
     - "postgresql{{ postgresql_version_terse }}-libs"
     - "postgresql{{ postgresql_version_terse }}-devel"
   when: ansible_os_family == "RedHat" and ansible_pkg_mgr == "yum" 
-  notify:
-    - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | Fedora
   dnf: "name={{ item }} state=present"
@@ -25,6 +21,4 @@
     - "postgresql{{ postgresql_version_terse }}-libs"
     - "postgresql{{ postgresql_version_terse }}-devel"
   when: ansible_os_family == "RedHat" and ansible_pkg_mgr == "dnf" 
-  notify:
-    - restart postgresql
 
