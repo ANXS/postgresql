@@ -683,6 +683,7 @@ postgresql_pgtune_connections: no
 
 
 postgresql_env:
+  LANGUAGE: "{{ postgresql_locale }}"
   LC_ALL: "{{ postgresql_locale }}"
   LC_LCTYPE: "{{ postgresql_locale }}"
 
