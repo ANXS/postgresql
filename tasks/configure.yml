@@ -33,22 +33,41 @@
     - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
   when: ansible_os_family == "RedHat"
 
+- name: PostgreSQL | Stop PostgreSQL | Debian
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: stopped
+  become: yes
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
-  shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}
+  shell: pg_dropcluster {{ postgresql_version }} {{ postgresql_cluster_name }}
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
-    pg_createcluster --start --locale {{ postgresql_locale }}
+    pg_createcluster --locale {{ postgresql_locale }}
     -e {{ postgresql_encoding }} -d {{ postgresql_data_directory }}
     {{ postgresql_version }} {{ postgresql_cluster_name }}
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
-- name: PostgreSQL | Check whether the postgres data directory is initialized
+- name: PostgreSQL | Update systemd | Debian
+  command: systemctl daemon-reload
+  become: yes
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+
+- name: PostgreSQL | Start PostgreSQL | Debian
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: started
+  become: yes
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+
+- name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat
   stat:
     path: "{{ postgresql_data_directory }}/PG_VERSION"
   when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
