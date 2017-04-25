@@ -7,28 +7,49 @@
   tags: [always]
 
 - include: install.yml
-  when: ansible_pkg_mgr == "apt"
+  when: ansible_pkg_mgr == "apt" and not postgresql_docker_mode
   tags: [postgresql, postgresql-install]
 
 - include: install_yum.yml
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr == "yum" and not postgresql_docker_mode
   tags: [postgresql, postgresql-install]
 
 - include: extensions.yml
+  when: not postgresql_docker_mode
   tags: [postgresql, postgresql-extensions]
 
 - include: configure.yml
+  when: not postgresql_docker_mode
+  tags: [postgresql, postgresql-configure]
+
+- include: configure-docker.yml
+  when: postgresql_docker_mode
   tags: [postgresql, postgresql-configure]
 
 - include: users.yml
+  when: not postgresql_docker_mode
+  tags: [postgresql, postgresql-users]
+
+- include: users-docker.yml
+  when: postgresql_docker_mode
   tags: [postgresql, postgresql-users]
 
 - include: databases.yml
+  when: not postgresql_docker_mode
+  tags: [postgresql, postgresql-databases]
+
+- include: databases-docker.yml
+  when: postgresql_docker_mode
   tags: [postgresql, postgresql-databases]
 
 - include: users_privileges.yml
+  when: not postgresql_docker_mode
+  tags: [postgresql, postgresql-users]
+
+- include: users_privileges-docker.yml
+  when: postgresql_docker_mode
   tags: [postgresql, postgresql-users]
 
 - include: monit.yml
-  when: monit_protection is defined and monit_protection == true
+  when: monit_protection is defined and monit_protection == true  and not postgresql_docker_mode
   tags: [postgresql, postgresql-monit]
