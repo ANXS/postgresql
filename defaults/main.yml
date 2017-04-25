@@ -12,6 +12,8 @@ postgresql_ctype_parts:
   - 'UTF-8' # Encoding
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
 
+postgresql_max_open_files: 65536
+
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "trust"
 
