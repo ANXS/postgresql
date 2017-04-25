@@ -7,9 +7,10 @@
     port: "{{postgresql_port}}"
     priv: "{{item.priv | default(omit)}}"
     state: present
-    login_host: "{{item.host | default(omit)}}"
+    login_host: "{{ (item.host if item.host is defined else postgresql_remote_host)  | default(omit) }}"
     login_user: "{{postgresql_admin_user}}"
-    role_attr_flags: "{{item.role_attr_flags | default(omit)}}"
+    login_password: "{{ postgresql_remote_password | default(omit) }}"
+    role_attr_flags: "{{ item.role_attr_flags | default(omit) }}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_user_privileges}}"
