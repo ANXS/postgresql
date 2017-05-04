@@ -31,6 +31,11 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
+postgresql_ext_postgis_deps:
+  - libgeos-c1
+  - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
+  - "postgresql-{{postgresql_version}}-postgis-scripts"
+
 # List of databases to be created (optional)
 postgresql_databases: []
 
