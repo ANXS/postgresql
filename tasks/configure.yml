@@ -57,7 +57,7 @@
 - name: PostgreSQL | Initialize the database | RedHat
   command: >
     {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
-    --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
+    --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}{% if postgresql_data_checksums and postgresql_version|version_compare('9.3', '>=') %} --data-checksums{% endif %}
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
