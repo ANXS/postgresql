@@ -79,6 +79,8 @@ postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{po
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
+# Archive directory:
+postgresql_archive_directory: "/srv/backups/postgresql"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
@@ -265,7 +267,7 @@ postgresql_archive_mode: on
 # Placeholders: %p = path of file to archive
 #               %f = file name only
 # e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
-postgresql_archive_command: 'test ! -f /srv/backups/postgresql/%f && cp %p /srv/backups/postgresql/%f'
+postgresql_archive_command: 'test ! -f {{ postgresql_archive_directory }}/%f && cp %p {{ postgresql_archive_directory }}/%f'
 
 # force a logfile segment switch after this
 postgresql_archive_timeout: 0
