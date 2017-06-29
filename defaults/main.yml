@@ -211,7 +211,7 @@ postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default i
 
 # - Settings -
 
-postgresql_wal_level: minimal     # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
+postgresql_wal_level: hot_standby # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
 postgresql_fsync:     on          # flush data to disk for crash safety
                                           # (turning this off can cause
                                           # unrecoverable data corruption)
@@ -259,13 +259,13 @@ postgresql_checkpoint_warning:           30s   # 0 disables
 # - Archiving -
 
 # allows archiving to be done
-postgresql_archive_mode: off
+postgresql_archive_mode: on
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
 #               %f = file name only
 # e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
-postgresql_archive_command: ''
+postgresql_archive_command: 'test ! -f /srv/backups/postgresql/%f && cp %p /srv/backups/postgresql/%f'
 
 # force a logfile segment switch after this
 postgresql_archive_timeout: 0
@@ -280,10 +280,10 @@ postgresql_archive_timeout: 0
 # Set these on the master and on any standby that will send replication data.
 
 # max number of walsender processes
-postgresql_max_wal_senders: 0
+postgresql_max_wal_senders: 2
 postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
-postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
+postgresql_wal_keep_segments:  8    # in logfile segments, 16MB each; 0 disables
 postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables (>= 9.3)
 postgresql_max_replication_slots: 0 # max number of replication slots
