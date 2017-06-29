@@ -9,12 +9,20 @@
 
 - name: PostgreSQL | Make sure the postgres data directory exists
   file:
-    path: "{{postgresql_data_directory}}"
+    path: "{{ postgresql_data_directory }}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     state: directory
     mode: 0700
   register: pgdata_dir_exist
+
+- name: PostgreSQL | Make sure the postgres archive directory exists
+  file:
+    path: "{{ postgresql_archive_directory }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    state: directory
+    mode: 0700
 
 - name: PostgreSQL | Ensure the locale for lc_collate and lc_ctype is generated | Debian
   become: yes
