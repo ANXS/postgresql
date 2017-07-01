@@ -171,3 +171,53 @@
     name: "{{ postgresql_service_name }}"
     state: restarted
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  
+  - name: PostgreSQL | Ensure cron scripts directory exits
+  file:
+    path: "{{ postgresql_conf_directory }}/cron"
+    group: "{{ postgresql_admin_user }}"
+    owner: "{{ postgresql_admin_user }}"
+    state: directory
+    mode: "0700"
+
+- name: PostgreSQL | Ensure bacsebackup cron script is installed
+  template:
+    src: "cron-pg-basebackup.j2"
+    dest: "{{ postgresql_conf_directory }}/cron/pg-basebackup.sh"
+    group: "{{ postgresql_admin_user }}"
+    owner: "{{ postgresql_admin_user }}"
+    mode: "0700"
+
+- name: PostgreSQL | Ensure pg_dumpall cron script is installed
+  template:
+    src: "cron-pg-dumpall.j2"
+    dest: "{{ postgresql_conf_directory }}/cron/pg-dumpall.sh"
+    group: "{{ postgresql_admin_user }}"
+    owner: "{{ postgresql_admin_user }}"
+    mode: "0700"
+
+- name: PostgreSQL | Update cron entries to perform basebackups
+  cron:
+    cron_file: "pg-basebackup"
+    name: "PostgreSQL basebackup (full backup)"
+    job: "{{ postgresql_conf_directory }}/cron/pg-basebackup.sh"
+    user: "{{ postgresql_admin_user }}"
+    minute: "{{ postgresql_backup_basebackup_minute }}"
+    hour: "{{ postgresql_backup_basebackup_hour }}"
+    day: "{{ postgresql_backup_basebackup_month_day }}"
+    month: "{{ postgresql_backup_basebackup_month }}"
+    weekday: "{{ postgresql_backup_basebackup_week_day }}"
+    state: present
+
+- name: PostgreSQL | Update cron entries to perform dumpall backups
+  cron:
+    cron_file: "pg-dumpall"
+    name: "PostgreSQL dumpall (logical backup)"
+    job: "{{ postgresql_conf_directory }}/cron/pg-basebackup.sh"
+    user: "{{ postgresql_admin_user }}"
+    minute: "{{ postgresql_backup_dumpall_minute }}"
+    hour: "{{ postgresql_backup_dumpall_hour }}"
+    day: "{{ postgresql_backup_dumpall_month_day }}"
+    month: "{{ postgresql_backup_dumpall_month }}"
+    weekday: "{{ postgresql_backup_dumpall_week_day }}"
+    state: present
