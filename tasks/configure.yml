@@ -213,7 +213,7 @@
   cron:
     cron_file: "pg-dumpall"
     name: "PostgreSQL dumpall (logical backup)"
-    job: "{{ postgresql_conf_directory }}/cron/pg-basebackup.sh"
+    job: "{{ postgresql_conf_directory }}/cron/pg-dumpall.sh"
     user: "{{ postgresql_admin_user }}"
     minute: "{{ postgresql_backup_dumpall_minute }}"
     hour: "{{ postgresql_backup_dumpall_hour }}"

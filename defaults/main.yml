@@ -75,8 +75,8 @@ postgresql_backup_basebackup_month     : "*"
 postgresql_backup_basebackup_week_day  : "*"
 
 postgresql_backup_dumpall_user      : root
-postgresql_backup_dumpall_minute    : 5
-postgresql_backup_dumpall_hour      : "*/6"
+postgresql_backup_dumpall_minute    : 31
+postgresql_backup_dumpall_hour      : "*/12"
 postgresql_backup_dumpall_month_day : "*"
 postgresql_backup_dumpall_month     : "*"
 postgresql_backup_dumpall_week_day  : "*"
