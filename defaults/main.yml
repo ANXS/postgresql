@@ -24,6 +24,7 @@ postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
+
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
@@ -61,6 +62,31 @@ postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
 
+#------------------------------------------------------------------------------
+# BACKUPS CONFIGURTION
+#------------------------------------------------------------------------------
+
+# Crontab configuration
+postgresql_backup_basebackup_user      : root
+postgresql_backup_basebackup_minute    : 5
+postgresql_backup_basebackup_hour      : "*/6"
+postgresql_backup_basebackup_month_day : "*"
+postgresql_backup_basebackup_month     : "*"
+postgresql_backup_basebackup_week_day  : "*"
+
+postgresql_backup_pg_dump_user      : root
+postgresql_backup_pg_dump_minute    : 5
+postgresql_backup_pg_dump_hour      : "*/6"
+postgresql_backup_pg_dump_month_day : "*"
+postgresql_backup_pg_dump_month     : "*"
+postgresql_backup_pg_dump_week_day  : "*"
+
+# Number of days to keep backups
+postgresql_backup_prune     : 6
+
+# Directory for storing backups
+postgresql_backup_directory : "/srv/backups/postgresql"
+
 # postgresql.conf
 
 #------------------------------------------------------------------------------
@@ -79,8 +105,8 @@ postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{po
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
-# Archive directory:
-postgresql_archive_directory: "/srv/backups/postgresql"
+# Archive and backup directory (defaults to the backup directory - basebackups without archived wal files won't work)
+postgresql_archive_directory: "{{ postgresql_backup_directory }}"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
