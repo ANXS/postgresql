@@ -1,6 +1,8 @@
-
 #!/bin/sh
 
-test ! -f "{{ postgresql_backup_directory }}/tmp" && mkdir -p "{{ postgresql_backup_directory }}/tmp"
-pg_dumpall -U postgres | tar cz > "{{ postgresql_backup_directory }}/pg-dumpall-`hostname`-`date '+%Y-%m-%d.%H:%M:%S'`.tar.gz"
-find {{ postgresql_backup_directory }} -mtime {{ postgresql_backup_prune }} -type f -name "pg-dumpall*" -delete
+test ! -f "{{ postgresql_backup_directory }}/tmp-dumpall" && mkdir -p "{{ postgresql_backup_directory }}/tmp-dumpall"
+BACKUP_NAME="pg-dumpall-`hostname`-`date '+%Y-%m-%d.%H:%M:%S'`"
+pg_dumpall -U postgres > "{{ postgresql_backup_directory }}/tmp-dumpall/${BACKUP_NAME}.sql"
+tar -zcvf "{{ postgresql_backup_directory }}/${BACKUP_NAME}.tar.gz" "{{ postgresql_backup_directory }}/tmp-dumpall/${BACKUP_NAME}.sql"
+rm -rf "{{ postgresql_backup_directory }}/tmp-dumpall"
+find "{{ postgresql_backup_directory }}" -mtime {{ postgresql_backup_prune }} -type f -name "pg-dumpall*" -delete
