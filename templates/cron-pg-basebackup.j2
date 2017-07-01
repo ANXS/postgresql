@@ -1,10 +1,10 @@
 
 #!/bin/sh
 
-test ! -f "{{ postgresql_archive_directory }}/tmp" && mkdir -p "{{ postgresql_archive_directory }}/tmp"
-pg_basebackup -D "{{ postgresql_archive_directory }}/tmp" -U postgres --checkpoint=fast --xlog-method=stream -R -l "Backup createt at $(hostname) on $(date)"
-tar -zcvf "{{ postgresql_archive_directory }}/pg-basebackup-`hostname`-`date '+%Y-%m-%d.%H:%M:%S'`.tar.gz" {{ postgresql_archive_directory }}
-rm -rf "{{ postgresql_archive_directory }}/tmp/*"
-find {{ postgresql_archive_directory }} -mtime {{ postgresql_backup_prune }} -type f -name "pg-basebackup*" -delete
+test ! -f "{{ postgresql_backup_directory }}/tmp" && mkdir -p "{{ postgresql_backup_directory }}/tmp"
+pg_basebackup -D "{{ postgresql_backup_directory }}/tmp" -U postgres --checkpoint=fast --xlog-method=stream -R -l "Backup created at $(hostname) on $(date)"
+tar -zcvf "{{ postgresql_backup_directory }}/pg-basebackup-`hostname`-`date '+%Y-%m-%d.%H:%M:%S'`.tar.gz" {{ postgresql_backup_directory }}
+rm -rf "{{ postgresql_backup_directory }}/tmp/*"
+find {{ postgresql_backup_directory }} -mtime {{ postgresql_backup_prune }} -type f -name "pg-basebackup*" -delete
 
 
