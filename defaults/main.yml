@@ -74,12 +74,12 @@ postgresql_backup_basebackup_month_day : "*"
 postgresql_backup_basebackup_month     : "*"
 postgresql_backup_basebackup_week_day  : "*"
 
-postgresql_backup_pg_dump_user      : root
-postgresql_backup_pg_dump_minute    : 5
-postgresql_backup_pg_dump_hour      : "*/6"
-postgresql_backup_pg_dump_month_day : "*"
-postgresql_backup_pg_dump_month     : "*"
-postgresql_backup_pg_dump_week_day  : "*"
+postgresql_backup_dumpall_user      : root
+postgresql_backup_dumpall_minute    : 5
+postgresql_backup_dumpall_hour      : "*/6"
+postgresql_backup_dumpall_month_day : "*"
+postgresql_backup_dumpall_month     : "*"
+postgresql_backup_dumpall_week_day  : "*"
 
 # Number of days to keep backups
 postgresql_backup_prune     : 6
