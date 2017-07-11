@@ -2,8 +2,8 @@
 
 - include_vars: "{{ item }}"
   with_first_found:
-    - "../vars/{{ ansible_distribution_release }}.yml"
-    - "../vars/empty.yml"
+    - "../../vars/{{ ansible_distribution_release }}.yml"
+    - "../../vars/empty.yml"
 
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed
   apt:
