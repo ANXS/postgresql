@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Process the output of the given file (should contain a plays stdout/err)
 # If we pass, return with 0 else return with 1, and print useful output

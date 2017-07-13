@@ -51,7 +51,7 @@
 - name: PostgreSQL | Check whether the postgres data directory is initialized
   stat:
     path: "{{ postgresql_data_directory }}/PG_VERSION"
-  when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
+  when: ansible_os_family in ["RedHat", "FreeBSD"] and not postgresql_cluster_reset
   register: pgdata_dir_initialized
 
 - name: PostgreSQL | Initialize the database | RedHat
@@ -61,6 +61,26 @@
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
+        (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
+
+- name: PostgreSQL | Configure service | FreeBSD
+  lineinfile:
+    line: "{{ item }}"
+    path: "/etc/rc.conf"
+  with_items:
+    - 'postgresql_data="{{ postgresql_conf_directory }}"'
+    - 'postgresql_initdb_flags="-D {{ postgresql_data_directory }} -E {{ postgresql_encoding }} --locale={{ postgresql_locale }}"'
+  when: ansible_os_family == "FreeBSD"
+
+- name: PostgreSQL | Initialize the database | FreeBSD
+  command: >
+    {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
+    --locale={{ postgresql_locale }} -E {{ postgresql_encoding }} -U {{ postgresql_service_user }}
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "FreeBSD" and
         (postgresql_cluster_reset or
          pgdata_dir_exist.changed or
          not pgdata_dir_initialized.stat.exists)
@@ -98,7 +118,9 @@
   shell: |
     set -e
     TMPDIR=$(mktemp -d)
-    pgtune --input-config=postgresql.conf.untuned\
+    pgtune --version={{postgresql_version}}\
+           {% if postgresql_pgtune_git_repo != '' %}--settings {{postgresql_pgtune_git_dest}}{% endif %}\
+           --input-config=postgresql.conf.untuned\
            --output-config=$TMPDIR/postgresql.conf\
            {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory|int}}{% endif %}\
            --type {{postgresql_pgtune_type|quote}}\
@@ -117,7 +139,7 @@
     rmdir $TMPDIR
   args:
     chdir: "{{postgresql_conf_directory}}"
-    executable: "/bin/bash"
+    executable: "{{ postgresql_bash }}"
   when: postgresql_pgtune
   register: postgresql_configuration_pt3
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"

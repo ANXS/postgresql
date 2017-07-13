@@ -6,12 +6,32 @@
     - "../vars/empty.yml"
   tags: [always]
 
+- name: PostgreSQL | Get PGTune from Git
+  git:
+    repo: "{{ postgresql_pgtune_git_repo }}"
+    dest: "{{ postgresql_pgtune_git_dest }}"
+    version: "{{ postgresql_pgtune_git_ref }}"
+  register: pgtune_git
+  when: postgresql_pgtune and postgresql_pgtune_git_repo != ''
+
+- name: PostgreSQL | Link PGTune from Git
+  file:
+    state: link
+    src: "{{ postgresql_pgtune_git_dest }}/pgtune"
+    dest: "{{ postgresql_bin_directory }}/pgtune"
+    mode: 0755
+  when: pgtune_git
+
 - include: install.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
 - include: install_yum.yml
   when: ansible_pkg_mgr == "yum"
+  tags: [postgresql, postgresql-install]
+
+- include: install_pkgng.yml
+  when: ansible_pkg_mgr == "pkgng"
   tags: [postgresql, postgresql-install]
 
 - include: extensions.yml
