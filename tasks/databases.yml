@@ -88,3 +88,23 @@
   failed_when: citext_ext_result.rc != 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   changed_when: citext_ext_result.rc == 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   when: item.citext is defined and item.citext
+
+- name: PostgreSQL | Add btree_gist to the database with the requirement
+  become: yes
+  become_user: "{{postgresql_service_user}}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS btree_gist;'"
+  with_items: "{{postgresql_databases}}"
+  register: btree_gist_ext_result
+  failed_when: btree_gist_ext_result.rc != 0 and ("already exists, skipping" not in btree_gist_ext_result.stderr)
+  changed_when: btree_gist_ext_result.rc == 0 and ("already exists, skipping" not in btree_gist_ext_result.stderr)
+  when: item.btree_gist is defined and item.btree_gist
+
+- name: PostgreSQL | Add btree_gin to the database with the requirement
+  become: yes
+  become_user: "{{postgresql_service_user}}"
+  shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS btree_gin;'"
+  with_items: "{{postgresql_databases}}"
+  register: btree_gin_ext_result
+  failed_when: btree_gin_ext_result.rc != 0 and ("already exists, skipping" not in btree_gin_ext_result.stderr)
+  changed_when: btree_gin_ext_result.rc == 0 and ("already exists, skipping" not in btree_gin_ext_result.stderr)
+  when: item.btree_gin is defined and item.btree_gin
