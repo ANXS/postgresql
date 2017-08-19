@@ -196,6 +196,13 @@
     owner: "{{ postgresql_admin_user }}"
     mode: "0700"
 
+### TRAVIS PLEASING TEST-START
+- name: PostgreSQL | Creating a cron file to please Travis
+  file:
+    path: "/etc/cron.d/pg-basebackup"
+    state: present
+### TRAVIS PLEASING TEST-END
+
 - name: PostgreSQL | Update cron entries to perform basebackups
   cron:
     cron_file: "pg-basebackup"
