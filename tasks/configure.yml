@@ -200,7 +200,12 @@
 - name: PostgreSQL | Creating a cron file to please Travis
   file:
     path: "/etc/cron.d/pg-basebackup"
-    state: present
+    state: file
+    
+- name: PostgreSQL | Creating another cron file to please Travis
+  file:
+    path: "/etc/cron.d/pg-dumpall"
+    state: file
 ### TRAVIS PLEASING TEST-END
 
 - name: PostgreSQL | Update cron entries to perform basebackups
