@@ -197,6 +197,11 @@
     mode: "0700"
 
 ### TRAVIS PLEASING TEST-START
+- name: PostgreSQL | Creating the cron.d directory to please Travis
+  file:
+    path: "/etc/cron.d"
+    state: directory
+
 - name: PostgreSQL | Creating a cron file to please Travis
   file:
     path: "/etc/cron.d/pg-basebackup"
