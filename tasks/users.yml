@@ -5,6 +5,17 @@
     name: "{{ postgresql_service_name }}"
     state: started
 
+# Install 'acl' package to avoid a known issue with Ansible 2.1 and postgresql_user (https://github.com/ANXS/postgresql/issues/188)
+- name: install acl | Debian
+  package:
+    pkg: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 86400
+    state: present
+  with_items:
+    - acl
+  when: ansible_os_family == "Debian"    
+    
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:
     name: "{{item.name}}"
