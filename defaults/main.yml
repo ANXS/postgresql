@@ -348,6 +348,8 @@ postgresql_cpu_operator_cost:          0.0025  # same scale as above
 postgresql_parallel_tuple_cost:        0.1     # same scale as above (>= 9.6)
 postgresql_parallel_setup_cost:        1000.0  # same scale as above (>= 9.6)
 postgresql_min_parallel_relation_size: 8MB     # (>= 9.6)
+postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
+postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
 postgresql_effective_cache_size:       128MB
 
 

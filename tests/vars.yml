@@ -8,7 +8,10 @@ postgresql_databases:
 
 postgresql_users:
   - name: baz
-    pass: pass
+    # pass: pass
+    # UNENCRYPTED PASSWORD is no longer supported (>= 10)
+    pass: 4528e6a7bb9341c36c425faf40ef32c3
+    encrypted: yes
 
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72
