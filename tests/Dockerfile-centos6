@@ -9,7 +9,7 @@ RUN yum -y install epel-release && \
     yum -y remove epel-release && \
     yum clean all && \
     sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers && \
-    pip install -q ansible==1.9.4
+    pip install -q ansible==2.1.1
 
 # Copy our role into the container, using our role name
 WORKDIR /tmp/postgresql

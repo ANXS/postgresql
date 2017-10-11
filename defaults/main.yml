@@ -647,11 +647,11 @@ postgresql_max_locks_per_transaction: 64         # min 10
 # lock table slots.
 postgresql_max_pred_locks_per_transaction: 64    # min 10
 
-postgresql_max_pred_locks_per_relation: -2	 # (>=10)
+postgresql_max_pred_locks_per_relation: -2   # (>=10)
 # negative values mean
 # (max_pred_locks_per_transaction
 #  / -max_pred_locks_per_relation) - 1
-postgresql_max_pred_locks_per_page: 2	 # (>=10)
+postgresql_max_pred_locks_per_page: 2  # (>=10)
 # min 0
 
 #------------------------------------------------------------------------------
