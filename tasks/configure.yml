@@ -137,6 +137,12 @@
     mode: 0755
   when: ansible_os_family == "RedHat"
 
+- name: PostgreSQL | Find check-db-dir script
+  find:
+    paths: "{{ postgresql_bin_directory }}"
+    patterns: "postgresql*{{ postgresql_version_terse }}-check-db-dir"
+  register: postgresql_check_db_dir_script
+
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
   template:
     src: etc_systemd_system_postgresql.service.d_custom.conf.j2
