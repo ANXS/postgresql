@@ -9,10 +9,9 @@ env:
   global:
     - ROLE_GLOBALS="postgresql_shared_buffers=32MB"
   matrix:
-    - ROLE_OPTIONS="postgresql_version=9.6" ANSIBLE_VERSION="1.9.4"
-    - ROLE_OPTIONS="postgresql_version=9.4" ANSIBLE_VERSION="2.1.2.0"
     - ROLE_OPTIONS="postgresql_version=9.5" ANSIBLE_VERSION="2.1.2.0"
     - ROLE_OPTIONS="postgresql_version=9.6" ANSIBLE_VERSION="2.1.2.0"
+    - ROLE_OPTIONS="postgresql_version=10" ANSIBLE_VERSION="2.3.2.0"
 
 before_install:
   # Remove the PostgreSQL installed by Travis

@@ -116,12 +116,13 @@ postgresql_ssl_ciphers:
   - '@STRENGTH'
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: 'prime256v1'
+postgresql_ssl_dh_params_file: '' # (>= 10) specify file name containing DH params
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
 postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem  # (>= 9.2)
 postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key # (>= 9.2)
 postgresql_ssl_ca_file: ''                                      # (>= 9.2)
 postgresql_ssl_crl_file: ''                                     # (>= 9.2)
-postgresql_password_encryption: on
+postgresql_password_encryption: 'md5'
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
 
@@ -199,6 +200,7 @@ postgresql_bgwriter_flush_after:    0      # (>= 9.6) 0 disables,
 postgresql_effective_io_concurrency:        1   # 1-1000; 0 disables prefetching
 postgresql_max_worker_processes:            8   # (change requires restart)
 postgresql_max_parallel_workers_per_gather: 0   # (>= 9.6) taken from max_worker_processes
+postgresql_max_parallel_workers:            8   # (>=10)
 postgresql_old_snapshot_threshold:          -1  # (>= 9.6) 1min-60d; -1 disables; 0 is immediate
                                                 # (change requires restart)
 postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default is 0
@@ -319,6 +321,9 @@ postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
+postgresql_max_logical_replication_workers: 4  # (>= 10)
+postgresql_max_sync_workers_per_subscription: 2  # (>= 10)
+
 #------------------------------------------------------------------------------
 # QUERY TUNING
 #------------------------------------------------------------------------------
@@ -347,7 +352,9 @@ postgresql_cpu_index_tuple_cost:       0.005   # same scale as above
 postgresql_cpu_operator_cost:          0.0025  # same scale as above
 postgresql_parallel_tuple_cost:        0.1     # same scale as above (>= 9.6)
 postgresql_parallel_setup_cost:        1000.0  # same scale as above (>= 9.6)
-postgresql_min_parallel_relation_size: 8MB     # (>= 9.6)
+postgresql_min_parallel_relation_size: 8MB     # (= 9.6) replaced by below two parameters in 10
+postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
+postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
 postgresql_effective_cache_size:       128MB
 
 
@@ -499,6 +506,7 @@ postgresql_log_line_prefix: '%t '
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
 postgresql_log_statement:  none  # none, ddl, mod, all
+postgresql_log_replication_commands: off   # (>=10)
 # log temporary files equal or larger
 postgresql_log_temp_files: -1
 postgresql_log_timezone:   UTC
@@ -587,8 +595,8 @@ postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 postgresql_bytea_output: hex  # hex, escape
 postgresql_xmlbinary:    base64
 postgresql_xmloption:    content
-postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2)
-
+postgresql_gin_fuzzy_search_limit:  0    # (<= 9.2, >= 10)
+postgresql_gin_pending_list_limit: 4MB   # (>= 10)
 
 # - Locale and Formatting -
 
@@ -639,6 +647,12 @@ postgresql_max_locks_per_transaction: 64         # min 10
 # lock table slots.
 postgresql_max_pred_locks_per_transaction: 64    # min 10
 
+postgresql_max_pred_locks_per_relation: -2   # (>=10)
+# negative values mean
+# (max_pred_locks_per_transaction
+#  / -max_pred_locks_per_relation) - 1
+postgresql_max_pred_locks_per_page: 2  # (>=10)
+# min 0
 
 #------------------------------------------------------------------------------
 # VERSION/PLATFORM COMPATIBILITY
@@ -713,6 +727,7 @@ postgresql_pgdg_releases:
       9.4: 3,
       9.5: 3,
       9.6: 3,
+      10: 1,
   }
   centos: {
       9.1: 7,
@@ -721,6 +736,7 @@ postgresql_pgdg_releases:
       9.4: 3,
       9.5: 3,
       9.6: 3,
+      10: 1,
   }
   sl: {
       9.1: 8,
@@ -729,6 +745,7 @@ postgresql_pgdg_releases:
       9.4: 3,
       9.5: 3,
       9.6: 3,
+      10: 1,
   }
   oraclelinux: {
       9.1: 8,
@@ -737,6 +754,7 @@ postgresql_pgdg_releases:
       9.4: 3,
       9.5: 3,
       9.6: 3,
+      10: 1,
   }
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
