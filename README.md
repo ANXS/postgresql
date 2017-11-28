@@ -1,8 +1,5 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.svg?branch=master)](https://travis-ci.org/ANXS/postgresql)
+## This is a fork of ANXS/PostgreSQL [![Build Status](https://travis-ci.org/cimon-io/postgresql.svg?branch=master)](https://travis-ci.org/cimon-io/postgresql)
 
----
-Help Wanted! If you are able and willing to help maintain this Ansible role then please open a GitHub issue. A lot of people seem to use this role and we (quite obviously) need assistance!
-💖
 ---
 
 Ansible role which installs and configures PostgreSQL, extensions, databases and users.
@@ -10,12 +7,12 @@ Ansible role which installs and configures PostgreSQL, extensions, databases and
 
 #### Installation
 
-This has been tested on Ansible 1.9.4 and higher.
+This has been tested on Ansible 2.0 and higher.
 
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install cimon-io.postgresql
 ```
 
 #### Dependencies
@@ -91,13 +88,6 @@ If you are contributing, please first test your changes within the vagrant envir
 
 Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
-
-#### Thanks
-
-To the contributors:
-- [Ralph von der Heyden](https://github.com/ralph)
-
-
 #### Feedback, bug-reports, requests, ...
 
-Are [welcome](https://github.com/ANXS/postgresql/issues)!
+Are [welcome](https://github.com/cimon-io/postgresql/issues)!
