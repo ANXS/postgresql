@@ -31,10 +31,10 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
 
-postgresql_ext_postgis_deps:
-  - libgeos-c1
-  - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
-  - "postgresql-{{postgresql_version}}-postgis-scripts"
+# postgresql_ext_postgis_deps:
+#   - libgeos-c1
+#   - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
+#   - "postgresql-{{postgresql_version}}-postgis-scripts"
 
 # List of databases to be created (optional)
 postgresql_databases: []
@@ -741,3 +741,4 @@ postgresql_pgdg_releases:
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
 postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_pgdg_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
+postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.', '') }}"
