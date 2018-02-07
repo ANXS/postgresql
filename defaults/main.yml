@@ -324,9 +324,9 @@ postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
 # These settings are ignored on a publisher.
 
-postgresql_max_logical_replication_workers: 4	# (>= 10) taken from max_worker_processes
+postgresql_max_logical_replication_workers: 4   # (>= 10) taken from max_worker_processes
             # (change requires restart)
-postgresql_max_sync_workers_per_subscription: 2	# (>= 10) taken from max_logical_replication_workers
+postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical_replication_workers
 
 
 #------------------------------------------------------------------------------
@@ -654,7 +654,7 @@ postgresql_max_locks_per_transaction: 64         # min 10
 # lock table slots.
 postgresql_max_pred_locks_per_transaction: 64    # min 10
 
-postgresql_max_pred_locks_per_relation: -2	# (>= 10) negative values mean
+postgresql_max_pred_locks_per_relation: -2       # (>= 10) negative values mean
                # (max_pred_locks_per_transaction
                #  / -max_pred_locks_per_relation) - 1
 postgresql_max_pred_locks_per_page: 2            # (>= 10) min 0
