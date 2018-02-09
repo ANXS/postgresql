@@ -1,10 +1,10 @@
 # file: postgresql/tasks/extensions.yml
 
-- include_tasks: extensions/contrib.yml
+- include: extensions/contrib.yml
   when: postgresql_ext_install_contrib
 
-- include_tasks: extensions/dev_headers.yml
+- include: extensions/dev_headers.yml
   when: postgresql_ext_install_dev_headers
 
-- include_tasks: extensions/postgis.yml
+- include: extensions/postgis.yml
   when: postgresql_ext_install_postgis

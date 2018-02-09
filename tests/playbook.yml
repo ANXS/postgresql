@@ -6,4 +6,4 @@
   vars_files:
     - ./vars.yml
   roles:
-    - postgresql
+    - my-ans-pg 

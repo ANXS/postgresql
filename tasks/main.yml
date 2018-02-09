@@ -6,29 +6,29 @@
     - "../vars/empty.yml"
   tags: [always]
 
-- include_tasks: install.yml
+- include: install.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
-- include_tasks: install_yum.yml
+- include: install_yum.yml
   when: ansible_pkg_mgr == "yum"
   tags: [postgresql, postgresql-install]
 
-- include_tasks: extensions.yml
+- include: extensions.yml
   tags: [postgresql, postgresql-extensions]
 
-- include_tasks: configure.yml
+- include: configure.yml
   tags: [postgresql, postgresql-configure]
 
-- include_tasks: users.yml
+- include: users.yml
   tags: [postgresql, postgresql-users]
 
-- include_tasks: databases.yml
+- include: databases.yml
   tags: [postgresql, postgresql-databases]
 
-- include_tasks: users_privileges.yml
+- include: users_privileges.yml
   tags: [postgresql, postgresql-users]
 
-- include_tasks: monit.yml
+- include: monit.yml
   when: monit_protection is defined and monit_protection == true
   tags: [postgresql, postgresql-monit]
