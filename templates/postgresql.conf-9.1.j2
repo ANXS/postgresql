@@ -560,3 +560,9 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# r
 #------------------------------------------------------------------------------
 
 #custom_variable_classes = ''		# list of custom variable class names
+
+{% for option in postgresql_custom_options %}
+{% for k,v in option.items() %}
+{{k}} = {{v}}
+{% endfor %}
+{% endfor %}

@@ -671,6 +671,12 @@ postgresql_exit_on_error: off
 # Reinitialize after backend crash?
 postgresql_restart_after_crash: on
 
+#------------------------------------------------------------------------------
+# OTHER OPTIONS
+#------------------------------------------------------------------------------
+
+# Additional options in the form of list of dictionaries (key, value)
+postgresql_custom_options: []
 
 #------------------------------------------------------------------------------
 # PGTUNE
