@@ -119,7 +119,7 @@ huge_pages = {{postgresql_huge_pages}}			# on, off, or try
 temp_buffers = {{postgresql_temp_buffers}}			# min 800kB
 max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero disables the feature
 					# (change requires restart)
-# Caution: It is not advisable to set max_prepared_transactions nonzero unless
+# Caution: it is not advisable to set max_prepared_transactions nonzero unless
 # you actively intend to use prepared transactions.
 work_mem = {{postgresql_work_mem}}				# min 64kB
 maintenance_work_mem = {{postgresql_maintenance_work_mem}}		# min 1MB
@@ -133,6 +133,7 @@ dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the def
 					#   windows
 					#   mmap
 					# use none to disable dynamic shared memory
+					# (change requires restart)
 
 # - Disk -
 
@@ -165,10 +166,13 @@ bgwriter_flush_after = {{postgresql_bgwriter_flush_after}}		# 0 disables,
 
 effective_io_concurrency = {{postgresql_effective_io_concurrency}}		# 1-1000; 0 disables prefetching
 max_worker_processes = {{postgresql_max_worker_processes}}		# (change requires restart)
-max_parallel_workers_per_gather = {{postgresql_max_parallel_workers_per_gather}}	# taken from max_worker_processes
+max_parallel_workers_per_gather = {{postgresql_max_parallel_workers_per_gather}}	# taken from max_parallel_workers
+max_parallel_workers = {{postgresql_max_parallel_workers}}		# maximum number of max_worker_processes that
+					# can be used in parallel queries
 old_snapshot_threshold = {{postgresql_old_snapshot_threshold}}		# 1min-60d; -1 disables; 0 is immediate
 								# (change requires restart)
 backend_flush_after = {{postgresql_backend_flush_after}}		# 0 disables, default is 0
+
 
 #------------------------------------------------------------------------------
 # WRITE AHEAD LOG
@@ -209,6 +213,7 @@ max_wal_size = {{ postgresql_max_wal_size if postgresql_max_wal_size or '1G' }}
 min_wal_size = {{ postgresql_min_wal_size if postgresql_min_wal_size or '80MB' }}
 checkpoint_completion_target = {{postgresql_checkpoint_completion_target}}	# checkpoint target duration, 0.0 - 1.0
 checkpoint_flush_after = {{postgresql_checkpoint_flush_after}} 		# measured in pages, 0 disables
+					# default is 256kB on linux, 0 otherwise
 checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
@@ -238,7 +243,9 @@ wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disa
 
 max_replication_slots = {{postgresql_max_replication_slots}}	# max number of replication slots
 				# (change requires restart)
-track_commit_timestamp = {{'on' if postgresql_track_commit_timestamp else 'off' }}
+
+track_commit_timestamp = {{'on' if postgresql_track_commit_timestamp else 'off' }}	# collect timestamp of transaction commit
+				# (change requires restart)
 
 # - Master Server -
 
@@ -270,9 +277,6 @@ wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver
 					# communication from master
 					# in milliseconds; 0 disables
 
-wal_retrieve_retry_interval = 5s	# time to wait before retrying to
-					# retrieve WAL after a failed attempt
-
 # - Subscribers -
 
 # These settings are ignored on a publisher.
@@ -282,7 +286,8 @@ max_logical_replication_workers = {{postgresql_max_logical_replication_workers}}
 max_sync_workers_per_subscription = {{postgresql_max_sync_workers_per_subscription}} # taken from max_logical_replication_workers
 
 
-wal_retrieve_retry_interval = {{postgresql_wal_retrieve_retry_interval}}
+wal_retrieve_retry_interval = {{postgresql_wal_retrieve_retry_interval}}	# time to wait before retrying to
+					# retrieve WAL after a failed attempt
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -312,7 +317,7 @@ cpu_operator_cost = {{postgresql_cpu_operator_cost}}		# same scale as above
 parallel_tuple_cost = {{postgresql_parallel_tuple_cost}}		# same scale as above
 parallel_setup_cost = {{postgresql_parallel_setup_cost}}	# same scale as above
 min_parallel_table_scan_size = {{postgresql_min_parallel_table_scan_size}}
-min_parallel_index_scan_size = {{postgresql_min_parallel_index_scan_size}} 
+min_parallel_index_scan_size = {{postgresql_min_parallel_index_scan_size}}
 effective_cache_size = {{postgresql_effective_cache_size}}
 
 # - Genetic Query Optimizer -
@@ -381,6 +386,7 @@ syslog_sequence_numbers = {{'on' if postgresql_syslog_sequence_numbers else 'off
 syslog_split_messages = {{'on' if postgresql_syslog_split_messages else 'off'}}
 
 # This is only relevant when logging to eventlog (win32):
+# (change requires restart)
 event_source = '{{postgresql_event_source}}'
 
 # - When to Log -
@@ -409,7 +415,7 @@ log_min_messages = {{postgresql_log_min_messages}}		# values in order of decreas
 					#   log
 					#   fatal
 					#   panic
-					#
+
 log_min_error_statement = {{postgresql_log_min_error_statement}}	# values in order of decreasing detail:
 					#   debug5
 					#   debug4
@@ -465,19 +471,18 @@ log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					# e.g. '<%u%%%d> '
 log_lock_waits = {{'on' if postgresql_log_lock_waits else 'off'}}			# log lock waits >= deadlock_timeout
 log_statement = '{{postgresql_log_statement}}'			# none, ddl, mod, all
-log_replication_commands = {{postgresql_log_replication_commands}} 
+log_replication_commands = {{'on' if postgresql_log_replication_commands else 'off'}}
 log_temp_files = {{postgresql_log_temp_files}}			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
 log_timezone = '{{postgresql_log_timezone}}'
 
 
-
 # - Process Title -
 
-cluster_name = {{postgresql_cluster_name}}			# added to process titles if nonempty
+cluster_name = '{{postgresql_cluster_name}}'			# added to process titles if nonempty
 					# (change requires restart)
-update_process_title = {{postgresql_update_process_title}} 
+update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
 
 
 #------------------------------------------------------------------------------
@@ -560,8 +565,8 @@ vacuum_multixact_freeze_table_age = {{postgresql_vacuum_multixact_freeze_table_a
 bytea_output = '{{postgresql_bytea_output}}'			# hex, escape
 xmlbinary = '{{postgresql_xmlbinary}}'
 xmloption = '{{postgresql_xmloption}}'
-gin_fuzzy_search_limit = {{postgresql_gin_fuzzy_search_limit}} 
-gin_pending_list_limit = {{postgresql_gin_pending_list_limit}} 
+gin_fuzzy_search_limit = {{postgresql_gin_fuzzy_search_limit}}
+gin_pending_list_limit = {{postgresql_gin_pending_list_limit}}
 
 # - Locale and Formatting -
 
@@ -609,11 +614,11 @@ max_locks_per_transaction = {{postgresql_max_locks_per_transaction}}		# min 10
 					# (change requires restart)
 max_pred_locks_per_transaction = {{postgresql_max_pred_locks_per_transaction}}	# min 10
 					# (change requires restart)
-
-max_pred_locks_per_relation = {{postgresql_max_pred_locks_per_relation}} 	# negative values mean
+max_pred_locks_per_relation = {{postgresql_max_pred_locks_per_relation}}	# negative values mean
 					# (max_pred_locks_per_transaction
 					#  / -max_pred_locks_per_relation) - 1
 max_pred_locks_per_page = {{postgresql_max_pred_locks_per_page}}            # min 0
+
 
 #------------------------------------------------------------------------------
 # VERSION/PLATFORM COMPATIBILITY
