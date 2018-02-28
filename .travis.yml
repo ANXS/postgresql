@@ -24,7 +24,7 @@ script:
   - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml
 
   # Idempotence test
-  - - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
 
 notifications:
