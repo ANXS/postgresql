@@ -5,12 +5,12 @@
   become: false
   gather_facts: false
   tasks:
-    - name: Build image if needed
+    - name: Build or pull image if needed
       docker_image:
         name: "{{ image_name.split(':')[0] }}"
         tag: "{{ image_name.split(':')[1] }}"
         dockerfile: "Dockerfile.{{ image_name | replace(':', '.') }}"
-        path: "images"
+        path: "{{ 'images' if 'builded' in image_name else '' }}"
         force: "{{ force_build_image | default(false) }}"
 
     - name: Run docker machines for testing PostgreSQL role
