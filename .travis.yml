@@ -13,6 +13,8 @@ env:
     - IMAGE_NAME="ubuntu:16.04-builded"
     - IMAGE_NAME="debian:8-builded"
     - IMAGE_NAME="debian:9-builded"
+    - IMAGE_NAME="centos:7-builded"
+    - IMAGE_NAME="centos:6-builded"
 
 install:
   - pip install ansible=="2.3.1.0" docker-py
