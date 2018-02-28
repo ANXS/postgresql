@@ -1,0 +1,12 @@
+---
+
+# Default cluster name to match Ubuntu
+postgresql_cluster_name: "main"
+
+# Include the cluster_name in the service
+postgresql_service_name: "postgresql-{{ postgresql_version }}-{{ postgresql_cluster_name }}"
+
+# Location of Database Cluster files
+postgresql_root_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_data_directory: "{{ postgresql_root_directory }}/data"
+postgresql_conf_directory: "{{ postgresql_data_directory }}"
