@@ -28,6 +28,7 @@
         name: "postgresql-{{ item }}"
         ansible_connection: docker
         ansible_user: root
+        ansible_python_interpreter: python
         groups: postgresql
         postgresql_version: "{{ item }}"
       changed_when: false
