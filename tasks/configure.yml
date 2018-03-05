@@ -130,19 +130,20 @@
     group: "{{ postgresql_service_group }}"
     mode: 0755
 
-- name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | RedHat
-  file:
-    name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
-    state: directory
-    mode: 0755
-  when: ansible_os_family == "RedHat"
-
-- name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
+- name: PostgreSQL | Create postgresql service for this cluster | RedHat
   template:
-    src: etc_systemd_system_postgresql.service.d_custom.conf.j2
-    dest: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d/custom.conf"
+    src: etc_systemd_system_postgresql.service.j2
+    dest: "/etc/systemd/system/{{ postgresql_service_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
   when: ansible_os_family == "RedHat"
-  register: postgresql_systemd_custom_conf
+  register: postgresql_systemd_service_create
+
+- name: PostgreSQL | Ensure the systemd daemon reloaded | RedHat
+  command: systemctl daemon-reload
+  when: ansible_os_family == "RedHat" and
+        postgresql_systemd_service_create
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
   file:
@@ -162,4 +163,4 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_service_create.changed
