@@ -137,12 +137,14 @@
     owner: root
     group: root
     mode: 0644
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version >= 7
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('7', '>=')
   register: postgresql_systemd_service_create
 
 - name: PostgreSQL | Ensure the systemd daemon reloaded | RedHat v7 and later
   command: systemctl daemon-reload
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version >= 7
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('7', '>=') and
         postgresql_systemd_service_create
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
