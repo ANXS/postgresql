@@ -130,19 +130,19 @@
     group: "{{ postgresql_service_group }}"
     mode: 0755
 
-- name: PostgreSQL | Create postgresql service for this cluster | RedHat
+- name: PostgreSQL | Create postgresql service for this cluster | RedHat v7 and later
   template:
     src: etc_systemd_system_postgresql.service.j2
     dest: "/etc/systemd/system/{{ postgresql_service_name }}.service"
     owner: root
     group: root
     mode: 0644
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version >= 7
   register: postgresql_systemd_service_create
 
-- name: PostgreSQL | Ensure the systemd daemon reloaded | RedHat
+- name: PostgreSQL | Ensure the systemd daemon reloaded | RedHat v7 and later
   command: systemctl daemon-reload
-  when: ansible_os_family == "RedHat" and
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version >= 7
         postgresql_systemd_service_create
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
