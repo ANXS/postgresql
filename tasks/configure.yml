@@ -145,7 +145,7 @@
   command: systemctl daemon-reload
   when: ansible_os_family == "RedHat" and
         ansible_distribution_major_version | version_compare('7', '>=') and
-        postgresql_systemd_service_create
+        postgresql_systemd_service_create.changed
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
   file:
