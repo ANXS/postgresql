@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 9.3
+postgresql_version: 9.6
 postgresql_encoding: 'UTF-8'
 postgresql_locale_parts:
   - 'en_US' # Locale
