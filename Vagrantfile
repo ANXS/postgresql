@@ -21,7 +21,8 @@ Vagrant.configure('2') do |config|
 
     machine.vm.provision 'ansible' do |ansible|
       ansible.playbook = 'tests/playbook.yml'
-      ansible.sudo = true
+      ansible.verbose = "v"
+      ansible.become = true
       ansible.inventory_path = 'vagrant-inventory'
       ansible.host_key_checking = false
     end
