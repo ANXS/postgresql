@@ -11,9 +11,5 @@
       name: "{{ postgresql_service_name }}"
       state: restarted
       enabled: yes
-    when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7") or
-          (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7") or
-          (ansible_distribution == "Debian" and ansible_distribution_major_version == "8") or
-           ansible_os_family == "Ubuntu" and ansible_lsb.major_release|int >= 15.04 
-
+    when: ansible_service_mgr == 'systemd'
  
