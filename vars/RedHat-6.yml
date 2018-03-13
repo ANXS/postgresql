@@ -1,0 +1,2 @@
+---
+postgresql_yum_pip_package: "python-pip"

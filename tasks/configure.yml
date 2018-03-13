@@ -122,6 +122,78 @@
   register: postgresql_configuration_pt3
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
+- name: PostgreSQL | Generate SSL Private Key | RedHat >= v7
+  openssl_privatekey:
+    path: "{{ postgresql_ssl_key_file }}"
+    type: "RSA"
+    size: "{{ postgresql_ssl_key_length }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('7','>=') and
+        postgresql_ssl
+
+- name: PostgreSQL | Generate SSL Private Key | RedHat <= v6
+  shell: "umask 0077; openssl genrsa {{ postgresql_ssl_key_length }}  > {{ postgresql_ssl_key_file }}"
+  args:
+    creates: "{{ postgresql_ssl_key_file }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('6','<=') and
+        postgresql_ssl
+
+- name: PostgreSQL | Secure SSL Private Key | RedHat
+  file:
+    path: "{{ postgresql_ssl_key_file }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0600
+  when: ansible_os_family == "RedHat" and
+        postgresql_ssl
+
+- name: PostgreSQL | Create CSR for SSL Certificate | RedHat >= v7
+  openssl_csr:
+    common_name: "{{ ansible_fqdn }}"
+    path: "{{ postgresql_ssl_csr_file }}"
+    privatekey_path: "{{ postgresql_ssl_key_file }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('7','>=') and
+        postgresql_ssl
+
+- name: PostgreSQL | Generate/Validate SSL Certificate | RedHat >= v7
+  openssl_certificate:
+    path: "{{ postgresql_ssl_cert_file }}"
+    privatekey_path: "{{ postgresql_ssl_key_file }}"
+    provider: "selfsigned"
+    csr_path: "{{ postgresql_ssl_csr_file }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('7','>=') and
+        postgresql_ssl
+
+- name: PostgreSQL | Generate SSL Certificate | RedHat <= v6
+  shell: "umask 0022; openssl req -new -x509 -key {{ postgresql_ssl_key_file }} -out {{ postgresql_ssl_cert_file }} -subj \"/C=XX/ST=''/L=''/O=''/OU=''/CN='{{ ansible_nodename }}'\""
+  args:
+    creates: "{{ postgresql_ssl_cert_file }}"
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  when: ansible_os_family == "RedHat" and
+        ansible_distribution_major_version | version_compare('6','<=') and
+        postgresql_ssl
+
+- name: PostgreSQL | Secure SSL Certificate | RedHat
+  file:
+    path: "{{ postgresql_ssl_cert_file }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0644
+  when: ansible_os_family == "RedHat" and
+        postgresql_ssl
+
 - name: PostgreSQL | Create folder for additional configuration files
   file:
     name: "{{postgresql_conf_directory}}/conf.d"

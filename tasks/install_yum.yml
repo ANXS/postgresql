@@ -2,24 +2,24 @@
 
 # The standard ca-certs are needed because  without them apt_key will fail to
 # validate www.postgresql.org (or probably any other source).
-- name: PostgreSQL | Make sure the CA certificates are available
+- name: PostgreSQL | Make sure the CA certificates are available | yum
   yum:
     name: ca-certificates
     state: present
 
-- name: PostgreSQL | Add PostgreSQL repository
+- name: PostgreSQL | Add PostgreSQL repository | yum
   yum:
     name: "{{ postgresql_yum_repository_url }}"
     state: present
 
-- name: PostgreSQL | Make sure the dependencies are installed
+- name: PostgreSQL | Make sure the dependencies are installed | yum
   yum:
     name: "{{ item }}"
     state: present
     update_cache: yes
   with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
 
-- name: PostgreSQL | Install PostgreSQL
+- name: PostgreSQL | Install PostgreSQL | yum
   yum:
     name: "{{ item }}"
     state: present
@@ -29,9 +29,23 @@
     - "postgresql{{ postgresql_version_terse }}"
     - "postgresql{{ postgresql_version_terse }}-contrib"
 
-- name: PostgreSQL | PGTune
+- name: PostgreSQL | PGTune | yum
   yum:
     name: pgtune
     state: present
   environment: "{{ postgresql_env }}"
   when: postgresql_pgtune
+
+- name: PostgreSQL | Install Python pip installer | yum
+  yum:
+    name: "{{ postgresql_yum_pip_package }}"
+    state: present
+  when: postgresql_ssl and
+        ansible_distribution_major_version | version_compare('7','>=')
+
+- name: PostgreSQL | Install pyOpenSSL | yum | pip
+  pip:
+    name: pyopenssl
+    state: present
+  when: postgresql_ssl and
+        ansible_distribution_major_version | version_compare('7','>=')
