@@ -12,3 +12,7 @@ postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
 postgresql_unix_socket_directories:
   - "{{ postgresql_pid_directory }}"
   - /tmp
+
+# SSL defaults
+postgresql_ssl_cert_file: "server.crt"
+postgresql_ssl_key_file: "server.key"
