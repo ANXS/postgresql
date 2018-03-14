@@ -139,7 +139,6 @@
     path: "{{ postgresql_data_directory }}/server.key"
     type: "RSA"
     size: "{{ postgresql_ssl_key_length }}"
-  creates: "{{ postgresql_data_directory }}/server.key"
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
@@ -158,7 +157,6 @@
   openssl_publickey:
     path: "{{ postgresql_data_directory }}/server.crt"
     privatekey_path: "{{ postgresql_data_directory }}/server.key"
-  creates: "{{ postgresql_data_directory }}/server.crt"
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
