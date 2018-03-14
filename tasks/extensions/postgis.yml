@@ -16,7 +16,7 @@
   notify:
     - restart postgresql
 
-- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat 
   yum:
     name: "{{item}}"
     state: present
