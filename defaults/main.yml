@@ -23,6 +23,9 @@ postgresql_service_enabled: true
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
+# How strong should the SSL key be
+postgresql_ssl_key_length: 2048
+
 postgresql_database_owner: "{{ postgresql_admin_user }}"
 # Extensions
 postgresql_ext_install_contrib: no

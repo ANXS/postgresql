@@ -122,16 +122,30 @@
   register: postgresql_configuration_pt3
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
-- name: PostgreSQL | Generate SSL server.key | RedHat
-  shell: "umask 0077; openssl genrsa 2048 > {{ postgresql_data_directory}}/server.key"
-  args:
-    creates: "{{ postgresql_data_directory }}/server.key"
+- name: PostgreSQL | Install pip | RedHat
+  yum:
+    name: python2-pip
+  when: ansible_os_family == "RedHat" and
+        postgresql_ssl == "on"
+
+- name: PostgreSQL | Install pyOpenSSL | RedHat
+  pip:
+    name: pyopenssl
+  when: ansible_os_family == "RedHat" and
+        postgresql_ssl == "on"
+
+- name: PostgreSQL | Generate SSL Private Key server.key | RedHat
+  openssl_privatekey:
+    path: "{{ postgresql_data_directory }}/server.key"
+    type: "RSA"
+    size: "{{ postgresql_ssl_key_length }}"
+  creates: "{{ postgresql_data_directory }}/server.key"
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
         postgresql_ssl == "on"
 
-- name: PostgreSQL | Secure SSL server.key | RedHat
+- name: PostgreSQL | Secure SSL Private Key server.key | RedHat
   file:
     path: "{{ postgresql_data_directory }}/server.key"
     owner: "{{ postgresql_service_user }}"
@@ -140,16 +154,17 @@
   when: ansible_os_family == "RedHat" and
         postgresql_ssl == "on"
 
-- name: PostgreSQL | Generate SSL server.crt | RedHat
-  shell: "umask 0022; openssl req -new -x509 -key {{ postgresql_data_directory }}/server.key -out {{ postgresql_data_directory}}/server.crt -subj \"/C=XX/ST=''/L=''/O=''/OU=''/CN='{{ ansible_nodename }}'\""
-  args:
-    creates: "{{ postgresql_data_directory }}/server.crt"
+- name: PostgreSQL | Generate SSL Public Key server.crt | RedHat
+  openssl_publickey:
+    path: "{{ postgresql_data_directory }}/server.crt"
+    privatekey_path: "{{ postgresql_data_directory }}/server.key"
+  creates: "{{ postgresql_data_directory }}/server.crt"
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
         postgresql_ssl == "on"
 
-- name: PostgreSQL | Secure SSL server.crt | RedHat
+- name: PostgreSQL | Secure SSL Public Key server.crt | RedHat
   file:
     path: "{{ postgresql_data_directory }}/server.crt"
     owner: "{{ postgresql_service_user }}"
