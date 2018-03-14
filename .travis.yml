@@ -31,5 +31,12 @@ script:
   - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
 
+  # Play test - Extended Options
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml --extra-vars 'postgresql_databases="travis_test_database" postgresql_database_extensions="adminpack,pgcrypto" postgresql_users="travis_test_user1, travis_test_user2 postgresql_ext_install_contrib="yes" postgresql_ext_install_postgis="yes" postgresql_pgtune="yes"'
+
+  # Idempotence test - Extended Options
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml --extra-vars 'postgresql_databases="travis_test_database" postgresql_database_extensions="adminpack,pgcrypto" postgresql_users="travis_test_user1, travis_test_user2 postgresql_ext_install_contrib="yes" postgresql_ext_install_postgis="yes" postgresql_pgtune="yes"' > idempotence_out
+  - ./tests/idempotence_check.sh idempotence_out
+
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
