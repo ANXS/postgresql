@@ -19,3 +19,10 @@ postgresql_users:
 postgresql_user_privileges:
   - name: baz
     db: foobar
+
+postgresql_database_extensions:
+  - db: foobar
+    extensions:
+    - adminpack
+    - pgcrypto
+    - unaccent
