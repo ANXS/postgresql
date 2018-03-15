@@ -26,3 +26,10 @@ postgresql_ext_install_contrib: true
 postgresql_ssl: false
 postgresql_pgtune: false
 postgresql_ext_install_postgis: false
+
+postgresql_database_extensions:
+  - db: foobar
+    extensions:
+    - adminpack
+    - pgcrypto
+    - unaccent
