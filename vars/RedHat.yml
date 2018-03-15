@@ -14,5 +14,6 @@ postgresql_unix_socket_directories:
   - /tmp
 
 # SSL defaults
-postgresql_ssl_cert_file: "server.crt"
-postgresql_ssl_key_file: "server.key"
+postgresql_ssl_cert_file: "{{ postgresql_data_directory }}/server.crt"
+postgresql_ssl_key_file: "{{ postgresql_data_directory }}/server.key"
+postgresql_ssl_csr_file: "{{ postgresql_data_directory }}/server.csr"
