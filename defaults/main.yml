@@ -110,7 +110,7 @@ postgresql_bonjour_name: '' # defaults to the computer name
 # - Security and Authentication -
 
 postgresql_authentication_timeout: 60s
-postgresql_ssl: no
+postgresql_ssl: off
 postgresql_ssl_ciphers:
   - 'DEFAULT'
   - '!LOW'
