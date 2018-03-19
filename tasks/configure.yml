@@ -130,7 +130,7 @@
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Secure SSL Private Key | RedHat
   file:
@@ -139,7 +139,7 @@
     group: "{{ postgresql_service_group }}"
     mode: 0600
   when: ansible_os_family == "RedHat" and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Create CSR for SSL Certificate | RedHat
   openssl_csr:
@@ -149,7 +149,7 @@
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Generate/Validate SSL Certificate | RedHat
   openssl_certificate:
@@ -160,7 +160,7 @@
   become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Secure SSL Certificate | RedHat
   file:
@@ -169,7 +169,7 @@
     group: "{{ postgresql_service_group }}"
     mode: 0644
   when: ansible_os_family == "RedHat" and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:

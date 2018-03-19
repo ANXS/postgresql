@@ -39,9 +39,9 @@
 - name: PostgreSQL | Install pip | yum
   yum:
     name: python2-pip
-  when: postgresql_ssl == "on"
+  when: postgresql_ssl
 
 - name: PostgreSQL | Install pyOpenSSL | yum
   pip:
     name: pyopenssl
-  when: postgresql_ssl == "on"
+  when: postgresql_ssl

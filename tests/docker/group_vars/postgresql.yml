@@ -20,9 +20,9 @@ postgresql_user_privileges:
   - name: baz
     db: foobar
 
-postgresql_ext_install_contrib: true
-postgresql_ssl: true
+postgresql_ext_install_contrib: on
+postgresql_ssl: on
 
 # These do not work everywhere, but should be included ASAP
-postgresql_pgtune: false
-postgresql_ext_install_postgis: false
+postgresql_pgtune: off
+postgresql_ext_install_postgis: off
