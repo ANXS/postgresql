@@ -148,7 +148,8 @@
     privatekey_path: "{{ postgresql_ssl_key_file }}"
   become: true
   become_user: "{{ postgresql_service_user }}"
-  when: postgresql_ssl == "on"
+  when: ansible_os_family == "RedHat" and
+        postgresql_ssl == "on"
 
 - name: PostgreSQL | Generate/Validate SSL Certificate | RedHat
   openssl_certificate:
