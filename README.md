@@ -30,11 +30,11 @@ ansible-galaxy install ANXS.postgresql
 | Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
 | Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
 | Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
-| Centos 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
-| Centos 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
+| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
+| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:| :grey_question:|
 
 - :white_check_mark: - tested, works fine
-- :grey_question: - will work in the future
+- :grey_question: - will work in the future (help out if you can)
 - :interrobang: - maybe works, not tested
 - :no_entry: - PostgreSQL has reached EOL
 
