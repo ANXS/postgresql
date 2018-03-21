@@ -13,6 +13,9 @@ postgresql_unix_socket_directories:
   - "{{ postgresql_pid_directory }}"
   - /tmp
 
+# Needed to install pyopenssl, to generate SSL keys
+postgresql_yum_pip_package: "python2-pip"
+
 # SSL defaults
 postgresql_ssl_cert_file: "{{ postgresql_data_directory }}/server.crt"
 postgresql_ssl_key_file: "{{ postgresql_data_directory }}/server.key"
