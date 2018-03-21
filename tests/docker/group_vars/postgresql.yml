@@ -26,3 +26,10 @@ postgresql_ssl: on
 # These do not work everywhere, but should be included ASAP
 postgresql_pgtune: off
 postgresql_ext_install_postgis: off
+
+postgresql_database_extensions:
+  - db: foobar
+    extensions:
+    - adminpack
+    - pgcrypto
+    - unaccent

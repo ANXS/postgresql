@@ -36,10 +36,17 @@
   environment: "{{ postgresql_env }}"
   when: postgresql_pgtune
 
-- name: PostgreSQL | Install pip | yum
+- name: PostgreSQL | Install pip | yum | RedHat v6
+  yum:
+    name: python-pip
+  when: ansible_distribution_major_version == '6' and
+        postgresql_ssl
+
+- name: PostgreSQL | Install pip | yum | RedHat >= v7
   yum:
     name: python2-pip
-  when: postgresql_ssl
+  when: ansible_distribution_major_version >= '7' and
+        postgresql_ssl
 
 - name: PostgreSQL | Install pyOpenSSL | yum
   pip:
