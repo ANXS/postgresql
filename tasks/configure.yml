@@ -183,7 +183,7 @@
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
         ansible_distribution_major_version | version_compare('6','<=') and
-        postgresql_ssl == "on"
+        postgresql_ssl
 
 - name: PostgreSQL | Secure SSL Certificate | RedHat
   file:
