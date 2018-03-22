@@ -31,7 +31,7 @@ postgresql_ext_install_postgis: no
 
 # PostGIS
 postgresql_postgis_release_compatibility:
-  9.3: "2.4"
+  9.3: "2"
   9.4: "2.4"
   9.5: "2.4"
   9.6: "2.4"
