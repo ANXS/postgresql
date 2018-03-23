@@ -2,3 +2,10 @@
 postgresql_service_name: "postgresql"
 
 postgresql_bin_directory: /usr/bin
+
+postgresql_ext_postgis_deps:
+  - "postgresql-contrib-{{postgresql_version}}"
+  - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
+  - "postgresql-{{postgresql_version}}-postgis-scripts"
+  - "postgresql-{{postgresql_version}}-pgrouting"
+  - "postgis"

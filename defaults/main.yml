@@ -29,7 +29,16 @@ postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
-postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
+# PostGIS
+postgresql_postgis_release_compatibility:
+  9.3: "2.3"
+  9.4: "2.4"
+  9.5: "2.4"
+  9.6: "2.4"
+  10: "2.4"
+  11: "2.5"
+
+postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
