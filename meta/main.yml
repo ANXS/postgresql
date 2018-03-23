@@ -7,11 +7,26 @@ galaxy_info:
   min_ansible_version: 2.4.0
   license: MIT
   platforms:
+  - name: Debian
+    versions:
+    - all
   - name: Ubuntu
+    versions:
+    - all
+  - name: CentOS
+    versions:
+    - all
+  - name: RedHat
     versions:
     - all
   categories:
   - database
   - database:sql
+  galaxy_tags:
+  - postgresql
+  - postgres
+  - sql
+  - database
+  - postgis
 
 dependencies: []
