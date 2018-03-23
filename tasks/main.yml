@@ -1,9 +1,17 @@
 # file: postgresql/tasks/main.yml
 
-- include_vars: "{{ item }}"
+- name: PostgreSQL | Include Variables | OS Family
+  include_vars: "{{ item }}"
   with_first_found:
-    - "../vars/{{ ansible_os_family }}.yml"
-    - "../vars/empty.yml"
+    - "{{ ansible_os_family }}.yml"
+  tags: [always]
+
+- name: PostgreSQL | Include Variables | OS Family, OS Major Version
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+      skip: true
   tags: [always]
 
 - import_tasks: install.yml
