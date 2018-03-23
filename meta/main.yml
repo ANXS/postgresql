@@ -9,16 +9,16 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
-    - all
+    - jessie
+    - stretch
   - name: Ubuntu
     versions:
-    - all
-  - name: CentOS
+    - xenial
+    - trusty
+  - name: EL
     versions:
-    - all
-  - name: RedHat
-    versions:
-    - all
+    - 6
+    - 7
   categories:
   - database
   - database:sql
@@ -28,5 +28,9 @@ galaxy_info:
   - sql
   - database
   - postgis
+  - debian
+  - ubuntu
+  - centos
+  - redhat
 
 dependencies: []
