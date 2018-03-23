@@ -17,3 +17,11 @@ postgresql_ext_postgis_deps:
   - "postgis{{ postgresql_ext_postgis_version | replace('.','') }}_{{ postgresql_version | replace('.','') }}"
   - "postgis{{ postgresql_ext_postgis_version | replace('.','') }}_{{ postgresql_version | replace('.','') }}-client"
   - "postgis{{ postgresql_ext_postgis_version | replace('.','') }}_{{ postgresql_version | replace('.','') }}-utils"
+
+postgresql_postgis_release_compatibility:
+  9.3: "2"
+  9.4: "2.4"
+  9.5: "2.4"
+  9.6: "2.4"
+  10: "2.4"
+  11: "2.5"
