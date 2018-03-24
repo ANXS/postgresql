@@ -451,10 +451,18 @@ log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					# e.g. '<%u%%%d> '
 log_lock_waits = {{'on' if postgresql_log_lock_waits else 'off'}}			# log lock waits >= deadlock_timeout
 log_statement = '{{postgresql_log_statement}}'			# none, ddl, mod, all
+log_replication_commands = {{'on' if postgresql_log_replication_commands else 'off'}}
 log_temp_files = {{postgresql_log_temp_files}}			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
 log_timezone = '{{postgresql_log_timezone}}'
+
+
+# - Process Title -
+
+cluster_name = '{{postgresql_cluster_name}}'			# added to process titles if nonempty
+					# (change requires restart)
+update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
 
 
 #------------------------------------------------------------------------------
@@ -468,7 +476,6 @@ track_counts = {{'on' if postgresql_track_counts else 'off'}}
 track_io_timing = {{'on' if postgresql_track_io_timing else 'off'}}
 track_functions = {{postgresql_track_functions}}			# none, pl, all
 track_activity_query_size = {{postgresql_track_activity_query_size}}	# (change requires restart)
-update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
 stats_temp_directory = '{{postgresql_stats_temp_directory}}'
 
 
@@ -537,6 +544,8 @@ vacuum_multixact_freeze_table_age = {{postgresql_vacuum_multixact_freeze_table_a
 bytea_output = '{{postgresql_bytea_output}}'			# hex, escape
 xmlbinary = '{{postgresql_xmlbinary}}'
 xmloption = '{{postgresql_xmloption}}'
+gin_fuzzy_search_limit = '{{postgresql_gin_fuzzy_search_limit}}'
+gin_pending_list_limit = '{{postgresql_gin_pending_list_limit}}'
 
 # - Locale and Formatting -
 
@@ -597,6 +606,7 @@ backslash_quote = {{postgresql_backslash_quote}}	# on, off, or safe_encoding
 default_with_oids = {{'on' if postgresql_default_with_oids else 'off'}}
 escape_string_warning = {{'on' if postgresql_escape_string_warning else 'off'}}
 lo_compat_privileges = {{'on' if postgresql_lo_compat_privileges else 'off'}}
+operator_precedence_warning = {{'on' if postgresql_operator_precedence_warning else 'off'}}
 quote_all_identifiers = {{'on' if postgresql_quote_all_identifiers else 'off'}}
 sql_inheritance = {{'on' if postgresql_sql_inheritance else 'off'}}
 standard_conforming_strings = {{'on' if postgresql_standard_conforming_strings else 'off'}}
