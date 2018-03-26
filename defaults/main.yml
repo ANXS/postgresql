@@ -94,7 +94,7 @@ postgresql_unix_socket_directory: ""    # (<= 9.2)
 postgresql_unix_socket_directories:     # (>= 9.3)
   - "{{ postgresql_pid_directory }}"
 postgresql_unix_socket_group: ""
-postgresql_unix_socket_permissions: 0777 # begin with 0 to use octal notation
+postgresql_unix_socket_permissions: "0777" # begin with 0 to use octal notation
 
 # Automatic pg_ctl configuration. Specify a list of options containing
 # cluster specific options to be passed to pg_ctl(1).
@@ -392,7 +392,7 @@ postgresql_logging_collector:          off
 postgresql_log_directory:              "pg_log"
 # Log file name pattern, can include strftime() escapes
 postgresql_log_filename:               "postgresql-%Y-%m-%d_%H%M%S.log"
-postgresql_log_file_mode:              0600 # begin with 0 to use octal notation
+postgresql_log_file_mode:              "0600" # begin with 0 to use octal notation
 # If on, an existing log file with the same name as the new log file will be
 # truncated rather than appended to. But such truncation only occurs on
 # time-driven rotation, not on restarts or size-driven rotation. Default is
