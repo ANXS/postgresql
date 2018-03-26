@@ -70,7 +70,7 @@
     path: "{{ postgresql_conf_directory }}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
-    mode: 0750
+    mode: 0700
     state: directory
 
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
