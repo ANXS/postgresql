@@ -2,14 +2,14 @@
 
 # Basic settings
 postgresql_version: 9.6
-postgresql_encoding: 'UTF-8'
+postgresql_encoding: "UTF-8"
 postgresql_locale_parts:
-  - 'en_US' # Locale
-  - 'UTF-8' # Encoding
+  - "en_US" # Locale
+  - "UTF-8" # Encoding
 postgresql_locale: "{{ postgresql_locale_parts | join('.') }}"
 postgresql_ctype_parts:
-  - 'en_US' # Locale
-  - 'UTF-8' # Encoding
+  - "en_US" # Locale
+  - "UTF-8" # Encoding
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
 
 postgresql_admin_user: "postgres"
@@ -33,8 +33,8 @@ postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
-  - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
-  - "postgresql-{{postgresql_version}}-postgis-scripts"
+  - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
+  - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
 # List of databases to be created (optional)
 postgresql_databases: []
@@ -50,10 +50,10 @@ postgresql_user_privileges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:
-  - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
-  - { type: local, database: all, user: all, address: '',             method: '{{ postgresql_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
-  - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
-  - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ postgresql_default_auth_method }}', comment: 'IPv6 local connections:' }
+  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "{{ postgresql_default_auth_method }}", comment: "" }
+  - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
+  - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method }}", comment: "IPv4 local connections:" }
+  - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method }}", comment: "IPv6 local connections:" }
 
 postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
@@ -67,41 +67,41 @@ postgresql_pg_hba_custom: []
 #------------------------------------------------------------------------------
 
 # Location of postgres configuration files here
-postgresql_conf_directory: "/etc/postgresql/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_conf_directory: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 # HBA (Host Based Authentication) file
-postgresql_hba_file: "{{postgresql_conf_directory}}/pg_hba.conf"
+postgresql_hba_file: "{{ postgresql_conf_directory }}/pg_hba.conf"
 # Ident configuration file
-postgresql_ident_file: "{{postgresql_conf_directory}}/pg_ident.conf"
+postgresql_ident_file: "{{ postgresql_conf_directory }}/pg_ident.conf"
 # Use data in another directory
 postgresql_varlib_directory_name: "postgresql"
-postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{postgresql_version}}/{{postgresql_cluster_name}}"
+postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
-postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{postgresql_version}}-{{postgresql_cluster_name}}.pid"
+postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
 
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
 #------------------------------------------------------------------------------
 
 postgresql_listen_addresses:
-  - localhost
+  - "localhost"
 postgresql_port: 5432
 
 postgresql_max_connections: 100
 postgresql_superuser_reserved_connections: 3
 
-postgresql_unix_socket_directory: ''    # (<= 9.2)
+postgresql_unix_socket_directory: ""    # (<= 9.2)
 postgresql_unix_socket_directories:     # (>= 9.3)
   - "{{ postgresql_pid_directory }}"
-postgresql_unix_socket_group: ''
-postgresql_unix_socket_permissions: '0777' # begin with 0 to use octal notation
+postgresql_unix_socket_group: ""
+postgresql_unix_socket_permissions: 0777 # begin with 0 to use octal notation
 
 # Automatic pg_ctl configuration. Specify a list of options containing
 # cluster specific options to be passed to pg_ctl(1).
 postgresql_pg_ctl_options: []
 
 postgresql_bonjour: off # advertise server via Bonjour
-postgresql_bonjour_name: '' # defaults to the computer name
+postgresql_bonjour_name: "" # defaults to the computer name
 
 
 # - Security and Authentication -
@@ -109,25 +109,25 @@ postgresql_bonjour_name: '' # defaults to the computer name
 postgresql_authentication_timeout: 60s
 postgresql_ssl: off
 postgresql_ssl_ciphers:
-  - 'DEFAULT'
-  - '!LOW'
-  - '!EXP'
-  - '!MD5'
-  - '@STRENGTH'
+  - "DEFAULT"
+  - "!LOW"
+  - "!EXP"
+  - "!MD5"
+  - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
-postgresql_ssl_ecdh_curve: 'prime256v1'
+postgresql_ssl_ecdh_curve: "prime256v1"
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: /etc/ssl/certs/ssl-cert-snakeoil.pem  # (>= 9.2)
-postgresql_ssl_key_file: /etc/ssl/private/ssl-cert-snakeoil.key # (>= 9.2)
-postgresql_ssl_ca_file: ''                                      # (>= 9.2)
-postgresql_ssl_crl_file: ''                                     # (>= 9.2)
+postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
+postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
+postgresql_ssl_ca_file: ""                                      # (>= 9.2)
+postgresql_ssl_crl_file: ""                                     # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
 
 # Kerberos and GSSAPI
-postgresql_krb_server_keyfile: ''
-postgresql_krb_srvname: postgres
+postgresql_krb_server_keyfile: ""
+postgresql_krb_srvname: "postgres" # (<= 9.3)
 postgresql_krb_caseins_users: off
 
 # TCP Keepalives, 0 selects the system default (in seconds)
@@ -143,7 +143,7 @@ postgresql_tcp_keepalives_count: 0
 # - Memory -
 
 postgresql_shared_buffers:       128MB # min 128kB
-postgresql_huge_pages:           try   # on, off, or try
+postgresql_huge_pages:           "try"   # on, off, or try
 postgresql_temp_buffers:         8MB   # min 800kB
 
 # Caution: it is not advisable to set max_prepared_transactions nonzero unless
@@ -155,7 +155,7 @@ postgresql_maintenance_work_mem:       16MB     # min 1MB
 postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
 postgresql_max_stack_depth:            2MB      # min 100kB
-postgresql_dynamic_shared_memory_type: posix    # the default is the first option
+postgresql_dynamic_shared_memory_type: "posix"  # the default is the first option
                                                 # supported by the operating system:
                                                 #   posix
                                                 #   sysv
@@ -210,7 +210,7 @@ postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default i
 
 # - Settings -
 
-postgresql_wal_level: minimal     # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
+postgresql_wal_level: "minimal"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
 postgresql_fsync:     on          # flush data to disk for crash safety
                                           # (turning this off can cause
                                           # unrecoverable data corruption)
@@ -229,7 +229,7 @@ postgresql_synchronous_commit: "on"
 # - fsync
 # - fsync_writethrough
 # - open_sync
-postgresql_wal_sync_method: fsync
+postgresql_wal_sync_method: "fsync"
 
 # recover from partial page writes
 postgresql_full_page_writes: on
@@ -264,7 +264,7 @@ postgresql_archive_mode: off
 # Placeholders: %p = path of file to archive
 #               %f = file name only
 # e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
-postgresql_archive_command: ''
+postgresql_archive_command: ""
 
 # force a logfile segment switch after this
 postgresql_archive_timeout: 0
@@ -295,7 +295,7 @@ postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # standby servers that provide sync rep.
 # number of sync standbys (>= 9.6) and comma-separated list of application_name from standby(s)
-postgresql_synchronous_standby_num_sync: ''
+postgresql_synchronous_standby_num_sync: ""
 postgresql_synchronous_standby_names: [] # '*' means 'all'
 
 # number of xacts by which cleanup is delayed
@@ -392,7 +392,7 @@ postgresql_logging_collector:          off
 postgresql_log_directory:              pg_log
 # Log file name pattern, can include strftime() escapes
 postgresql_log_filename:               postgresql-%Y-%m-%d_%H%M%S.log
-postgresql_log_file_mode:              '0600' # begin with 0 to use octal notation
+postgresql_log_file_mode:              "0600" # begin with 0 to use octal notation
 # If on, an existing log file with the same name as the new log file will be
 # truncated rather than appended to. But such truncation only occurs on
 # time-driven rotation, not on restarts or size-driven rotation. Default is
@@ -494,7 +494,7 @@ postgresql_log_hostname:          off
 #   %q = stop here in non-session
 #        processes
 #   %% = '%'
-postgresql_log_line_prefix: '%t '
+postgresql_log_line_prefix: "%t "
 
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
@@ -567,7 +567,7 @@ postgresql_autovacuum_vacuum_cost_limit: -1
 postgresql_search_path: # schema names
   - '"$user"'
   - public
-postgresql_default_tablespace: '' # a tablespace name, '' uses the default
+postgresql_default_tablespace: "" # a tablespace name, "" uses the default
 postgresql_temp_tablespaces: [] # a list of tablespace names
 
 postgresql_check_function_bodies:          on
@@ -620,9 +620,9 @@ postgresql_lc_numeric: "{{ postgresql_locale }}"
 # locale for time formatting
 postgresql_lc_time: "{{ postgresql_locale }}"
 
-postgresql_default_text_search_config: pg_catalog.english
+postgresql_default_text_search_config: "pg_catalog.english"
 
-postgresql_dynamic_library_path: '$libdir'
+postgresql_dynamic_library_path: "$libdir"
 postgresql_local_preload_libraries: []
 postgresql_session_preload_libraries: []
 
@@ -647,7 +647,7 @@ postgresql_max_pred_locks_per_transaction: 64    # min 10
 # - Previous PostgreSQL Versions -
 
 postgresql_array_nulls:                 on
-postgresql_backslash_quote:             safe_encoding # on, off, or safe_encoding
+postgresql_backslash_quote:             "safe_encoding" # on, off, or safe_encoding
 postgresql_default_with_oids:           off
 postgresql_escape_string_warning:       on
 postgresql_lo_compat_privileges:        off
@@ -680,7 +680,7 @@ postgresql_pgtune: no
 # Total system memory in bytes, will attempt to detect if set to "no"
 postgresql_pgtune_memory: no
 # Database type, valid options are DW, OLTP, Web, Mixed, Desktop
-postgresql_pgtune_type: Mixed
+postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
 
@@ -692,9 +692,9 @@ postgresql_env:
   LC_LCTYPE: "{{ postgresql_locale }}"
 
 # APT settings
-postgresql_apt_key_id: ACCC4CF8
+postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-postgresql_apt_repository: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main {{postgresql_version}}'
+postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
 
@@ -744,4 +744,4 @@ postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ post
 
 postgresql_apt_py3_dependencies: ["python3-psycopg2", "locales"]
 postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
-postgresql_apt_dependencies: "{{postgresql_apt_py3_dependencies if 'python3' in ansible_python_interpreter|default('') else postgresql_apt_py2_dependencies}}"
+postgresql_apt_dependencies: "{{ postgresql_apt_py3_dependencies if 'python3' in ansible_python_interpreter|default('') else postgresql_apt_py2_dependencies }}"
