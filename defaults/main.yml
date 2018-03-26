@@ -100,8 +100,8 @@ postgresql_unix_socket_permissions: 0777 # begin with 0 to use octal notation
 # cluster specific options to be passed to pg_ctl(1).
 postgresql_pg_ctl_options: []
 
-postgresql_bonjour: off # advertise server via Bonjour
-postgresql_bonjour_name: "" # defaults to the computer name
+postgresql_bonjour: off      # advertise server via Bonjour
+postgresql_bonjour_name: ""  # defaults to the computer name
 
 
 # - Security and Authentication -
@@ -119,8 +119,8 @@ postgresql_ssl_ecdh_curve: "prime256v1"
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
 postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
-postgresql_ssl_ca_file: ""                                      # (>= 9.2)
-postgresql_ssl_crl_file: ""                                     # (>= 9.2)
+postgresql_ssl_ca_file: ""                                        # (>= 9.2)
+postgresql_ssl_crl_file: ""                                       # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
@@ -258,7 +258,7 @@ postgresql_checkpoint_warning:           30s   # 0 disables
 # - Archiving -
 
 # allows archiving to be done
-postgresql_archive_mode: off
+postgresql_archive_mode: off   # Should be a string with quotes, but all templates need fixing first
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
@@ -364,12 +364,12 @@ postgresql_geqo_seed:                  0.0  # range 0.0-1.0
 
 # - Other Planner Options -
 
-postgresql_default_statistics_target:  100        # range 1-10000
-postgresql_constraint_exclusion:       partition  # on, off, or partition
-postgresql_cursor_tuple_fraction:      0.1        # range 0.0-1.0
+postgresql_default_statistics_target:  100          # range 1-10000
+postgresql_constraint_exclusion:       "partition"  # on, off, or partition
+postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
-postgresql_join_collapse_limit:        8          # 1 disables collapsing of explicit
-postgresql_force_parallel_mode:        off        # (>= 9.6)
+postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
+postgresql_force_parallel_mode:        "off"        # (>= 9.6)
 
 
 #------------------------------------------------------------------------------
@@ -380,7 +380,7 @@ postgresql_force_parallel_mode:        off        # (>= 9.6)
 
 # Valid values are combinations of stderr, csvlog, syslog, and eventlog.
 # depending on platform. Csvlog requires logging_collector to be on.
-postgresql_log_destination:            stderr
+postgresql_log_destination:            "stderr"
 
 # Enable capturing of stderr and csvlog into log files.
 # Required to be on for csvlogs.
@@ -389,10 +389,10 @@ postgresql_logging_collector:          off
 # These are only used if logging_collector is on:
 
 # Directory where log files are written, can be absolute or relative to PGDATA
-postgresql_log_directory:              pg_log
+postgresql_log_directory:              "pg_log"
 # Log file name pattern, can include strftime() escapes
-postgresql_log_filename:               postgresql-%Y-%m-%d_%H%M%S.log
-postgresql_log_file_mode:              "0600" # begin with 0 to use octal notation
+postgresql_log_filename:               "postgresql-%Y-%m-%d_%H%M%S.log"
+postgresql_log_file_mode:              0600 # begin with 0 to use octal notation
 # If on, an existing log file with the same name as the new log file will be
 # truncated rather than appended to. But such truncation only occurs on
 # time-driven rotation, not on restarts or size-driven rotation. Default is
@@ -404,12 +404,12 @@ postgresql_log_rotation_age:           1d
 postgresql_log_rotation_size:          10MB
 
 # These are relevant when logging to syslog:
-postgresql_syslog_facility:            LOCAL0
-postgresql_syslog_ident:               postgres
+postgresql_syslog_facility:            "LOCAL0"
+postgresql_syslog_ident:               "postgres"
 postgresql_syslog_sequence_numbers:    on         # (>= 9.6)
 postgresql_syslog_split_messages:      on         # (>= 9.6)
 # This is only relevant when logging to eventlog (win32) (>= 9.2):
-postgresql_event_source:               PostgreSQL
+postgresql_event_source:               "PostgreSQL"
 
 
 # - When to Log -
@@ -424,7 +424,7 @@ postgresql_event_source:               PostgreSQL
 # - notice
 # - warning
 # - error
-postgresql_client_min_messages: notice
+postgresql_client_min_messages: "notice"
 
 # Values in order of decreasing detail:
 # - debug5
@@ -439,7 +439,7 @@ postgresql_client_min_messages: notice
 # - log
 # - fatal
 # - panic
-postgresql_log_min_messages: warning
+postgresql_log_min_messages: "warning"
 
 # Values in order of decreasing detail:
 # - debug5
@@ -454,7 +454,7 @@ postgresql_log_min_messages: warning
 # - log
 # - fatal
 # - panic (effectively off)
-postgresql_log_min_error_statement: error
+postgresql_log_min_error_statement: "error"
 
 # -1 is disabled, 0 logs all statements and their durations, > 0 logs only
 # statements running at least this number of milliseconds
@@ -471,7 +471,7 @@ postgresql_log_checkpoints:       off
 postgresql_log_connections:       off
 postgresql_log_disconnections:    off
 postgresql_log_duration:          off
-postgresql_log_error_verbosity:   default  # terse, default, or verbose messages
+postgresql_log_error_verbosity:   "default"  # terse, default, or verbose messages
 postgresql_log_hostname:          off
 
 # Special values:
@@ -498,10 +498,10 @@ postgresql_log_line_prefix: "%t "
 
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
-postgresql_log_statement:  none  # none, ddl, mod, all
+postgresql_log_statement:  "none"  # none, ddl, mod, all
 # log temporary files equal or larger
 postgresql_log_temp_files: -1
-postgresql_log_timezone:   UTC
+postgresql_log_timezone:   "UTC"
 
 
 #------------------------------------------------------------------------------
@@ -513,10 +513,10 @@ postgresql_log_timezone:   UTC
 postgresql_track_activities:          on
 postgresql_track_counts:              on
 postgresql_track_io_timing:           off   # (>= 9.2)
-postgresql_track_functions:           none # none, pl, all
+postgresql_track_functions:           "none" # none, pl, all
 postgresql_track_activity_query_size: 1024
 postgresql_update_process_title:      on
-postgresql_stats_temp_directory:      pg_stat_tmp
+postgresql_stats_temp_directory:      "pg_stat_tmp"
 
 
 # - Statistics Monitoring -
@@ -566,15 +566,15 @@ postgresql_autovacuum_vacuum_cost_limit: -1
 
 postgresql_search_path: # schema names
   - '"$user"'
-  - public
+  - "public"
 postgresql_default_tablespace: "" # a tablespace name, "" uses the default
 postgresql_temp_tablespaces: [] # a list of tablespace names
 
 postgresql_check_function_bodies:          on
-postgresql_default_transaction_isolation:  read committed
+postgresql_default_transaction_isolation:  "read committed"
 postgresql_default_transaction_read_only:  off
 postgresql_default_transaction_deferrable: off
-postgresql_session_replication_role:       origin
+postgresql_session_replication_role:       "origin"
 
 postgresql_statement_timeout:                     0           # in milliseconds, 0 is disabled
 postgresql_lock_timeout:                          0           # in milliseconds, 0 is disabled (>= 9.3)
@@ -584,26 +584,26 @@ postgresql_vacuum_freeze_table_age:               150000000
 postgresql_vacuum_multixact_freeze_min_age:       5000000     # (>= 9.3)
 postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 
-postgresql_bytea_output: hex  # hex, escape
-postgresql_xmlbinary:    base64
-postgresql_xmloption:    content
+postgresql_bytea_output: "hex"  # hex, escape
+postgresql_xmlbinary:    "base64"
+postgresql_xmloption:    "content"
 postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2)
 
 
 # - Locale and Formatting -
 
 postgresql_datestyle:
-  - iso
-  - mdy
-postgresql_intervalstyle:      postgres
-postgresql_timezone:           UTC
+  - "iso"
+  - "mdy"
+postgresql_intervalstyle:      "postgres"
+postgresql_timezone:           "UTC"
 
 # Select the set of available time zone abbreviations. Currently, there are:
 #   Default
 #   Australia
 #   India
 # You can create your own file in `share/timezonesets/`.
-postgresql_timezone_abbreviations: Default
+postgresql_timezone_abbreviations: "Default"
 
 postgresql_extra_float_digits: 0          # min -15, max 3
 postgresql_client_encoding:    False  # actually defaults to database encoding
