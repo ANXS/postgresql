@@ -7,7 +7,7 @@ Vagrant.configure('2') do |config|
   config.ssh.insert_key = false
   config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
 
-  config.vm.define 'anxs' do |machine|
+  config.vm.define 'anxs-centos-vm' do |machine|
     #machine.vm.box = "bento/ubuntu-16.04"
     # machine.vm.box = "ubuntu/trusty64"
     #machine.vm.box = "ubuntu/precise64"
@@ -18,11 +18,11 @@ Vagrant.configure('2') do |config|
 
     machine.vm.network :private_network, ip: '192.168.88.22'
 
-    machine.vm.hostname = 'centos-vm'
+    machine.vm.hostname = 'anxs-centos-vm'
 
     machine.vm.provision 'ansible' do |ansible|
       ansible.playbook = 'tests/playbook.yml'
-      ansible.verbose = "v"
+      # ansible.verbose = "v"
       ansible.become = true
       ansible.inventory_path = 'vagrant-inventory'
       ansible.host_key_checking = false
@@ -30,10 +30,10 @@ Vagrant.configure('2') do |config|
 
   end
 
-  config.vm.define 'ubuntu-vm' do |machine| machine.vm.box = "bento/ubuntu-16.04"
+  config.vm.define 'anxs-ubuntu-vm' do |machine| machine.vm.box = "bento/ubuntu-16.04"
     machine.vm.network :private_network, ip: '192.168.88.23'
 
-    machine.vm.hostname = 'ubuntu-vm'
+    machine.vm.hostname = 'anxs-ubuntu-vm'
 
     machine.vm.provision 'ansible' do |ansible|
       ansible.playbook = 'tests/playbook.yml'

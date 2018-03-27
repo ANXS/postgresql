@@ -8,7 +8,7 @@ postgresql_databases:
 
 postgresql_users:
 
-  # postgresql 10 does not accepte unencrypted passwords 
+  # postgresql 10 does not accept unencrypted passwords 
   - name: baz
 
   - name: zab
