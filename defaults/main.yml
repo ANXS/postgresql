@@ -672,9 +672,9 @@ postgresql_transform_null_equals:       off
 
 # These options allow settings to be loaded from files other than the
 # default postgresql.conf.
-postgresql_include_dir: "conf.d"               # (>= 9.3)
+postgresql_include_dir:       "conf.d"         # (>= 9.3)
 postgresql_include_if_exists: "exists.conf"    # (>= 9.3)
-postgresql_include: "special.conf"             # (>= 9.3)
+postgresql_include:           "special.conf"   # (>= 9.3)
 
 #------------------------------------------------------------------------------
 # ERROR HANDLING
