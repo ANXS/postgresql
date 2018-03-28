@@ -6,6 +6,7 @@ postgresql_databases:
   - name: foobar
     owner: baz
 
+# NOTE: postgresql >= 10 does not accept unencrypted passwords
 postgresql_users:
   - name: baz
     pass: md51a1dc91c907325c69271ddf0c944bc72
