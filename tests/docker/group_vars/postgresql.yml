@@ -7,8 +7,8 @@ postgresql_databases:
     owner: baz
 
 postgresql_users:
-  - name: baz
-    pass: pass
+#  - name: baz
+#    pass: pass
 
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72
