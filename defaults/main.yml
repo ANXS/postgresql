@@ -737,6 +737,8 @@ postgresql_pgdg_dists:
   Scientific: sl
   SLC: sl
   OracleLinux: oraclelinux
+  Fedora: fedora
+
 postgresql_pgdg_releases:
   redhat: {
       9.1: 8,
@@ -774,11 +776,22 @@ postgresql_pgdg_releases:
       9.6: 3,
        10: 2,
   }
+
+postgresql_fedora_releases:
+  fedora: {
+     9.5: 12,
+     9.6: 8,
+      10: 3,
+      11: 1,
+  }
+
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
 postgresql_pgdg_repository_base_url: "https://download.postgresql.org/pub/repos/yum/"
 postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 postgresql_yum_repository_url_pgdg: "{{ postgresql_pgdg_repository_base_url }}/RPM-GPG-KEY-PGDG-{{ postgresql_version_terse }}"
+
+postgresql_dnf_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_distribution | lower }}/fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_fedora_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
 
 postgresql_apt_py3_dependencies: ["python3-psycopg2", "locales"]
 postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
