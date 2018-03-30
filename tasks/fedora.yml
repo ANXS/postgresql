@@ -4,9 +4,9 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgreSQL | Make sure the CA certificates are available
+      - name: PostgrSQL | Install all the OS Dependencies
         dnf:
-          name: ca-certificates
+          name: ca-certificates,python
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
