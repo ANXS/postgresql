@@ -4,22 +4,15 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgreSQL | Make sure the CA certificates are available
+      - name: PostgreSQL | Install all the required dependencies
         yum:
-          name: ca-certificates
+          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release"]
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
         yum:
           name: "{{ postgresql_yum_repository_url }}"
           state: present
-
-      - name: PostgreSQL | Make sure the dependencies are installed
-        yum:
-         name: "{{ item }}"
-         state: present
-         update_cache: yes
-        with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
 
       - name: PostgreSQL | Install PostgreSQL
         yum:
