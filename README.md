@@ -125,9 +125,9 @@ To the top contributors:
 - [Michael Conrad](https://github.com/MichaelConrad)
 - [Greg Clough](https://github.com/gclough)
 - [Sébastien Alix](https://github.com/sebalix)
-- [Ralph von der Heyden](https://github.com/ralph)
-
 - [Copperfield](https://github.com/Copperfield)
+
+- [Ralph von der Heyden](https://github.com/ralph)
 
 
 #### Feedback, bug-reports, requests, ...
