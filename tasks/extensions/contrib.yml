@@ -2,18 +2,18 @@
 
 - name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | Debian
   apt:
-    name: "postgresql-contrib-{{postgresql_version}}"
+    name: "postgresql-contrib-{{ postgresql_version }}"
     state: present
     update_cache: yes
-    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+    cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when: ansible_os_family == "Debian"
   notify:
-    - restart postgresql
+    - restart postgresql with service
 
 - name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | RedHat
   yum:
-    name: "postgresql{{postgresql_version_terse}}-contrib"
+    name: "postgresql{{ postgresql_version_terse }}-contrib"
     state: present
   when: ansible_os_family == "RedHat"
   notify:
-    - restart postgresql
+    - restart postgresql with systemd
