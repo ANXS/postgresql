@@ -12,4 +12,3 @@
       state: restarted
       enabled: yes
     when: ansible_service_mgr == 'systemd'
- 
