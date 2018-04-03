@@ -154,3 +154,8 @@
     mode: u=rwX,g=rwXs,o=rx
   notify: restart postgresql with service
 
+- name: PostgreSQL | Reload all conf files
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: reloaded
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
