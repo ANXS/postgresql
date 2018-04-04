@@ -4,3 +4,6 @@
   template:
     src: etc_monit_conf.d_postgresql.j2
     dest: /etc/monit/conf.d/postgresql
+  notify:
+    - reload monit
+
