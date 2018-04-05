@@ -19,7 +19,7 @@
          name: "{{ item }}"
          state: present
          update_cache: yes
-        with_items: ["python-psycopg2", "python-pycurl", "glibc-common"]
+        with_items: ["python-psycopg2", "python-pycurl", "glibc-common", "libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL
         yum:
