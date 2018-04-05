@@ -9,6 +9,10 @@
           name: ca-certificates
           state: present
 
+      - debug:
+          msg: "WARNING: PostgreSQL is pre-release, and NOT suitable for production!"
+        when: postgresql_version > 10
+
       - name: PostgreSQL | Add PostgreSQL repository
         yum:
           name: "{{ postgresql_yum_repository_url }}"
