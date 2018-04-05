@@ -750,7 +750,7 @@ postgresql_install_repository: true
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
+postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg{% if postgresql_version > 10 %}-testing{% endif %} main {{ postgresql_version }}"
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
 
@@ -816,7 +816,8 @@ postgresql_fedora_releases:
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 
 # YUM repository locations
-postgresql_yum_repository_url: "http://yum.postgresql.org"
+postgresql_yum_repository_base_url: "http://yum.postgresql.org"
+postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_pgdg_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
 postgresql_pgdg_repository_url: "https://download.postgresql.org/pub/repos/yum/"
 
 # YUM (RedHat, CentOS, etc.) baseurl/gpgkey

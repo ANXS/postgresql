@@ -1,10 +1,5 @@
 # file: postgresql/tasks/extensions/postgis.yml
 
-- include_vars: "{{ item }}"
-  with_first_found:
-    - "../vars/{{ ansible_distribution_release }}.yml"
-    - "../vars/empty.yml"
-
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Debian
   apt:
     name: "{{ postgresql_ext_postgis_deps }}"

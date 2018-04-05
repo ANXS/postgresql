@@ -8,7 +8,7 @@
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when: ansible_os_family == "Debian"
   notify:
-    - restart postgresql
+    - restart postgresql with service
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
   yum: 
