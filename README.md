@@ -123,11 +123,10 @@ Maintainers:
 - [Sergei Antipov](https://github.com/UnderGreen)
 
 Top Contributors:
-- [Pjan Vandaele](https://github.com/pjan)
 - [David Farrington](https://github.com/farridav)
 - [Jesse Lang](https://github.com/jesselang)
-- [Michael Conrad](https://github.com/MichaelConrad)
 - [Greg Clough](https://github.com/gclough)
+- [Michael Conrad](https://github.com/MichaelConrad)
 - [Sébastien Alix](https://github.com/sebalix)
 - [Copperfield](https://github.com/Copperfield)
 
