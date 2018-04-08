@@ -6,7 +6,7 @@
   - block:
       - name: PostgreSQL | Install all the required dependencies
         yum:
-          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release"]
+          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
