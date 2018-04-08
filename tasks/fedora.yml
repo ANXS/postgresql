@@ -4,21 +4,15 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgrSQL | Install all the OS Dependencies
+      - name: PostgrSQL | Install all the rquired depedencies
         dnf:
-          name: ca-certificates,python
+          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
         dnf:
           name: "{{ postgresql_dnf_repository_url }}"
           state: present
-
-      - name: PostgreSQL | Make sure the dependencies are installed
-        dnf:
-         name: "{{ item }}"
-         state: present
-        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL
         dnf:
