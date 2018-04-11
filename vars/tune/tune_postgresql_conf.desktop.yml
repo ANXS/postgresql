@@ -1,0 +1,9 @@
+---
+
+#------------------------------------------------------------------------------
+# Tuning parameters for a small "desktop" PC, which is not dedicated to PostgreSQL
+#------------------------------------------------------------------------------
+
+postgresql_tuning_memory_percent: "10"  # What percent of RAM to dedicate to PostgreSQL
+
+...

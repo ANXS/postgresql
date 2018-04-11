@@ -1,0 +1,122 @@
+---
+
+#------------------------------------------------------------------------------
+# Tuning parameters that are common to all machine types
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Global adjustments to tuning formulas, not a part of postgresql.conf themselves,
+# but they affect the formulas to give different numbers
+#------------------------------------------------------------------------------
+postgresql_tuning_memory_percent: "100"  # What percent of RAM to dedicate to PostgreSQL
+postgresql_tuning_memory_mb: "{{ (postgresql_tuning_memory_percent|int / 100 * ansible_memory_mb.real.total)|int }}"
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+# - Security and Authentication -
+## Wait until Pull #303 is merged ## postgresql_ssl: "on" # Allow SSL, as restart is required to change
+postgresql_ssl_renegotiation_limit: "0" # Turn off, as it's buggy
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+# - Memory -
+postgresql_shared_buffers: "{{ [(postgresql_tuning_memory_mb|int * 0.25)|int,16384]|min }}MB" # 25% of RAM, maximum of 16GB
+postgresql_temp_buffers: "{{ [(postgresql_tuning_memory_mb|int * 0.25 / postgresql_max_connections)|int,1]|max }}MB" # 25% of RAM, divided by max_connections, minimum of 1MB
+postgresql_work_mem: "{{ [(postgresql_tuning_memory_mb|int * 0.25 / postgresql_max_connections)|int,1]|max }}MB" # 25% of RAM, divided by max_connections, minimum of 1MB
+postgresql_maintenance_work_mem: "{{ [(postgresql_tuning_memory_mb|int * 0.15 / postgresql_autovacuum_max_workers|float)|int,1]|max }}MB" # 15% of RAM, divided by autovacuum_max_workers, minimum of 1MB
+
+# - Kernel Resource Usage -
+postgresql_shared_preload_libraries:
+  - pg_stat_statements # Always helpful, and needs a restart to load. Costs a few % of CPU
+
+# - Kernel Resource Usage -
+postgresql_vacuum_cost_limit: 10000 # Make vacuum more aggressive
+
+# - Background Writer -
+postgresql_bgwriter_delay: "100ms" # Default 200ms too high, go even lower for high update databases
+postgresql_bgwriter_lru_maxpages: "1000" # Default 100 is too low
+postgresql_bgwriter_lru_lultiplier: "4.0" # Make bgwriter more aggressive
+
+# - Asynchronous Behavior -
+postgresql_effective_io_concurrency: "{{ [([((ansible_processor_vcpus + 1) * 0.5 )|int,1]|max),16]|min }}" # Assume more vcpus means more I/O, minimum of 1, maximum of 16
+postgresql_max_worker_processes: "{{ [((ansible_processor_vcpus + 1) * 0.9 )|int,1]|max }}" # 90% of vcpus, minimum of 1
+postgresql_max_parallel_workers_per_gather: "{{ [(ansible_processor_vcpus * 0.2 )|int,1]|max }}" # 20% of vcpus, minimum of 1
+
+#------------------------------------------------------------------------------
+# WRITE AHEAD LOG
+#------------------------------------------------------------------------------
+
+# - Settings -
+postgresql_wal_level: "logical" # >= v9.4. Always use the maximum, as changing needs a restart
+postgresql_wal_compression: "on" # >= v9.5. Smaller WAL
+postgresql_wal_buffers: "{{ (([[(postgresql_tuning_memory_mb|int * 0.01)|int, 16]|max,64]|min / 16)|round * 16)|int }}MB" # 1% of RAM, minimum 16MB, maximum 64MB, rounded to 16MB chunks
+
+# - Checkpoints -
+postgresql_checkpoint_timeout: "30min" # Less checkpoints = less I/O, but longer crash recovery
+postgresql_checkpoint_segments: "64" # <= v9.4 (64 x 16MB = 1GB)
+postgresql_max_wal_size: "{{ ([[(postgresql_tuning_memory_mb|int * 0.05)|int, 1]|max,64]|min)|int }}GB" # (5% of RAM * 1024), minimum 1GB, maximum 64GB, rounded to 1GB chunks
+postgresql_min_wal_size: "512MB" # >= v9.5. Do not remove WAL, but recycle it
+postgresql_checkpoint_completion_target: "0.9" # Spread I/O more evenly between checkpoints
+
+# - Archiving -
+postgresql_archive_mode: "on" # Always helpful, and changing needs a restart
+postgresql_archive_command: 'echo WARNING: Skipping archive of %f. Point in Time Recovery is not possible without this file.' # Warn the DBA they can't do Point In Time Recovery (PITR) without saving them
+
+#------------------------------------------------------------------------------
+# REPLICATION
+#------------------------------------------------------------------------------
+
+# - Sending Server(s) -
+postgresql_max_wal_senders: "10" # Only costs a small amount or RAM, too few needs a restart
+postgresql_max_replication_slots: "10" # Only costs a small amount or RAM, too few needs a restart
+
+# - Standby Servers -
+postgresql_hot_standby: "on" # Always default to on, even on Primary servers. Helps with HA
+
+#------------------------------------------------------------------------------
+# QUERY TUNING
+#------------------------------------------------------------------------------
+
+# - Planner Cost Constants -
+postgresql_random_page_cost: "2.0" # Most disks are faster today, go to 1.0 for SSD
+postgresql_cpu_tuple_cost: "0.03" # Usually better explain plans
+postgresql_effective_cache_size: "{{ (postgresql_tuning_memory_mb|int * 0.70)|int }}MB" # 70% of RAM
+
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+# - Where to Log -
+postgresql_logging_collector: "on" # Logging is always helpful
+
+# - What to Log -
+postgresql_log_checkpoints: "on" # Helpful for monitoring/tuning
+postgresql_log_connections: "on" # Helpful for monitoring/tuning
+postgresql_log_disconnections: "on" # Helpful for monitoring/tuning
+postgresql_log_line_prefix: "%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h " # pgbadger compatible
+postgresql_log_lock_waits: "on" # Helpful for monitoring/tuning
+
+#------------------------------------------------------------------------------
+# AUTOVACUUM PARAMETERS
+#------------------------------------------------------------------------------
+
+postgresql_autovacuum_max_workers: "{{ [(ansible_processor_vcpus * 0.20)|int,1]|max }}" # 20% of vcpus, minimum of 1
+postgresql_autovacuum_vacuum_threshold: "10000" # Don't vacuum smaller tables too frequently
+postgresql_autovacuum_analyze_threshold: "100" # Don't analyze smaller tables too frequently
+postgresql_autovacuum_vacuum_scale_factor: "0.05" # Vacuum larger tables more frequently
+postgresql_autovacuum_analyze_scale_factor: "0.05" # Analyze larger tables more frequently
+postgresql_autovacuum_vacuum_cost_delay: "10ms" # Make autovacuum more aggressive, go lower for very busy databases
+postgresql_autovacuum_vacuum_cost_limit: "{{ postgresql_vacuum_cost_limit }}" # "-1" is the same, but set it explicitly for clarity
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+# - Statement Behavior -
+postgresql_idle_in_transaction_session_timeout: 600000  # Kill idle transactions (not sessions) older than 10 minutes, as they may hold locks
+
+...

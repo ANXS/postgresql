@@ -1,0 +1,30 @@
+---
+# file: postgresql/tasks/tune.yml
+
+- name: PostgreSQL | Tuning | common
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "tune/tune_postgresql_conf.common.yml"
+
+- name: PostgreSQL | Tuning | common | v{{ postgresql_version }}
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "tune/tune_postgresql_conf.common.{{ postgresql_version }}.yml"
+      skip: true
+
+- name: PostgreSQL | Tuning | use:{{ postgresql_tune_server_use }}
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "tune/tune_postgresql_conf.{{ postgresql_tune_server_use }}.yml"
+      skip: true
+
+- name: PostgreSQL | Tuning | use:{{ postgresql_tune_server_use }} | v{{ postgresql_version }}
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+      - "tune/tune_postgresql_conf.{{ postgresql_tune_server_use }}.{{ postgresql_version }}.yml"
+      skip: true
+
+...

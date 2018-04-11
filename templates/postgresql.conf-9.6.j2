@@ -63,8 +63,6 @@ listen_addresses = '{{postgresql_listen_addresses|join(',')}}'		# what IP addres
 					# (change requires restart)
 port = {{postgresql_port}}				# (change requires restart)
 max_connections = {{postgresql_max_connections}}			# (change requires restart)
-# Note:  Increasing max_connections costs ~400 bytes of shared memory per
-# connection slot, plus lock space (see max_locks_per_transaction).
 superuser_reserved_connections = {{postgresql_superuser_reserved_connections}}	# (change requires restart)
 unix_socket_directories = '{{postgresql_unix_socket_directories|join(',')}}'	# comma-separated list of directories
 					# (change requires restart)
@@ -82,7 +80,7 @@ authentication_timeout = {{postgresql_authentication_timeout}}		# 1s-600s
 ssl = {{'on' if postgresql_ssl else 'off'}}				# (change requires restart)
 ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
-ssl_prefer_server_ciphers = {{postgresql_ssl_prefer_server_ciphers}}		# (change requires restart)
+ssl_prefer_server_ciphers = {{ 'on' if postgresql_ssl_prefer_server_ciphers else 'off' }}		# (change requires restart)
 ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
 ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
@@ -120,12 +118,11 @@ huge_pages = {{postgresql_huge_pages}}			# on, off, or try
 temp_buffers = {{postgresql_temp_buffers}}			# min 800kB
 max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero disables the feature
 					# (change requires restart)
-# Note:  Increasing max_prepared_transactions costs ~600 bytes of shared memory
-# per transaction slot, plus lock space (see max_locks_per_transaction).
-# It is not advisable to set max_prepared_transactions nonzero unless you
-# actively intend to use prepared transactions.
+# Caution: It is not advisable to set max_prepared_transactions nonzero unless
+# you actively intend to use prepared transactions.
 work_mem = {{postgresql_work_mem}}				# min 64kB
 maintenance_work_mem = {{postgresql_maintenance_work_mem}}		# min 1MB
+replacement_sort_tuples = {{postgresql_replacement_sort_tuples}}	# limits use of replacement selection sort
 autovacuum_work_mem = {{postgresql_autovacuum_work_mem}}		# min 1MB, or -1 to use maintenance_work_mem
 max_stack_depth = {{postgresql_max_stack_depth}}			# min 100kB
 dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the default is the first option
@@ -138,7 +135,7 @@ dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the def
 
 # - Disk -
 
-temp_file_limit = {{postgresql_temp_file_limit}}			# limits per-session temp file space
+temp_file_limit = {{postgresql_temp_file_limit}}			# limits per-process temp file space
 					# in kB, or -1 for no limit
 
 # - Kernel Resource Usage -
@@ -159,13 +156,18 @@ vacuum_cost_limit = {{postgresql_vacuum_cost_limit}}		# 1-10000 credits
 
 bgwriter_delay = {{postgresql_bgwriter_delay}}			# 10-10000ms between rounds
 bgwriter_lru_maxpages = {{postgresql_bgwriter_lru_maxpages}}		# 0-1000 max buffers written/round
-bgwriter_lru_multiplier = {{postgresql_bgwriter_lru_multiplier}}		# 0-10.0 multipler on buffers scanned/round
+bgwriter_lru_multiplier = {{postgresql_bgwriter_lru_multiplier}}		# 0-10.0 multiplier on buffers scanned/round
+bgwriter_flush_after = {{postgresql_bgwriter_flush_after}}		# 0 disables,
+					# default is 512kB on linux, 0 otherwise
 
 # - Asynchronous Behavior -
 
 effective_io_concurrency = {{postgresql_effective_io_concurrency}}		# 1-1000; 0 disables prefetching
-max_worker_processes = {{postgresql_max_worker_processes}}
-
+max_worker_processes = {{postgresql_max_worker_processes}}		# (change requires restart)
+max_parallel_workers_per_gather = {{postgresql_max_parallel_workers_per_gather}}	# taken from max_worker_processes
+old_snapshot_threshold = {{postgresql_old_snapshot_threshold}}		# 1min-60d; -1 disables; 0 is immediate
+								# (change requires restart)
+backend_flush_after = {{postgresql_backend_flush_after}}		# 0 disables, default is 0
 
 #------------------------------------------------------------------------------
 # WRITE AHEAD LOG
@@ -173,11 +175,13 @@ max_worker_processes = {{postgresql_max_worker_processes}}
 
 # - Settings -
 
-wal_level = {{postgresql_wal_level}}			# minimal, archive, hot_standby, or logical
+wal_level = {{postgresql_wal_level}}			# minimal, replica, or logical
 					# (change requires restart)
-fsync = {{'on' if postgresql_fsync else 'off'}}				# turns forced synchronization on or off
+fsync = {{'on' if postgresql_fsync else 'off'}}				# flush data to disk for crash safety
+						# (turning this off can cause
+						# unrecoverable data corruption)
 synchronous_commit = {{postgresql_synchronous_commit}}		# synchronization level;
-					# off, local, remote_write, or on
+					# off, local, remote_write, remote_apply, or on
 wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first option
 					# supported by the operating system:
 					#   open_datasync
@@ -187,21 +191,24 @@ wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first opt
 					#   open_sync
 full_page_writes = {{'on' if postgresql_full_page_writes else 'off'}}			# recover from partial page writes
 wal_compression = {{ 'on' if postgresql_wal_compression else 'off' }}
-wal_log_hints = {{postgresql_wal_log_hints}}			# also do full page writes of non-critical updates
+wal_log_hints = {{ 'on' if postgresql_wal_log_hints else 'off' }}			# also do full page writes of non-critical updates
 					# (change requires restart)
 wal_buffers = {{postgresql_wal_buffers}}			# min 32kB, -1 sets based on shared_buffers
 					# (change requires restart)
 wal_writer_delay = {{postgresql_wal_writer_delay}}		# 1-10000 milliseconds
+wal_writer_flush_after = {{postgresql_wal_writer_flush_after}}		# 0 disables
 
 commit_delay = {{postgresql_commit_delay}}			# range 0-100000, in microseconds
 commit_siblings  = {{postgresql_commit_siblings}}			# range 1-1000
 
 # - Checkpoints -
 
-checkpoint_timeout = {{postgresql_checkpoint_timeout}}		# range 30s-1h
+checkpoint_timeout = {{postgresql_checkpoint_timeout}}		# range 30s-1d
 max_wal_size = {{ postgresql_max_wal_size if postgresql_max_wal_size or '1G' }}
 min_wal_size = {{ postgresql_min_wal_size if postgresql_min_wal_size or '80MB' }}
 checkpoint_completion_target = {{postgresql_checkpoint_completion_target}}	# checkpoint target duration, 0.0 - 1.0
+checkpoint_flush_after = {{postgresql_checkpoint_flush_after}} 		# 0 disables,
+					# default is 256kB on linux, 0 otherwise
 checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
@@ -237,8 +244,8 @@ track_commit_timestamp = {{'on' if postgresql_track_commit_timestamp else 'off' 
 
 # These settings are ignored on a standby server.
 
-synchronous_standby_names = '{{postgresql_synchronous_standby_names|join(',')}}'	# standby servers that provide sync rep
-				# comma-separated list of application_name
+synchronous_standby_names = '{{postgresql_synchronous_standby_num_sync}}{% if postgresql_synchronous_standby_names != [] %} ({{postgresql_synchronous_standby_names|join(',')}}){% endif %}'	# standby servers that provide sync rep
+				# number of sync standbys and comma-separated list of application_name
 				# from standby(s); '*' = all
 vacuum_defer_cleanup_age = {{postgresql_vacuum_defer_cleanup_age}}	# number of xacts by which cleanup is delayed
 
@@ -289,6 +296,9 @@ random_page_cost = {{postgresql_random_page_cost}}			# same scale as above
 cpu_tuple_cost = {{postgresql_cpu_tuple_cost}}			# same scale as above
 cpu_index_tuple_cost = {{postgresql_cpu_index_tuple_cost}}		# same scale as above
 cpu_operator_cost = {{postgresql_cpu_operator_cost}}		# same scale as above
+parallel_tuple_cost = {{postgresql_parallel_tuple_cost}}		# same scale as above
+parallel_setup_cost = {{postgresql_parallel_setup_cost}}	# same scale as above
+min_parallel_relation_size = {{postgresql_min_parallel_relation_size}}
 effective_cache_size = {{postgresql_effective_cache_size}}
 
 # - Genetic Query Optimizer -
@@ -309,6 +319,7 @@ cursor_tuple_fraction = {{postgresql_cursor_tuple_fraction}}		# range 0.0-1.0
 from_collapse_limit = {{postgresql_from_collapse_limit}}
 join_collapse_limit = {{postgresql_join_collapse_limit}}		# 1 disables collapsing of explicit
 					# JOIN clauses
+force_parallel_mode = {{'on' if postgresql_force_parallel_mode else 'off'}}
 
 
 #------------------------------------------------------------------------------
@@ -352,6 +363,8 @@ log_rotation_size = {{postgresql_log_rotation_size}}		# Automatic rotation of lo
 # These are relevant when logging to syslog:
 syslog_facility = '{{postgresql_syslog_facility}}'
 syslog_ident = '{{postgresql_syslog_ident}}'
+syslog_sequence_numbers = {{'on' if postgresql_syslog_sequence_numbers else 'off'}}
+syslog_split_messages = {{'on' if postgresql_syslog_split_messages else 'off'}}
 
 # This is only relevant when logging to eventlog (win32):
 event_source = '{{postgresql_event_source}}'
@@ -424,6 +437,7 @@ log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					#   %p = process ID
 					#   %t = timestamp without milliseconds
 					#   %m = timestamp with milliseconds
+					#   %n = timestamp with milliseconds (as a Unix epoch)
 					#   %i = command tag
 					#   %e = SQL state
 					#   %c = session ID
@@ -515,6 +529,7 @@ default_transaction_deferrable = {{'on' if postgresql_default_transaction_deferr
 session_replication_role = '{{postgresql_session_replication_role}}'
 statement_timeout = {{postgresql_statement_timeout}}			# in milliseconds, 0 is disabled
 lock_timeout = {{postgresql_lock_timeout}}			# in milliseconds, 0 is disabled
+idle_in_transaction_session_timeout = {{postgresql_idle_in_transaction_session_timeout}}		# in milliseconds, 0 is disabled
 vacuum_freeze_min_age = {{postgresql_vacuum_freeze_min_age}}
 vacuum_freeze_table_age = {{postgresql_vacuum_freeze_table_age}}
 vacuum_multixact_freeze_min_age = {{postgresql_vacuum_multixact_freeze_min_age}}
@@ -567,9 +582,6 @@ session_preload_libraries = '{{postgresql_session_preload_libraries|join(',')}}'
 deadlock_timeout = {{postgresql_deadlock_timeout}}
 max_locks_per_transaction = {{postgresql_max_locks_per_transaction}}		# min 10
 					# (change requires restart)
-# Note:  Each lock table slot uses ~270 bytes of shared memory, and there are
-# max_locks_per_transaction * (max_connections + max_prepared_transactions)
-# lock table slots.
 max_pred_locks_per_transaction = {{postgresql_max_pred_locks_per_transaction}}	# min 10
 					# (change requires restart)
 
