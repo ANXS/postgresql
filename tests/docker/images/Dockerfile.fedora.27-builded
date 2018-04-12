@@ -1,6 +1,6 @@
 FROM fedora:latest
 
-RUN dnf install iproute  sudo -y
+RUN dnf install iproute python sudo -y
 
 RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 		ls | grep -v systemd-tmpfiles-setup.service | xargs rm -f && \
