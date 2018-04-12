@@ -16,13 +16,9 @@
 
       - name: PostgreSQL | Install PostgreSQL
         dnf:
-          name: "{{ item }}"
+          name: '"postgresql{{ postgresql_version_terse }}-server","postgresql{{ postgresql_version_terse }}","postgresql{{ postgresql_version_terse }}-contrib"'
           state: present
         environment: "{{ postgresql_env }}"
-        with_items:
-          - "postgresql{{ postgresql_version_terse }}-server"
-          - "postgresql{{ postgresql_version_terse }}"
-          - "postgresql{{ postgresql_version_terse }}-contrib"
 
       - name: PostgreSQL | PGTune
         dnf:

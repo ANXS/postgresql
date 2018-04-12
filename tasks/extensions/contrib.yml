@@ -17,3 +17,12 @@
   when: ansible_os_family == "RedHat"
   notify:
     - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | Fedora
+  dnf:
+    name: "postgresql{{postgresql_version_terse}}-contrib"
+    state: present
+  when: ansible_distribution == "Fedora"
+  notify:
+    - restart postgresql
+
