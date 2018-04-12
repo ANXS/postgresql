@@ -8,7 +8,7 @@
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_os_family == "Debian"
   notify:
-    - restart postgresql with service
+    - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | RedHat
   yum:
@@ -16,4 +16,4 @@
     state: present
   when: ansible_os_family == "RedHat"
   notify:
-    - restart postgresql with systemd
+    - restart postgresql
