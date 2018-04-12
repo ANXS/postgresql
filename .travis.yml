@@ -1,12 +1,35 @@
 ---
+
 language: python
 python: "2.7"
-before_install:
- - sudo apt-get update -qq
- - sudo apt-get install -qq python-apt python-pycurl
+sudo: required
+dist: trusty
+services:
+  - docker
+
+env:
+  matrix:
+    - IMAGE_NAME="ubuntu-upstart:14.04"
+    - IMAGE_NAME="ubuntu:16.04-builded"
+    - IMAGE_NAME="debian:8-builded"
+    - IMAGE_NAME="debian:9-builded"
+    - IMAGE_NAME="centos:7-builded"
+    - IMAGE_NAME="centos:6-builded"
+
 install:
-  - pip install ansible==1.5.0
+  - pip install ansible=="2.4.2.0" docker-py
+  - ln -s ${PWD} tests/docker/ANXS.postgresql
+
 script:
-  - echo localhost > inventory
-  - ansible-playbook --syntax-check -i inventory test.yml
-  - ansible-playbook -i inventory test.yml --connection=local --sudo
+  # Syntax check
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml --syntax-check
+
+  # Play test
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml
+
+  # Idempotence test
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
+  - ./tests/idempotence_check.sh idempotence_out
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
