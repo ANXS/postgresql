@@ -1,5 +1,13 @@
 # file: postgresql/tasks/extensions/postgis.yml
 
+<<<<<<< HEAD
+=======
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution_release }}.yml"
+    - "../vars/empty.yml"
+
+>>>>>>> 9ae74d4f97f656609dd748f363088e9f12ab5582
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Debian
   apt:
     name: "{{ item }}"
@@ -17,6 +25,19 @@
     state: present
     update_cache: yes
   with_items: "{{ postgresql_ext_postgis_deps }}"
+<<<<<<< HEAD
+=======
+  when: ansible_os_family == "Debian"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
+  yum:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items: "{{ postgresql_ext_postgis_deps }}"
+>>>>>>> 9ae74d4f97f656609dd748f363088e9f12ab5582
   when: ansible_os_family == "RedHat"
   notify:
     - restart postgresql with systemd

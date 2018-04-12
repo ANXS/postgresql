@@ -6,7 +6,11 @@
   - block:
       - name: PostgreSQL | Install all the required dependencies
         yum:
+<<<<<<< HEAD
           name: ["ca-certificates", "python-psycopg2", "python-pycurl", "glibc-common", "epel-release", "libselinux-python"]
+=======
+          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
+>>>>>>> 9ae74d4f97f656609dd748f363088e9f12ab5582
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
@@ -23,6 +27,7 @@
           - "postgresql{{ postgresql_version_terse }}-server"
           - "postgresql{{ postgresql_version_terse }}"
           - "postgresql{{ postgresql_version_terse }}-contrib"
+<<<<<<< HEAD
 
       - name: PostgreSQL | PGTune
         yum:
@@ -30,3 +35,13 @@
           state: present
         environment: "{{ postgresql_env }}"
         when: postgresql_pgtune
+=======
+
+      - name: PostgreSQL | PGTune
+        yum:
+          name: pgtune
+          state: present
+        environment: "{{ postgresql_env }}"
+        when: postgresql_pgtune
+
+>>>>>>> 9ae74d4f97f656609dd748f363088e9f12ab5582
