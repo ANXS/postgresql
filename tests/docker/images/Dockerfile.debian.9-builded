@@ -29,3 +29,5 @@ RUN sed -ri /etc/systemd/journald.conf \
 			-e 's!^#?Storage=.*!Storage=volatile!'
 
 RUN ln -s /lib/systemd/systemd /sbin/init
+
+RUN git clone https://github.com/rtshome/ansible_pgsql /tmp/ansible_pgsql

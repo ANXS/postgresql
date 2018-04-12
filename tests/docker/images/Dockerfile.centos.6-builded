@@ -1,3 +1,5 @@
 FROM centos:6
 
 RUN yum install iproute epel-release sudo -y
+
+RUN git clone https://github.com/rtshome/ansible_pgsql /tmp/ansible_pgsql
