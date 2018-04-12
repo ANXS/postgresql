@@ -16,6 +16,8 @@ RUN yum -y install epel-release && \
 WORKDIR /tmp/postgresql
 COPY  .  /tmp/postgresql
 
+RUN git clone https://github.com/rtshome/ansible_pgsql /tmp/ansible_pgsql
+
 # Run our play
 RUN echo localhost > inventory
 RUN ansible-playbook -i inventory -c local --become tests/playbook.yml
