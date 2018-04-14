@@ -127,6 +127,36 @@
   notify: reload postgresql
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
+- name: PostgreSQL | Update configuration - pt. 3 (pgtune)
+  become: true
+  become_user: "{{ postgresql_service_user }}"
+  shell: |
+    set -e
+    TMPDIR=$(mktemp -d)
+    pgtune --input-config=postgresql.conf.untuned\
+           --output-config=$TMPDIR/postgresql.conf\
+           {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory|int}}{% endif %}\
+           --type {{postgresql_pgtune_type|quote}}\
+           {% if postgresql_pgtune_connections %}--connections {{postgresql_pgtune_connections|int}}{% endif %}\
+    # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
+    if diff --ignore-blank-lines \
+        <(sed -e 's/#.*//' postgresql.conf) \
+        <(sed -e 's/#.*//' $TMPDIR/postgresql.conf)
+    then
+      echo '_OK_'
+    else
+      cp $TMPDIR/postgresql.conf postgresql.conf
+    fi
+    # Cleanup
+    rm $TMPDIR/postgresql.conf
+    rmdir $TMPDIR
+  args:
+    chdir: "{{postgresql_conf_directory}}"
+    executable: "/bin/bash"
+  when: postgresql_pgtune
+  register: postgresql_configuration_pt3
+  changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
+
 - name: PostgreSQL | Create folder for additional configuration files
   file:
     name: "{{postgresql_conf_directory}}/conf.d"
