@@ -1,0 +1,41 @@
+# file: postgresql/handlers/reload.yml
+  
+#
+# Reload PostgreSQL
+#
+- name: PostgreSQL | <= v9.4, must restart to implement parameter changes
+  debug:
+    msg: "NOTICE: Detected PostgreSQL v9.4 or earlier. Restart required."
+  when: postgresql_restart_on_config_change and
+        postgresql_version | version_compare('9.4','<=')
+  register: postgresql_pre95_restart_required
+  
+- name: PostgreSQL | Reload PostgreSQL to implement parameter changes  | >= v9.5
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: reloaded
+  when: postgresql_version | version_compare('9.5','>=')
+  
+- name: PostgreSQL | Check for parameter changes that require a restart | >= v9.5
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  shell: "{{ postgresql_bin_directory }}/psql postgres --username {{ postgresql_admin_user }} --tuples-only --command='SELECT count(*) COUNT FROM pg_settings WHERE pending_restart IS true;'"
+  register: postgresql_check_for_param_changes
+  when: postgresql_version | version_compare('9.5','>=')
+  changed_when: postgresql_check_for_param_changes.rc == 0 and
+                postgresql_check_for_param_changes.stdout | replace (' ','') != "0"
+
+- name: PostgreSQL | Restart PostgreSQL to activate parameter changes
+  include_tasks: "{{ role_path }}/handlers/restart.yml"
+  when: postgresql_restart_on_config_change and
+        ( postgresql_pre95_restart_required.changed or
+          postgresql_check_for_param_changes.stdout | default('0') | replace (' ','') | int > 0
+        )
+
+- name: PostgreSQL | Check for parameter changes that require a restart which will NOT be done
+  debug:
+    msg: "WARNING: Parameter changes pending. Restart has NOT been done because postgresql_restart_on_config_change is FALSE."
+  when: not postgresql_restart_on_config_change and
+        ( postgresql_pre95_restart_required.changed or
+          postgresql_check_for_param_changes.stdout | default('0') | replace (' ','') | int > 0
+        )

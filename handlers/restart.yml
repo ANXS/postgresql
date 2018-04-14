@@ -1,0 +1,19 @@
+# file: postgresql/handlers/restart.yml
+  
+#
+# Restart PostgreSQL
+#
+- name: PostgreSQL | Force a checkpoint before a restart
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  shell: "{{ postgresql_bin_directory }}/psql postgres --username {{ postgresql_admin_user }} --tuples-only --command='CHECKPOINT;'"
+  register: postgresql_checkpoint_before_restart
+  changed_when: postgresql_checkpoint_before_restart.rc == 0 and
+                postgresql_checkpoint_before_restart.stdout | replace (' ','') == "CHECKPOINT"
+  failed_when: postgresql_checkpoint_before_restart.rc != 0 or
+               postgresql_checkpoint_before_restart.stdout | replace (' ','') != "CHECKPOINT"
+  
+- name: PostgreSQL | Restart PostgreSQL to implement changes
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: restarted
