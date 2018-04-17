@@ -1,6 +1,15 @@
 # file: postgresql/handlers/main.yml
 
-- name: restart postgresql
-  service:
-    name: "{{ postgresql_service_name }}"
-    state: restarted
+  - name: restart postgresql with service
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: restarted
+      enabled: yes
+
+  - name: restart postgresql with systemd
+    systemd:
+      name: "{{ postgresql_service_name }}"
+      state: restarted
+      enabled: yes
+    when: ansible_service_mgr == 'systemd'
+ 
