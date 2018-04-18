@@ -13,6 +13,7 @@
         dnf:
           name: "{{ postgresql_dnf_repository_url }}"
           state: present
+        when: postgresql_install_repository
 
       - name: PostgreSQL | Install PostgreSQL
         dnf:
