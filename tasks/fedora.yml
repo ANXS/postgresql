@@ -9,10 +9,14 @@
           name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
           state: present
 
-      - name: PostgreSQL | Add PostgreSQL repository
-        dnf:
+      - name: PostgreSQL | Add yum Repository
+        yum_repository:
           name: "{{ postgresql_dnf_repository_url }}"
+          name: postgresql
           state: present
+          description: postgresql yum repo
+          baseurl: "{{ postgresql_dnf_repository_url }}"
+          gpgkey: "{{ postgresql_yum_repository_url_pgdg }}"
         when: postgresql_install_repository
 
       - name: PostgreSQL | Install PostgreSQL
