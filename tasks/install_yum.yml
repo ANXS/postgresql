@@ -15,6 +15,7 @@
            description: postgresql yum repo
            baseurl: "{{ postgresql_yum_repository_url }}"
            gpgkey: "{{ postgresql_yum_repository_url_pgdg }}"
+        when: postgresql_install_repository
 
       - name: PostgreSQL | Install PostgreSQL
         yum:
@@ -32,4 +33,3 @@
           state: present
         environment: "{{ postgresql_env }}"
         when: postgresql_pgtune
-

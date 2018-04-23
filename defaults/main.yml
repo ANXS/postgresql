@@ -706,11 +706,12 @@ postgresql_pgtune_type: "Mixed"
 postgresql_pgtune_connections: no
 
 
-
-
 postgresql_env:
   LC_ALL: "{{ postgresql_locale }}"
   LC_LCTYPE: "{{ postgresql_locale }}"
+
+# Install repo, or rely on existing configuration (Satellite, Artifactory, etc.)
+postgresql_install_repository: true
 
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
