@@ -22,7 +22,7 @@
     state: present
     update_cache: yes
   with_items: "{{ postgresql_ext_postgis_deps }}"
-  when: ansible_os_family == "RedHat"
+  when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
     - restart postgresql
 
@@ -30,7 +30,7 @@
   dnf:
     name: "{{ postgresql_ext_postgis_deps }}"
     state: present
-  when: ansible_distribution == "Fedora"
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
     - restart postgresql
 
