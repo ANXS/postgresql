@@ -32,6 +32,7 @@
     - { parts: "{{ postgresql_locale_parts }}", locale_name: "{{ postgresql_locale }}" }
     - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
   when: ansible_os_family == "RedHat"
+  ignore_errors: yes
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster --stop {{ postgresql_version }} {{ postgresql_cluster_name }}

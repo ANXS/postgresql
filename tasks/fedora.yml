@@ -4,9 +4,9 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgrSQL | Install all the rquired depedencies
+      - name: PostgrSQL | Install all the required depedencies
         dnf:
-          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
+          name: "ca-certificates,python-psycopg2, python-pycurl, glibc-common,libselinux-python"
           state: present
 
       - name: PostgreSQL | Add yum Repository
@@ -21,7 +21,7 @@
 
       - name: PostgreSQL | Install PostgreSQL
         dnf:
-          name: '"postgresql{{ postgresql_version_terse }}-server","postgresql{{ postgresql_version_terse }}","postgresql{{ postgresql_version_terse }}-contrib"'
+          name: "postgresql{{ postgresql_version_terse }}-server,postgresql{{ postgresql_version_terse }},postgresql{{ postgresql_version_terse }}-contrib"
           state: present
         environment: "{{ postgresql_env }}"
 
