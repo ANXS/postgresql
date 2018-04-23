@@ -796,7 +796,7 @@ postgresql_yum_repository_url_pgdg: "{{ postgresql_pgdg_repository_base_url }}/R
 
 
 postgresql_pgdg_repository_base_url: "https://download.postgresql.org/pub/repos/yum/"
-]]
+
 postgresql_dnf_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/fedora/fedora{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 
 +postgresql_yum_repository_url_pgdg: "{{ postgresql_pgdg_repository_base_url }}/RPM-GPG-KEY-PGDG-{{ postgresql_version_terse }}"
