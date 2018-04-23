@@ -717,6 +717,9 @@ postgresql_env:
   LC_ALL: "{{ postgresql_locale }}"
   LC_LCTYPE: "{{ postgresql_locale }}"
 
+# Install repo, or rely on existing configuration (Satellite, Artifactory, etc.)
+postgresql_install_repository: true
+
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
