@@ -27,7 +27,6 @@
   dnf:
     name: '"postgresql{{ postgresql_version_terse }}-libs","postgresql{{ postgresql_version_terse }}-devel"'
     state: present
-    update_cache: yes
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
     - restart postgresql with systemd
