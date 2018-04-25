@@ -23,3 +23,9 @@ postgresql_users:
 postgresql_user_privileges:
   - name: baz
     db: foobar
+
+postgresql_database_schemas:
+  - database: foobar
+    state: present
+    schema: acme
+    owner: baz

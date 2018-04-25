@@ -26,6 +26,9 @@
 - import_tasks: databases.yml
   tags: [postgresql, postgresql-databases]
 
+- import_tasks: schemas.yml
+  tags: [postgresql, postgresql-schemas]
+
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]
 
