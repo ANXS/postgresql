@@ -1,14 +1,18 @@
 ---
 
-postgresql_version: 9.6
+postgresql_version: 10 
 
 postgresql_databases:
   - name: foobar
     owner: baz
 
 postgresql_users:
+
+  # postgresql >=10 does not accept unencrypted passwords 
   - name: baz
-    pass: pass
+    pass: md51a1dc91c907325c69271ddf0c944bc72
+    encrypted: yes
+
 
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72
@@ -19,3 +23,9 @@ postgresql_users:
 postgresql_user_privileges:
   - name: baz
     db: foobar
+
+postgresql_database_schemas:
+  - database: foobar
+    state: present
+    schema: acme
+    owner: baz
