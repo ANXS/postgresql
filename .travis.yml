@@ -17,7 +17,7 @@ env:
     - IMAGE_NAME="centos:6-builded"
 
 install:
-  - pip install ansible=="2.3.1.0" docker-py
+  - pip install ansible=="2.4.2.0" docker-py
   - ln -s ${PWD} tests/docker/ANXS.postgresql
 
 script:
