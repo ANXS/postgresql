@@ -130,7 +130,7 @@
     group: "{{ postgresql_service_group }}"
     mode: 0640
   register: postgresql_configuration_pt4
-  notify: reload postgresql with service
+  notify: restart postgresql with service
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
