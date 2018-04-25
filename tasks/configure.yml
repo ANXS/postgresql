@@ -130,6 +130,14 @@
     group: "{{ postgresql_service_group }}"
     mode: 0755
 
+- name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | RedHat
+  file:
+    name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
+    state: directory
+    mode: 0755
+  when: ansible_os_family == "RedHat"
+  notify: restart postgresql with systemd
+
 - name: PostgreSQL | Create postgresql service for this cluster | RedHat v7 and later
   template:
     src: etc_systemd_system_postgresql.service.j2
@@ -154,6 +162,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
+  notify: restart postgresql with service
 
 - name: PostgreSQL | Ensure the log directory link exists
   file:
@@ -176,3 +185,9 @@
     name: "{{ postgresql_service_name }}"
     state: restarted
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_service_create.changed
+
+- name: PostgreSQL | Reload all conf files
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: reloaded
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
