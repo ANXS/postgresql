@@ -6,6 +6,9 @@ User={{ postgresql_service_user }}
 Group={{ postgresql_service_group }}
 
 Environment=PGDATA={{ postgresql_conf_directory }}
-
 ExecStartPre=
+{% if postgresql_version | version_compare('10', '>=') %}
+ExecStartPre={{ postgresql_bin_directory }}/postgresql-{{ postgresql_version_terse }}-check-db-dir {{ postgresql_data_directory }}
+{% else %}
 ExecStartPre={{ postgresql_bin_directory }}/postgresql{{ postgresql_version_terse }}-check-db-dir {{ postgresql_data_directory }}
+{% endif %}
