@@ -114,16 +114,19 @@ Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 #### Thanks
 
-To the top contributors:
+Creator:
+- [Pjan Vandaele](https://github.com/pjan)
+
+Maintainers:
 - [Jonathan Lozada D.](https://github.com/jlozadad)
 - [Jonathan Freedman](https://github.com/otakup0pe)
 - [Sergei Antipov](https://github.com/UnderGreen)
 
-- [Pjan Vandaele](https://github.com/pjan)
+Top Contributors:
 - [David Farrington](https://github.com/farridav)
 - [Jesse Lang](https://github.com/jesselang)
-- [Michael Conrad](https://github.com/MichaelConrad)
 - [Greg Clough](https://github.com/gclough)
+- [Michael Conrad](https://github.com/MichaelConrad)
 - [Sébastien Alix](https://github.com/sebalix)
 - [Copperfield](https://github.com/Copperfield)
 
