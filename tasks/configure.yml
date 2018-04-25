@@ -155,6 +155,16 @@
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
 
+- name: PostgreSQL | Ensure the log directory link exists
+  file:
+    name: "{{ postgresql_data_directory }}/pg_log"
+    src: "{{ postgresql_log_directory }}"
+    state: link
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0770
+  when: postgresql_log_directory != "pg_log"
+
 - name: PostgreSQL | Enable service
   service:
     name: "{{ postgresql_service_name }}"
