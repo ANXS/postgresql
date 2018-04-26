@@ -7,3 +7,4 @@ Icon
 .Trashes
 .vagrant
 test
+*.retry

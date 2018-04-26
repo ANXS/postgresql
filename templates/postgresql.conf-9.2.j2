@@ -66,8 +66,7 @@ max_connections = {{postgresql_max_connections}}			# (change requires restart)
 # Note:  Increasing max_connections costs ~400 bytes of shared memory per
 # connection slot, plus lock space (see max_locks_per_transaction).
 superuser_reserved_connections = {{postgresql_superuser_reserved_connections}}	# (change requires restart)
-unix_socket_directories = '{{postgresql_unix_socket_directories|join(',')}}'	# comma-separated list of directories
-					# (change requires restart)
+unix_socket_directory = '{{postgresql_unix_socket_directory or (postgresql_unix_socket_directories and postgresql_unix_socket_directories[0]) or ''}}'		# (change requires restart)
 unix_socket_group = '{{postgresql_unix_socket_group}}'			# (change requires restart)
 unix_socket_permissions = {{postgresql_unix_socket_permissions}}		# begin with 0 to use octal notation
 					# (change requires restart)
@@ -211,7 +210,7 @@ archive_timeout = {{postgresql_archive_timeout}}		# force a logfile segment swit
 max_wal_senders = {{postgresql_max_wal_senders}}		# max number of walsender processes
 				# (change requires restart)
 wal_keep_segments = {{postgresql_wal_keep_segments}}		# in logfile segments, 16MB each; 0 disables
-wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disables
+replication_timeout = {{postgresql_replication_timeout or postgresql_wal_sender_timeout}}	# in milliseconds; 0 disables
 
 # - Master Server -
 
@@ -238,9 +237,6 @@ wal_receiver_status_interval = {{postgresql_wal_receiver_status_interval}}	# sen
 					# 0 disables
 hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback or 'off'}}		# send info from standby to prevent
 					# query conflicts
-wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver waits for
-					# communication from master
-					# in milliseconds; 0 disables
 
 
 #------------------------------------------------------------------------------
@@ -466,9 +462,6 @@ autovacuum_vacuum_scale_factor = {{postgresql_autovacuum_vacuum_scale_factor}}	#
 autovacuum_analyze_scale_factor = {{postgresql_autovacuum_analyze_scale_factor}}	# fraction of table size before analyze
 autovacuum_freeze_max_age = {{postgresql_autovacuum_freeze_max_age}}	# maximum XID age before forced vacuum
 					# (change requires restart)
-autovacuum_multixact_freeze_max_age = {{postgresql_autovacuum_multixact_freeze_max_age}}	# maximum Multixact age
-					# before forced vacuum
-					# (change requires restart)
 autovacuum_vacuum_cost_delay = {{postgresql_autovacuum_vacuum_cost_delay}}	# default vacuum cost delay for
 					# autovacuum, in milliseconds;
 					# -1 means use vacuum_cost_delay
@@ -493,14 +486,12 @@ default_transaction_read_only = {{'on' if postgresql_default_transaction_read_on
 default_transaction_deferrable = {{'on' if postgresql_default_transaction_deferrable else 'off'}}
 session_replication_role = '{{postgresql_session_replication_role}}'
 statement_timeout = {{postgresql_statement_timeout}}			# in milliseconds, 0 is disabled
-lock_timeout = {{postgresql_lock_timeout}}			# in milliseconds, 0 is disabled
 vacuum_freeze_min_age = {{postgresql_vacuum_freeze_min_age}}
 vacuum_freeze_table_age = {{postgresql_vacuum_freeze_table_age}}
-vacuum_multixact_freeze_min_age = {{postgresql_vacuum_multixact_freeze_min_age}}
-vacuum_multixact_freeze_table_age = {{postgresql_vacuum_multixact_freeze_table_age}}
 bytea_output = '{{postgresql_bytea_output}}'			# hex, escape
 xmlbinary = '{{postgresql_xmlbinary}}'
 xmloption = '{{postgresql_xmloption}}'
+gin_fuzzy_search_limit = '{{postgresql_gin_fuzzy_search_limit}}'
 
 # - Locale and Formatting -
 
@@ -510,7 +501,7 @@ timezone = '{{postgresql_timezone}}'
 timezone_abbreviations = '{{postgresql_timezone_abbreviations}}'     # Select the set of available time zone
 					# abbreviations.  Currently, there are
 					#   Default
-					#   Australia
+					#   Australia (historical usage)
 					#   India
 					# You can create your own file in
 					# share/timezonesets/.
@@ -579,19 +570,6 @@ transform_null_equals = {{'on' if postgresql_transform_null_equals else 'off'}}
 
 exit_on_error = {{'on' if postgresql_exit_on_error else 'off'}}			# terminate session on any error?
 restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# reinitialize after backend crash?
-
-
-#------------------------------------------------------------------------------
-# CONFIG FILE INCLUDES
-#------------------------------------------------------------------------------
-
-# These options allow settings to be loaded from files other than the
-# default postgresql.conf.
-
-include_dir = 'conf.d'			# include files ending in '.conf' from
-					# directory 'conf.d'
-#include_if_exists = 'exists.conf'	# include file only if it exists
-#include = 'special.conf'		# include file
 
 
 #------------------------------------------------------------------------------
