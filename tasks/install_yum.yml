@@ -1,30 +1,30 @@
 # file: postgresql/tasks/install_yum.yml
 
-# The standard ca-certs are needed because  without them apt_key will fail to
+# The standard ca-certs are needed because  without them yum will fail to
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgreSQL | Install all the required dependencies
+      - name: PostgreSQL | Install all the required dependencies | yum
         yum:
           name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
           state: present
 
-      - name: PostgreSQL | Add PostgreSQL repository
+      - name: PostgreSQL | Add PostgreSQL repository | yum
         yum_repository:
            name: postgresql
            description: postgresql yum repo
-           baseurl: "{{ postgresql_yum_repository_url }}"
-           gpgkey: "{{ postgresql_yum_repository_url_pgdg }}"
+           baseurl: "{{ postgresql_yum_repository_baseurl }}"
+           gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
         when: postgresql_install_repository
         
-      - name: PostgreSQL | Make sure the dependencies are installed
+      - name: PostgreSQL | Make sure the dependencies are installed | yum
         yum:
          name: "{{ item }}"
          state: present
          update_cache: yes
         with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
-      - name: PostgreSQL | Install PostgreSQL
+      - name: PostgreSQL | Install PostgreSQL | yum
         yum:
           name: "{{ item }}"
           state: present
@@ -34,7 +34,7 @@
           - "postgresql{{ postgresql_version_terse }}"
           - "postgresql{{ postgresql_version_terse }}-contrib"
 
-      - name: PostgreSQL | PGTune
+      - name: PostgreSQL | PGTune | yum
         yum:
           name: pgtune
           state: present
