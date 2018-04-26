@@ -10,10 +10,19 @@
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository
-        yum:
-          name: "{{ postgresql_yum_repository_url }}"
-          state: present
+        yum_repository:
+           name: postgresql
+           description: postgresql yum repo
+           baseurl: "{{ postgresql_yum_repository_url }}"
+           gpgkey: "{{ postgresql_yum_repository_url_pgdg }}"
         when: postgresql_install_repository
+        
+      - name: PostgreSQL | Make sure the dependencies are installed
+        yum:
+         name: "{{ item }}"
+         state: present
+         update_cache: yes
+        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL
         yum:
