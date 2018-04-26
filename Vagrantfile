@@ -13,7 +13,8 @@ Vagrant.configure('2') do |config|
     #machine.vm.box = "ubuntu/precise64"
     #machine.vm.box = "debian/jessie64"
     #machine.vm.box = "debian/wheezy64"
-    machine.vm.box = "centos/7"
+    #machine.vm.box = "centos/7"
+     machine.vm.box = "fedora/27-cloud-base"
     #machine.vm.box = "centos/6"
 
     machine.vm.network :private_network, ip: '192.168.88.22'
@@ -21,7 +22,7 @@ Vagrant.configure('2') do |config|
 
     machine.vm.provision 'ansible' do |ansible|
       ansible.playbook = 'tests/playbook.yml'
-      ansible.verbose = "v"
+      ansible.verbose = "vvv"
       ansible.become = true
       ansible.inventory_path = 'vagrant-inventory'
       ansible.host_key_checking = false

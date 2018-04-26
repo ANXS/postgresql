@@ -16,6 +16,13 @@
            baseurl: "{{ postgresql_yum_repository_url }}"
            gpgkey: "{{ postgresql_yum_repository_url_pgdg }}"
         when: postgresql_install_repository
+        
+      - name: PostgreSQL | Make sure the dependencies are installed
+        yum:
+         name: "{{ item }}"
+         state: present
+         update_cache: yes
+        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL
         yum:
