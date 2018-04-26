@@ -28,7 +28,7 @@
 # Memory units:  kB = kilobytes        Time units:  ms  = milliseconds
 #                MB = megabytes                     s   = seconds
 #                GB = gigabytes                     min = minutes
-#                                                   h   = hours
+#                TB = terabytes                     h   = hours
 #                                                   d   = days
 
 
@@ -82,17 +82,18 @@ authentication_timeout = {{postgresql_authentication_timeout}}		# 1s-600s
 ssl = {{'on' if postgresql_ssl else 'off'}}				# (change requires restart)
 ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
-ssl_renegotiation_limit = {{postgresql_ssl_renegotiation_limit}}	# amount of data between renegotiations
+ssl_prefer_server_ciphers = {{postgresql_ssl_prefer_server_ciphers}}		# (change requires restart)
+ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
 ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
 ssl_ca_file = '{{postgresql_ssl_ca_file}}'			# (change requires restart)
 ssl_crl_file = '{{postgresql_ssl_crl_file}}'			# (change requires restart)
 password_encryption = {{'on' if postgresql_password_encryption else 'off'}}
 db_user_namespace = {{'on' if postgresql_db_user_namespace else 'off'}}
+row_security = {{'on' if postgresql_row_security else 'off'}}
 
-# Kerberos and GSSAPI
+# GSSAPI using Kerberos
 krb_server_keyfile = '{{postgresql_krb_server_keyfile}}'
-krb_srvname = '{{postgresql_krb_srvname}}'		# (Kerberos only)
 krb_caseins_users = {{'on' if postgresql_db_user_namespace else 'off'}}
 
 # - TCP Keepalives -
@@ -114,6 +115,8 @@ tcp_keepalives_count = {{postgresql_tcp_keepalives_count}}		# TCP_KEEPCNT;
 
 shared_buffers = {{postgresql_shared_buffers}}			# min 128kB
 					# (change requires restart)
+huge_pages = {{postgresql_huge_pages}}			# on, off, or try
+					# (change requires restart)
 temp_buffers = {{postgresql_temp_buffers}}			# min 800kB
 max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero disables the feature
 					# (change requires restart)
@@ -123,7 +126,15 @@ max_prepared_transactions = {{postgresql_max_prepared_transactions}}		# zero dis
 # actively intend to use prepared transactions.
 work_mem = {{postgresql_work_mem}}				# min 64kB
 maintenance_work_mem = {{postgresql_maintenance_work_mem}}		# min 1MB
+autovacuum_work_mem = {{postgresql_autovacuum_work_mem}}		# min 1MB, or -1 to use maintenance_work_mem
 max_stack_depth = {{postgresql_max_stack_depth}}			# min 100kB
+dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the default is the first option
+					# supported by the operating system:
+					#   posix
+					#   sysv
+					#   windows
+					#   mmap
+					# use none to disable dynamic shared memory
 
 # - Disk -
 
@@ -153,6 +164,7 @@ bgwriter_lru_multiplier = {{postgresql_bgwriter_lru_multiplier}}		# 0-10.0 multi
 # - Asynchronous Behavior -
 
 effective_io_concurrency = {{postgresql_effective_io_concurrency}}		# 1-1000; 0 disables prefetching
+max_worker_processes = {{postgresql_max_worker_processes}}
 
 
 #------------------------------------------------------------------------------
@@ -161,7 +173,7 @@ effective_io_concurrency = {{postgresql_effective_io_concurrency}}		# 1-1000; 0 
 
 # - Settings -
 
-wal_level = {{postgresql_wal_level}}			# minimal, archive, or hot_standby
+wal_level = {{postgresql_wal_level}}			# minimal, archive, hot_standby, or logical
 					# (change requires restart)
 fsync = {{'on' if postgresql_fsync else 'off'}}				# turns forced synchronization on or off
 synchronous_commit = {{postgresql_synchronous_commit}}		# synchronization level;
@@ -174,6 +186,9 @@ wal_sync_method = {{postgresql_wal_sync_method}}		# the default is the first opt
 					#   fsync_writethrough
 					#   open_sync
 full_page_writes = {{'on' if postgresql_full_page_writes else 'off'}}			# recover from partial page writes
+wal_compression = {{ 'on' if postgresql_wal_compression else 'off' }}
+wal_log_hints = {{postgresql_wal_log_hints}}			# also do full page writes of non-critical updates
+					# (change requires restart)
 wal_buffers = {{postgresql_wal_buffers}}			# min 32kB, -1 sets based on shared_buffers
 					# (change requires restart)
 wal_writer_delay = {{postgresql_wal_writer_delay}}		# 1-10000 milliseconds
@@ -183,16 +198,16 @@ commit_siblings  = {{postgresql_commit_siblings}}			# range 1-1000
 
 # - Checkpoints -
 
-checkpoint_segments = {{postgresql_checkpoint_segments}}		# in logfile segments, min 1, 16MB each
 checkpoint_timeout = {{postgresql_checkpoint_timeout}}		# range 30s-1h
+max_wal_size = {{ postgresql_max_wal_size if postgresql_max_wal_size or '1G' }}
+min_wal_size = {{ postgresql_min_wal_size if postgresql_min_wal_size or '80MB' }}
 checkpoint_completion_target = {{postgresql_checkpoint_completion_target}}	# checkpoint target duration, 0.0 - 1.0
 checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
 
-archive_mode = {{'on' if postgresql_archive_mode else 'off'}}		# allows archiving to be done
-				# (change requires restart)
-archive_command = '{{postgresql_archive_command}}'		# command to use to archive a logfile segment
+archive_mode = {{'on' if postgresql_archive_mode else 'off'}} # enables archiving; off, on, or always
+archive_command = '{{postgresql_archive_command}}'            # command to use to archive a logfile segment
 				# placeholders: %p = path of file to archive
 				#               %f = file name only
 				# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
@@ -212,6 +227,11 @@ max_wal_senders = {{postgresql_max_wal_senders}}		# max number of walsender proc
 				# (change requires restart)
 wal_keep_segments = {{postgresql_wal_keep_segments}}		# in logfile segments, 16MB each; 0 disables
 wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disables
+
+max_replication_slots = {{postgresql_max_replication_slots}}	# max number of replication slots
+				# (change requires restart)
+
+track_commit_timestamp = {{'on' if postgresql_track_commit_timestamp else 'off' }}
 
 # - Master Server -
 
@@ -242,6 +262,7 @@ wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver
 					# communication from master
 					# in milliseconds; 0 disables
 
+wal_retrieve_retry_interval = {{postgresql_wal_retrieve_retry_interval}}
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -466,7 +487,7 @@ autovacuum_vacuum_scale_factor = {{postgresql_autovacuum_vacuum_scale_factor}}	#
 autovacuum_analyze_scale_factor = {{postgresql_autovacuum_analyze_scale_factor}}	# fraction of table size before analyze
 autovacuum_freeze_max_age = {{postgresql_autovacuum_freeze_max_age}}	# maximum XID age before forced vacuum
 					# (change requires restart)
-autovacuum_multixact_freeze_max_age = {{postgresql_autovacuum_multixact_freeze_max_age}}	# maximum Multixact age
+autovacuum_multixact_freeze_max_age = {{postgresql_autovacuum_multixact_freeze_max_age}}	# maximum multixact age
 					# before forced vacuum
 					# (change requires restart)
 autovacuum_vacuum_cost_delay = {{postgresql_autovacuum_vacuum_cost_delay}}	# default vacuum cost delay for
@@ -510,7 +531,7 @@ timezone = '{{postgresql_timezone}}'
 timezone_abbreviations = '{{postgresql_timezone_abbreviations}}'     # Select the set of available time zone
 					# abbreviations.  Currently, there are
 					#   Default
-					#   Australia
+					#   Australia (historical usage)
 					#   India
 					# You can create your own file in
 					# share/timezonesets/.
@@ -536,6 +557,7 @@ default_text_search_config = '{{postgresql_default_text_search_config}}'
 
 dynamic_library_path = '{{postgresql_dynamic_library_path}}'
 local_preload_libraries = '{{postgresql_local_preload_libraries|join(',')}}'
+session_preload_libraries = '{{postgresql_session_preload_libraries|join(',')}}'
 
 
 #------------------------------------------------------------------------------
