@@ -1,6 +1,6 @@
 # file: postgresql/tasks/install_dnf.yml
 
-# The standard ca-certs are needed because  without them apt_key will fail to
+# The standard ca-certs are needed because  without them dnf will fail to
 # validate www.postgresql.org (or probably any other source).
 
   - block:
