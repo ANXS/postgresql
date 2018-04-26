@@ -787,7 +787,6 @@ postgresql_fedora_releases:
 
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 postgresql_yum_repository_base_url: "http://yum.postgresql.org"
-<<<<<<< HEAD
 postgresql_pgdg_repository_base_url: "https://download.postgresql.org/pub/repos/yum/"
 postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 postgresql_yum_repository_url_pgdg: "{{ postgresql_pgdg_repository_base_url }}/RPM-GPG-KEY-PGDG-{{ postgresql_version_terse }}"
