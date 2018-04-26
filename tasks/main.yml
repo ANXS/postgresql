@@ -11,11 +11,11 @@
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_yum.yml
-  when: ansible_pkg_mgr == "yum" and ansible_distribution == "RedHat" 
+  when: ansible_pkg_mgr == "yum"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_dnf.yml
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_pkg_mgr == "dnf"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml
