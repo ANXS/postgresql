@@ -18,6 +18,12 @@ postgresql_users:
 
   - name: zabaz
 
+postgresql_database_schemas:
+  - database: foobar
+    state: present
+    schema: acme
+    owner: baz
+
 postgresql_user_privileges:
   - name: baz
     db: foobar

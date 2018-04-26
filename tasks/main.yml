@@ -6,12 +6,16 @@
     - "../vars/empty.yml"
   tags: [always]
 
-- import_tasks: install.yml
+- import_tasks: install_apt.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_yum.yml
-  when: ansible_pkg_mgr == "yum"
+  when: ansible_pkg_mgr == "yum" and ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" )
+  tags: [postgresql, postgresql-install]
+
+- import_tasks: install_dnf.yml
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml
@@ -25,6 +29,9 @@
 
 - import_tasks: databases.yml
   tags: [postgresql, postgresql-databases]
+
+- import_tasks: schemas.yml
+  tags: [postgresql, postgresql-schemas]
 
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]

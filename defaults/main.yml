@@ -46,6 +46,9 @@ postgresql_database_extensions: []
 # List of users to be created (optional)
 postgresql_users: []
 
+# List of schemas to be created (optional)
+postgresql_database_schemas: []
+
 # List of user privileges to be applied (optional)
 postgresql_user_privileges: []
 
@@ -55,11 +58,18 @@ postgresql_pg_hba_default:
   - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
   - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method }}", comment: "IPv4 local connections:" }
   - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method }}", comment: "IPv6 local connections:" }
+  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map=root_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
 
 postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+# pg_ident.conf
+postgresql_pg_ident:
+  - comment: "root is allowed to login as {{ postgresql_admin_user }}"
+    mapname: "root_as_{{ postgresql_admin_user }}"
+    system_username: "{{ postgresql_admin_user }}"
+    pg_username: "{{ postgresql_admin_user }}"
 
 # postgresql.conf
 
@@ -728,6 +738,8 @@ postgresql_pgdg_dists:
   Scientific: sl
   SLC: sl
   OracleLinux: oraclelinux
+  Fedora: fedora
+
 postgresql_pgdg_releases:
   redhat: {
       9.1: 8,
@@ -765,9 +777,28 @@ postgresql_pgdg_releases:
       9.6: 3,
        10: 2,
   }
+
+postgresql_fedora_releases:
+  fedora: {
+     9.5: 12,
+     9.6: 8,
+      10: 3,
+      11: 1,
+  }
+
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
-postgresql_yum_repository_base_url: "http://yum.postgresql.org"
-postgresql_yum_repository_url: "{{ postgresql_yum_repository_base_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-{{ postgresql_pgdg_dists[ansible_distribution] }}{{ postgresql_version_terse }}-{{ postgresql_version }}-{{ postgresql_pgdg_releases.get(postgresql_pgdg_dists[ansible_distribution]).get(postgresql_version) }}.noarch.rpm"
+
+# YUM repository locations
+postgresql_yum_repository_url: "http://yum.postgresql.org"
+postgresql_pgdg_repository_url: "https://download.postgresql.org/pub/repos/yum/"
+
+# YUM (RedHat, CentOS, etc.) baseurl/gpgkey
+postgresql_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+postgresql_yum_repository_gpgkey: "{{ postgresql_pgdg_repository_url }}/RPM-GPG-KEY-PGDG-{{ postgresql_version_terse }}"
+
+# DNF (Fedora) baseurl/gpgkey
+postgresql_dnf_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/fedora/fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+postgresql_dnf_repository_gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
 
 postgresql_apt_py3_dependencies: ["python3-psycopg2", "locales"]
 postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]

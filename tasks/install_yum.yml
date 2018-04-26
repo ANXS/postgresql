@@ -1,21 +1,30 @@
 # file: postgresql/tasks/install_yum.yml
 
-# The standard ca-certs are needed because  without them apt_key will fail to
+# The standard ca-certs are needed because  without them yum will fail to
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgreSQL | Install all the required dependencies
+      - name: PostgreSQL | Install all the required dependencies | yum
         yum:
           name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
           state: present
 
-      - name: PostgreSQL | Add PostgreSQL repository
-        yum:
-          name: "{{ postgresql_yum_repository_url }}"
-          state: present
+      - name: PostgreSQL | Add PostgreSQL repository | yum
+        yum_repository:
+           name: postgresql
+           description: postgresql yum repo
+           baseurl: "{{ postgresql_yum_repository_baseurl }}"
+           gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
         when: postgresql_install_repository
+        
+      - name: PostgreSQL | Make sure the dependencies are installed | yum
+        yum:
+         name: "{{ item }}"
+         state: present
+         update_cache: yes
+        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
-      - name: PostgreSQL | Install PostgreSQL
+      - name: PostgreSQL | Install PostgreSQL | yum
         yum:
           name: "{{ item }}"
           state: present
@@ -25,7 +34,7 @@
           - "postgresql{{ postgresql_version_terse }}"
           - "postgresql{{ postgresql_version_terse }}-contrib"
 
-      - name: PostgreSQL | Setup service users profile
+      - name: PostgreSQL | Setup service users profile | yum
         template:
           src: pgsql_profile.j2
           dest: "~{{ postgresql_service_user }}/.pgsql_profile"
@@ -34,7 +43,7 @@
           mode: 0700
         when: postgresql_service_user_pgsql_profile
 
-      - name: PostgreSQL | Create ~/pgtab.example
+      - name: PostgreSQL | Create ~/pgtab.example | yum
         template:
           src: pgtab.j2
           dest: "~{{ postgresql_service_user }}/pgtab.example"
@@ -43,7 +52,7 @@
           mode: 0644
         when: postgresql_service_user_pgsql_profile
 
-      - name: PostgreSQL | Create ~/pgtab header
+      - name: PostgreSQL | Create ~/pgtab header | yum
         lineinfile:
           path: "~{{ postgresql_service_user }}/pgtab"
           owner: "{{ postgresql_service_user }}"
@@ -55,7 +64,7 @@
           line: "#  pgclustername : pgtabversion : pgrelease : pgport : pgdatabase : pgroot : pgbindir : [pgdata] : [pgwalarch] : [pgbackups]"
         when: postgresql_service_user_pgsql_profile
 
-      - name: PostgreSQL | Create ~/pgtab Ansible warning
+      - name: PostgreSQL | Create ~/pgtab Ansible warning | yum
         lineinfile:
           path: "~{{ postgresql_service_user }}/pgtab"
           owner: "{{ postgresql_service_user }}"
@@ -66,7 +75,7 @@
           line: "#  NOTICE: This file is managed by Ansible. Do not modify it."
         when: postgresql_service_user_pgsql_profile
 
-      - name: PostgreSQL | Add database to ~/pgtab
+      - name: PostgreSQL | Add database to ~/pgtab | yum
         lineinfile:
           path: "~{{ postgresql_service_user }}/pgtab"
           owner: "{{ postgresql_service_user }}"
@@ -76,7 +85,7 @@
           line: "{{ postgresql_cluster_name }}:1:{{ postgresql_version }}:{{ postgresql_port }}:{{ postgresql_service_user }}:/var/lib/pgsql:/usr/pgsql-{{ postgresql_version }}/bin:{{ postgresql_data_directory }}:::"
         when: postgresql_service_user_pgsql_profile
 
-      - name: PostgreSQL | PGTune
+      - name: PostgreSQL | PGTune | yum
         yum:
           name: pgtune
           state: present
