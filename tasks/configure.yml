@@ -122,6 +122,16 @@
   register: postgresql_configuration_pt3
   changed_when: "'_OK_' not in postgresql_configuration_pt3.stdout"
 
+- name: PostgreSQL | Update configuration - pt. 4 (pg_ident.conf)
+  template:
+    src: pg_ident.conf.j2
+    dest: "{{ postgresql_ident_file }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0640
+  register: postgresql_configuration_pt4
+  notify: restart postgresql with service
+
 - name: PostgreSQL | Create folder for additional configuration files
   file:
     name: "{{postgresql_conf_directory}}/conf.d"

@@ -57,11 +57,18 @@ postgresql_pg_hba_default:
   - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
   - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method }}", comment: "IPv4 local connections:" }
   - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method }}", comment: "IPv6 local connections:" }
+  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map=root_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
 
 postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
+# pg_ident.conf
+postgresql_pg_ident:
+  - comment: "root is allowed to login as {{ postgresql_admin_user }}"
+    mapname: "root_as_{{ postgresql_admin_user }}"
+    system_username: "{{ postgresql_admin_user }}"
+    pg_username: "{{ postgresql_admin_user }}"
 
 # postgresql.conf
 
