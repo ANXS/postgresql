@@ -11,7 +11,6 @@
 
       - name: PostgreSQL | Add yum Repository | dnf
         yum_repository:
-          name: "{{ postgresql_dnf_repository_url }}"
           name: postgresql
           state: present
           description: postgresql yum repo
