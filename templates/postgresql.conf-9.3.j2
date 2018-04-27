@@ -217,7 +217,7 @@ wal_sender_timeout = {{postgresql_wal_sender_timeout}}	# in milliseconds; 0 disa
 
 # These settings are ignored on a standby server.
 
-synchronous_standby_names = '{{postgresql_synchronous_standby_names|join(',')}}'	# standby servers that provide sync rep
+synchronous_standby_names = '{% if postgresql_synchronous_standby_names != [] %}"{{postgresql_synchronous_standby_names|join('\",\"')}}"{% endif %}'	# standby servers that provide sync rep
 				# comma-separated list of application_name
 				# from standby(s); '*' = all
 vacuum_defer_cleanup_age = {{postgresql_vacuum_defer_cleanup_age}}	# number of xacts by which cleanup is delayed
