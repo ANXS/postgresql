@@ -34,6 +34,7 @@ ansible-galaxy install ANXS.postgresql
 | Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 | CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 | CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Fedora latest | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 
 - :white_check_mark: - tested, works fine
 - :grey_question: - will work in the future (help out if you can)
@@ -82,6 +83,17 @@ postgresql_users:
   - name: baz
     pass: pass
     encrypted: no       # denotes if the password is already encrypted.
+
+# List of schemas to be created (optional)
+postgresql_schemas:
+  - database: foobar           # database name
+    schema: acme               # schema name
+    state: present
+
+  - database: foobar           # database name
+    schema: acme_baz           # schema name
+    owner: baz                 # owner name
+    state: present
 
 # List of user privileges to be applied (optional)
 postgresql_user_privileges:
