@@ -397,7 +397,7 @@ postgresql_constraint_exclusion:       "partition"  # on, off, or partition
 postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
-postgresql_force_parallel_mode:        "off"        # (>= 9.6)
+postgresql_force_parallel_mode:        off          # (>= 9.6)
 
 
 #------------------------------------------------------------------------------
