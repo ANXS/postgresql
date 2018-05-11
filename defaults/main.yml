@@ -3,9 +3,6 @@
 # Basic settings
 postgresql_version: 9.6
 postgresql_encoding: "UTF-8"
-postgresql_data_checksums: false
-postgresql_pwfile: ""
-
 postgresql_locale_parts:
   - "en_US" # Locale
   - "UTF-8" # Encoding
@@ -88,7 +85,6 @@ postgresql_ident_file: "{{ postgresql_conf_directory }}/pg_ident.conf"
 # Use data in another directory
 postgresql_varlib_directory_name: "postgresql"
 postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
-postgresql_wal_directory: ""
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
@@ -311,8 +307,7 @@ postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # standby servers that provide sync rep.
 # number of sync standbys (>= 9.6) and comma-separated list of application_name from standby(s)
-postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable below)
-postgresql_synchronous_standby_choose_sync: "FIRST" # >= 10
+postgresql_synchronous_standby_num_sync: ""
 postgresql_synchronous_standby_names: [] # '*' means 'all'
 
 # number of xacts by which cleanup is delayed
