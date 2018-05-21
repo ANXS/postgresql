@@ -14,7 +14,7 @@
     lc_ctype: "{{ item.lc_ctype | default(postgresql_ctype) }}"
     port: "{{postgresql_port}}"
     template: "template0"
-    state: present
+    state: "{{ item.state | default('present') }}"
     login_user: "{{postgresql_admin_user}}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
