@@ -1,0 +1,27 @@
+# added sekipaolo
+
+# TODO: make idempotent instead of ignore errors
+# TODO: remove unused slots (from master loop over slaves?) !!!!
+- name: Create the replication slot
+  shell: |
+    psql -h {{ hostvars[groups['master'][0]].ansible_eth0.ipv4.address }} \
+    -U replica \
+    -c "SELECT * FROM pg_create_physical_replication_slot('{{ ansible_hostname| replace('-', '') }}');"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  environment: 
+    PGPASSWORD: "{{ pg_replica_password }}"
+  ignore_errors: yes
+
+- name: make a copy of master data
+  shell: |
+    /usr/bin/pg_basebackup -v \
+    --label 'initial' \
+    -h {{ hostvars[groups['master'][0]].ansible_eth0.ipv4.address }} \
+    -D {{ postgresql_data_directory }} \
+    -U replica \
+    --wal-method=stream
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  environment: 
+    PGPASSWORD: "{{ pg_replica_password }}"

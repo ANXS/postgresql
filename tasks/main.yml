@@ -6,6 +6,11 @@
     - "../vars/empty.yml"
   tags: [always]
 
+# added sekipaolo
+- include_tasks: slave-config-rule.yml
+  with_items: "{{ groups['slave'] }}"
+  when: "'master' in group_names"
+
 - import_tasks: install_apt.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
@@ -35,6 +40,15 @@
 
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]
+
+# added sekipaolo
+- name: add recovery file in slave
+  template: 
+    src: recovery.conf.j2
+    dest: "{{ postgresql_data_directory }}/recovery.conf"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+  when: "'slave' in group_names"
 
 - import_tasks: monit.yml
   when: monit_protection is defined and monit_protection == true
