@@ -1,4 +1,5 @@
 ---
 postgresql_service_name: "postgresql"
 
-postgresql_bin_directory: /usr/bin
+# modified sekipaolo
+postgresql_bin_directory: "/usr/lib/postgresql/{{postgresql_version}}/bin"
