@@ -303,7 +303,7 @@ effective_cache_size = {{postgresql_effective_cache_size}}
 
 # - Genetic Query Optimizer -
 
-geqo = {{'on' if postgresql_enable_tidscan else 'off'}}
+geqo = {{'on' if postgresql_geqo else 'off'}}
 geqo_threshold = {{postgresql_geqo_threshold}}
 geqo_effort = {{postgresql_geqo_effort}}			# range 1-10
 geqo_pool_size = {{postgresql_geqo_pool_size}}			# selects default based on effort
