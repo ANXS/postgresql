@@ -46,7 +46,7 @@ ansible-galaxy install ANXS.postgresql
 
 ```yaml
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 9.6  # do not change this number once deployed otherwise your data will be lost
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
