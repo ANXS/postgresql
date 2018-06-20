@@ -2,16 +2,18 @@
 
 # TODO: make idempotent instead of ignore errors
 # TODO: remove unused slots (from master loop over slaves?) !!!!
-- name: Create the replication slot
-  shell: |
-    psql -h {{ hostvars[groups['master'][0]].ansible_eth0.ipv4.address }} \
-    -U replica \
-    -c "SELECT * FROM pg_create_physical_replication_slot('{{ ansible_hostname| replace('-', '') }}');"
-  become: yes
-  become_user: "{{ postgresql_service_user }}"
-  environment: 
-    PGPASSWORD: "{{ pg_replica_password }}"
-  ignore_errors: yes
+
+- name: daemon-reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: postgresql
+
+- name: stop postgresql to configure slave
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: stopped
+    enabled: yes
 
 - name: make a copy of master data
   shell: |
@@ -25,3 +27,12 @@
   become_user: "{{ postgresql_service_user }}"
   environment: 
     PGPASSWORD: "{{ pg_replica_password }}"
+
+# added sekipaolo
+- name: add recovery file in slave
+  template: 
+    src: recovery.conf.j2
+    dest: "{{ postgresql_data_directory }}/recovery.conf"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+  when: "'slave' in group_names"

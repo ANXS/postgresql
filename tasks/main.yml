@@ -31,24 +31,21 @@
 
 - import_tasks: users.yml
   tags: [postgresql, postgresql-users]
+  when: "'master' in group_names"
 
 - import_tasks: databases.yml
   tags: [postgresql, postgresql-databases]
+  when: "'master' in group_names"
+
 
 - import_tasks: schemas.yml
   tags: [postgresql, postgresql-schemas]
+  when: "'master' in group_names"
+
 
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]
-
-# added sekipaolo
-- name: add recovery file in slave
-  template: 
-    src: recovery.conf.j2
-    dest: "{{ postgresql_data_directory }}/recovery.conf"
-    owner: "{{ postgresql_service_user }}"
-    group: "{{ postgresql_service_group }}"
-  when: "'slave' in group_names"
+  when: "'master' in group_names"
 
 - import_tasks: monit.yml
   when: monit_protection is defined and monit_protection == true

@@ -80,21 +80,6 @@
   when: not postgresql_cluster_reset
   register: pgdata_dir_initialized
 
-# added sekipaolo
-- name: PostgreSQL | initilize slave
-  include_tasks: initialize-slave.yml
-  when: (postgresql_cluster_reset or
-         pgdata_dir_exist.changed or
-         not pgdata_dir_initialized.stat.exists)
-         and 'slave' in group_names
-
-# added sekipaolo
-- name: PostgreSQL | initilize master
-  include_tasks: initialize-master.yml
-  when: (postgresql_cluster_reset or
-         pgdata_dir_exist.changed or
-         not pgdata_dir_initialized.stat.exists)
-         and 'master' in group_names
 
 - name: PostgreSQL | Ensure configuration directory exists
   file:
@@ -200,3 +185,22 @@
     name: "{{ postgresql_service_name }}"
     state: reloaded
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+
+# added sekipaolo
+- name: PostgreSQL | initilize master
+  include_tasks: initialize-master.yml
+  when: (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
+         and 'master' in group_names
+  notify: restart postgresql with service
+
+
+# added sekipaolo
+- name: PostgreSQL | initilize slave
+  include_tasks: initialize-slave.yml
+  when: (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
+         and 'slave' in group_names
+  notify: restart postgresql with service
