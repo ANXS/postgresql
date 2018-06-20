@@ -1,0 +1,38 @@
+# added sekipaolo
+
+# TODO: make idempotent instead of ignore errors
+# TODO: remove unused slots (from master loop over slaves?) !!!!
+
+- name: daemon-reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: postgresql
+
+- name: stop postgresql to configure slave
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: stopped
+    enabled: yes
+
+- name: make a copy of master data
+  shell: |
+    /usr/bin/pg_basebackup -v \
+    --label 'initial' \
+    -h {{ hostvars[groups['master'][0]].ansible_eth0.ipv4.address }} \
+    -D {{ postgresql_data_directory }} \
+    -U replica \
+    --wal-method=stream
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  environment: 
+    PGPASSWORD: "{{ pg_replica_password }}"
+
+# added sekipaolo
+- name: add recovery file in slave
+  template: 
+    src: recovery.conf.j2
+    dest: "{{ postgresql_data_directory }}/recovery.conf"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+  when: "'slave' in group_names"

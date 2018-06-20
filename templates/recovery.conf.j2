@@ -1,0 +1,5 @@
+# added sekipaolo
+standby_mode = on
+primary_conninfo = 'host={{ hostvars[groups['master'][0]].ansible_eth0.ipv4.address }} port=5432 user=replica password={{ pg_replica_password }}'
+primary_slot_name = '{{ replica_slot_name }}'
+#trigger_file = '{{ postgresql_data_directory }}/failover'

@@ -77,23 +77,9 @@
 - name: PostgreSQL | Check whether the postgres data directory is initialized
   stat:
     path: "{{ postgresql_data_directory }}/PG_VERSION"
-  when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
+  when: not postgresql_cluster_reset
   register: pgdata_dir_initialized
 
-- name: PostgreSQL | Initialize the database | RedHat
-  command: >
-    {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
-    --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
-    {% if postgresql_data_checksums and postgresql_version | version_compare('9.3', '>=') %}--data-checksums{% endif %}
-    {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
-    {% if postgresql_wal_directory != "" and postgresql_version | version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
-    {% if postgresql_wal_directory != "" and postgresql_version | version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
-  become: yes
-  become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "RedHat" and
-        (postgresql_cluster_reset or
-         pgdata_dir_exist.changed or
-         not pgdata_dir_initialized.stat.exists)
 
 - name: PostgreSQL | Ensure configuration directory exists
   file:
@@ -199,3 +185,22 @@
     name: "{{ postgresql_service_name }}"
     state: reloaded
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+
+# added sekipaolo
+- name: PostgreSQL | initilize master
+  include_tasks: initialize-master.yml
+  when: (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
+         and 'master' in group_names
+  notify: restart postgresql with service
+
+
+# added sekipaolo
+- name: PostgreSQL | initilize slave
+  include_tasks: initialize-slave.yml
+  when: (postgresql_cluster_reset or
+         pgdata_dir_exist.changed or
+         not pgdata_dir_initialized.stat.exists)
+         and 'slave' in group_names
+  notify: restart postgresql with service

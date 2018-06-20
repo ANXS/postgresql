@@ -1,0 +1,28 @@
+# added sekipaolo
+- name: PostgreSQL | Initialize the database | RedHat
+  command: >
+    {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
+    --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
+    {% if postgresql_data_checksums and postgresql_version | version_compare('9.3', '>=') %}--data-checksums{% endif %}
+    {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
+    {% if postgresql_wal_directory != "" and postgresql_version | version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
+    {% if postgresql_wal_directory != "" and postgresql_version | version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+
+
+- name: daemon-reload
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: postgresql
+
+- name: Create the replication slot
+  shell: |
+    psql \
+    -c "SELECT * FROM pg_create_physical_replication_slot('{{ hostvars[item].replica_slot_name }}');"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  ignore_errors: yes
+  when: "'master' in group_names"
+  with_items: "{{groups['slave']}}"

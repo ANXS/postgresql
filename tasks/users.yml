@@ -13,8 +13,19 @@
     port: "{{postgresql_port}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
-  no_log: true
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_users}}"
   when: postgresql_users|length > 0
+
+- name: Create replication user account
+  postgresql_user:
+    name: "replica"
+    password: "{{ pg_replica_password }}"
+    role_attr_flags: replication
+    encrypted: "yes"
+    port: "{{postgresql_port}}"
+    state: present
+    login_user: "{{postgresql_admin_user}}"
+  become: True
+  become_user: postgres

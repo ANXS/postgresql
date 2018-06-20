@@ -1,0 +1,11 @@
+- set_fact: 
+    rules: 
+      - type: host
+        method: md5
+        database: replication
+        role_attr_flags: REPLICATION
+        user: replica
+        address: "{{ hostvars[item].ansible_eth0.ipv4.address }}/32"
+        comment: "Allow replication from slave {{ hostvars[item].ansible_hostname }}"
+- set_fact:
+    postgresql_pg_hba_custom: "{{ postgresql_pg_hba_custom}} + {{ rules }}"
