@@ -1,0 +1,17 @@
+---
+# "roles" is the comma-separated list of affected users and "objs" is the
+# comma-separated list of roles to which the user(s) should be granted
+# membership. The database "db" is only used for connection, since role
+# membership is cluster-wide, so by default is set to "postgres"
+
+- name: PostgreSQL | Grant users membership to their appropriate roles
+  postgresql_privs:
+    type: group
+    db: "{{ user.db | default('postgres') }}"
+    port: "{{ postgresql_port }}"
+    login_user: "{{ postgresql_admin_user }}"
+    roles: "{{ user.name }}"
+    objs: "{{ item }}"
+  with_items: "{{ user.roles }}"
+  become: yes
+  become_user: "{{ postgresql_admin_user }}"

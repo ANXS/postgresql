@@ -1,4 +1,4 @@
-# file: postgresql/tasks/users_privileges.yml
+# file: postgresql/tasks/users_privileges-docker.yml
 
 - name: PostgreSQL | Update the user privileges
   postgresql_user:
@@ -13,3 +13,11 @@
     login_password: "{{postgresql_admin_pwd}}"
   with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0
+
+# This does a "grant role to user"
+- include: users_membership-docker.yml
+  loop: "{{ postgresql_user_privileges }}"
+  loop_control:
+    loop_var: user
+  when:
+    - user.roles is defined
