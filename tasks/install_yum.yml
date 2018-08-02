@@ -43,8 +43,8 @@
 
       - name: PostgreSQL | Libzbxpgsql | yum
         yum:
-          name: libzbxpgsql
+          name: "{{ item }}"
           state: present
           skip_broken: yes
-        environment: "{{ postgresql_env }}"
+        with_items: ["postgresql-libs", "libzbxpgsql"]
         when: postgresql_monitorzbx
