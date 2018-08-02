@@ -15,7 +15,7 @@
            description: postgresql yum repo
            baseurl: "{{ postgresql_yum_repository_baseurl }}"
            gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
-        when: postgresql_install_repository
+        when: postgresql_install_repository and postgresql_yum_repository_baseurl | default('') != ''
         
       - name: PostgreSQL | Make sure the dependencies are installed | yum
         yum:
