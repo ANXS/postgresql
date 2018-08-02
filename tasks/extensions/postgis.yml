@@ -14,7 +14,7 @@
   with_items: "{{ postgresql_ext_postgis_deps }}"
   when: ansible_os_family == "Debian"
   notify:
-    - restart postgresql
+    - restart postgresql with service
 
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
   yum:
@@ -24,7 +24,8 @@
   with_items: "{{ postgresql_ext_postgis_deps }}"
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
-    - restart postgresql
+    - restart postgresql with service
+    - restart postgresql with systemd
 
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora
   dnf:
@@ -32,5 +33,5 @@
     state: present
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
-    - restart postgresql
+    - restart postgresql with systemd
 
