@@ -709,6 +709,14 @@ postgresql_restart_after_crash: on
 
 
 #------------------------------------------------------------------------------
+# MONITORING WITH ZABBIX
+#------------------------------------------------------------------------------
+#Install library from RedHat repos to provide detailed and granular monitoring of PostgreSQL servers using a native Zabbix agent module
+#http://cavaliercoder.com/libzbxpgsql/
+postgresql_monitorzbx: false
+
+
+#------------------------------------------------------------------------------
 # PGTUNE
 #------------------------------------------------------------------------------
 # Should we run pgtune and accept the changes it proposes?
