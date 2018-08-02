@@ -2,10 +2,13 @@
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | Debian
   apt:
-    name: libpq-dev
+    name: "{{ item }}"
     state: present
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+  with_items:
+    - libpq-dev
+    - "postgresql-server-dev-{{ postgresql_version }}"
   when: ansible_os_family == "Debian"
   notify:
     - restart postgresql with service
