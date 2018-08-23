@@ -271,7 +271,7 @@ max_standby_streaming_delay = {{postgresql_max_standby_streaming_delay}}	# max d
 					# -1 allows indefinite delay
 wal_receiver_status_interval = {{postgresql_wal_receiver_status_interval}}	# send replies at least this often
 					# 0 disables
-hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback or 'off'}}		# send info from standby to prevent
+hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback else 'off'}}		# send info from standby to prevent
 					# query conflicts
 wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver waits for
 					# communication from master
