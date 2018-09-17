@@ -160,7 +160,7 @@
     group: "{{ postgresql_service_group }}"
     mode: 0640
   register: postgresql_configuration_pt4
-  notify: restart postgresql with service
+  notify: restart postgresql
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
@@ -176,7 +176,7 @@
     state: directory
     mode: 0755
   when: ansible_os_family == "RedHat"
-  notify: restart postgresql with systemd
+  notify: restart postgresql
 
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
   template:
@@ -192,7 +192,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
-  notify: restart postgresql with service
+  notify: restart postgresql
 
 - name: PostgreSQL | Reload all conf files
   service:
