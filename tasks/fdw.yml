@@ -1,0 +1,25 @@
+---
+# file: postgresql/tasks/fdw.yml
+# tasks for PostgreSQL Foreign Data Wrappers
+
+- name: PostgreSQL | FDW | Load OS specific variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - ../vars
+
+- name: PostgreSQL | FDW | MySQL
+  package:
+    name: "{{ postgresql_fdw_mysql_packages }}"
+    state: present
+  when: postgresql_fdw_mysql
+
+- name: PostgreSQL | FDW | OGR
+  package:
+    name: "{{ postgresql_fdw_ogr_packages }}"
+    state: present
+  when: postgresql_fdw_ogr

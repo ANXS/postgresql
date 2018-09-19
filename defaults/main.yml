@@ -27,6 +27,7 @@ postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
+
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
@@ -38,6 +39,10 @@ postgresql_ext_postgis_deps:
   - libgeos-c1
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
+
+# Foreign Data Wrapper(s)
+postgresql_fdw_mysql: no
+postgresql_fdw_ogr: no
 
 # List of databases to be created (optional)
 postgresql_databases: []

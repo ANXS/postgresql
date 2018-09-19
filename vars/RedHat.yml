@@ -1,4 +1,6 @@
 ---
+# PostgreSQL vars for RedHat based distributions
+#
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service
 postgresql_cluster_name: "data"
@@ -12,3 +14,6 @@ postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
 postgresql_unix_socket_directories:
   - "{{ postgresql_pid_directory }}"
   - /tmp
+
+postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
+postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
