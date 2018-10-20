@@ -28,12 +28,13 @@ ansible-galaxy install ANXS.postgresql
 
 | Distribution / PostgreSQL | <= 9.2 | 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 |
 | ------------------------- |:------:|:---:|:---:|:---:|:---:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Ubuntu 18.04 | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 14.04 | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Ubuntu 16.04 | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Debian 8.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Debian 9.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| CentOS 6.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| CentOS 7.x | :no_entry: | :no_entryk:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 | Fedora latest | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 
 - :white_check_mark: - tested, works fine
@@ -46,7 +47,7 @@ ansible-galaxy install ANXS.postgresql
 
 ```yaml
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 11
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
@@ -133,6 +134,7 @@ Maintainers:
 - [Jonathan Lozada D.](https://github.com/jlozadad)
 - [Jonathan Freedman](https://github.com/otakup0pe)
 - [Sergei Antipov](https://github.com/UnderGreen)
+- [Florin Irion](https://github.com/irionr)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)

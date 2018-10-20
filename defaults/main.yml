@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 11
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
@@ -751,8 +751,9 @@ postgresql_pgdg_releases:
       9.3: 3,
       9.4: 3,
       9.5: 3,
-      9.6: 3,
-       10: 2,
+      9.6: 10,
+       10: 5,
+       11: 1,
   }
   centos: {
       9.1: 7,
@@ -760,8 +761,9 @@ postgresql_pgdg_releases:
       9.3: 3,
       9.4: 3,
       9.5: 3,
-      9.6: 3,
-       10: 2,
+      9.6: 10,
+       10: 5,
+       11: 1,
   }
   sl: {
       9.1: 8,
@@ -769,8 +771,9 @@ postgresql_pgdg_releases:
       9.3: 3,
       9.4: 3,
       9.5: 3,
-      9.6: 3,
-       10: 2,
+      9.6: 10,
+       10: 5,
+       11: 1,
   }
   oraclelinux: {
       9.1: 8,
@@ -778,15 +781,16 @@ postgresql_pgdg_releases:
       9.3: 3,
       9.4: 3,
       9.5: 3,
-      9.6: 3,
-       10: 2,
+      9.6: 10,
+       10: 5,
+       11: 1,
   }
 
 postgresql_fedora_releases:
   fedora: {
      9.5: 12,
      9.6: 8,
-      10: 3,
+      10: 5,
       11: 1,
   }
 

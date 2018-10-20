@@ -8,6 +8,7 @@ Vagrant.configure('2') do |config|
   config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
 
   config.vm.define 'anxs' do |machine|
+    #machine.vm.box = "generic/ubuntu1804"
     #machine.vm.box = "bento/ubuntu-16.04"
     # machine.vm.box = "ubuntu/trusty64"
     #machine.vm.box = "ubuntu/precise64"
