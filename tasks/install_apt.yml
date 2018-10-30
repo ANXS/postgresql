@@ -44,7 +44,6 @@
     default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
-  with_items:
 
 - name: PostgreSQL | PGTune | apt
   apt:

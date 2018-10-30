@@ -31,7 +31,6 @@
             - "postgresql{{ postgresql_version_terse }}-contrib"
           state: present
         environment: "{{ postgresql_env }}"
-        with_items:
 
       - name: PostgreSQL | PGTune | yum
         yum:
