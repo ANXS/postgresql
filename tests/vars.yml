@@ -10,12 +10,12 @@ postgresql_users:
 
   # postgresql >=10 does not accept unencrypted passwords 
   - name: baz
-    pass: md51a1dc91c907325c69271ddf0c944bc72
+    password: md51a1dc91c907325c69271ddf0c944bc72
     encrypted: yes
 
 
   - name: zab
-    pass: md51a1dc91c907325c69271ddf0c944bc72
+    password: md51a1dc91c907325c69271ddf0c944bc72
     encrypted: yes
 
   - name: zabaz

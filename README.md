@@ -81,7 +81,7 @@ postgresql_database_extensions:
 # List of users to be created (optional)
 postgresql_users:
   - name: baz
-    pass: pass
+    password: pass
     encrypted: no       # denotes if the password is already encrypted.
 
 # List of schemas to be created (optional)
