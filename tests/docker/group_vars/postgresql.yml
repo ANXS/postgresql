@@ -1,6 +1,7 @@
 ---
 
 postgresql_shared_buffers: "32MB"
+postgresql_data_checksums: true
 
 postgresql_databases:
   - name: foobar
