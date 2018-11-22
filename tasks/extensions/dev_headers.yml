@@ -20,8 +20,7 @@
     - "postgresql{{ postgresql_version_terse }}-devel"
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
-    - restart postgresql with service
-    - restart postgresql with systemd
+    - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | Fedora
   dnf:
@@ -29,5 +28,5 @@
     state: present
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
-    - restart postgresql with systemd
+    - restart postgresql
 
