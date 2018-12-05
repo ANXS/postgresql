@@ -169,7 +169,7 @@ postgresql_max_prepared_transactions: 0 # zero disables the feature
 
 postgresql_work_mem:                   1MB      # min 64kB
 postgresql_maintenance_work_mem:       16MB     # min 1MB
-postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
+postgresql_replacement_sort_tuples:    150000   # (>= 9.6, <11) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
 postgresql_max_stack_depth:            2MB      # min 100kB
 postgresql_dynamic_shared_memory_type: "posix"  # the default is the first option
