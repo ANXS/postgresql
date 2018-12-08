@@ -87,7 +87,16 @@ ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
 ssl_ca_file = '{{postgresql_ssl_ca_file}}'			# (change requires restart)
 ssl_crl_file = '{{postgresql_ssl_crl_file}}'			# (change requires restart)
-password_encryption = {{'on' if postgresql_password_encryption else 'off'}}     # md5 or scram-sha-256
+
+# md5 or scram-sha-256 starting from PostgreSQL 10
+{% if postgresql_password_encryption == 'on' %}
+password_encryption = md5
+{% elif postgresql_password_encryption == 'off' %}
+password_encryption = off
+{% else %}
+password_encryption = scram-sha-256
+{% endif %}
+
 db_user_namespace = {{'on' if postgresql_db_user_namespace else 'off'}}
 row_security = {{'on' if postgresql_row_security else 'off'}}
 

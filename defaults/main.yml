@@ -136,6 +136,10 @@ postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
 postgresql_ssl_ca_file: ""                                        # (>= 9.2)
 postgresql_ssl_crl_file: ""                                       # (>= 9.2)
+
+# Note that the value of password_encryption changed in PostgreSQL 10
+# While before it was on/off, now it should be explicitly md5 or scram-sha-256
+# see https://www.postgresql.org/docs/10/runtime-config-connection.html#GUC-PASSWORD-ENCRYPTION
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
