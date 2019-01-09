@@ -101,6 +101,36 @@ postgresql_user_privileges:
     db: foobar                  # database
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
+
+# Manage replication with repmgr (optional)
+repmgr_target_group: "postgresql-db"
+postgresql_ext_install_repmgr: yes
+repmgr_user: repmgr
+repmgr_database: repmgr
+postgresql_wal_level: "replica"
+postgresql_max_wal_senders: 10
+postgresql_max_replication_slots: 10
+postgresql_wal_keep_segments: 100
+postgresql_hot_standby: on
+postgresql_archive_mode: on
+postgresql_archive_command: "test ! -f /tmp/%f && cp %p /tmp/%f"
+postgresql_shared_preload_libraries:
+  - repmgr
+
+postgresql_users:
+  - name: "{{repmgr_user}}"
+    pass: "password"
+
+postgresql_databases:
+  - name: {{repmgr_database}}
+    owner: "{{repmgr_user}}"
+    encoding: "UTF-8"
+
+postgresql_user_privileges:
+  - name: "{{repmgr_user}}"
+    db: {{repmgr_database}}
+    priv: "ALL"
+    role_attr_flags: "SUPERUSER,REPLICATION"
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)

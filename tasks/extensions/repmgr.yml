@@ -1,0 +1,28 @@
+# file: postgresql/tasks/extensions/contrib.yml
+
+- name: PostgreSQL | Extensions | Make sure the postgres repmgr extensions are installed | apt
+  apt:
+    name: "postgresql-{{postgresql_version}}-repmgr"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+  when: ansible_pkg_mgr == "apt"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgres repmgr extensions are installed | yum
+  yum:
+    name: "repmgr{{postgresql_version}}"
+    state: present
+  when: ansible_pkg_mgr == "yum"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgres repmgr extensions are installed | dnf
+  dnf:
+    name: "repmgr{{postgresql_version}}"
+    state: present
+  when: ansible_pkg_mgr == "dnf"
+  notify:
+    - restart postgresql
+

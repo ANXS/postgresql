@@ -39,3 +39,7 @@
 - import_tasks: monit.yml
   when: monit_protection is defined and monit_protection == true
   tags: [postgresql, postgresql-monit]
+
+- import_tasks: extensions/configure_repmgr.yml
+  when: postgresql_ext_install_repmgr
+  tags: [postgresql, postgresql-extensions]

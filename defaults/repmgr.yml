@@ -1,0 +1,95 @@
+# Required configuration items
+repmgr_target_group: ""
+repmgr_user: "repmgr"
+repmgr_database: "repmgr"
+repmgr_master: "{{ groups[repmgr_target_group][0] }}"
+repmgr_conninfo: "host={{ansible_hostname}} user={{repmgr_user}} dbname={{repmgr_database}} connect_timeout=2"
+repmgr_data_directory: "{{postgresql_data_directory}}"
+
+# Optional configuration items
+#
+
+# Replication
+repmgr_config_directory: "{{postgresql_conf_directory}}"
+repmgr_replication_user: "{{repmgr_user}}"
+repmgr_replication_type: "physical"
+repmgr_location: "default"
+repmgr_use_replication_slots: "no"
+repmgr_witness_sync_interval: 15
+repmgr_use_primary_conninfo_password: "false"
+repmgr_passfile: "/var/lib/pgsql/.pgpass"
+repmgr_private_key_path: "/var/lib/pgsql/.ssh/id_rsa"
+repmgr_public_key_path: "/var/lib/pgsql/.ssh/id_rsa.pub"
+
+# Logging
+repmgr_log_level: "INFO"
+repmgr_log_facility: "STDERR"
+repmgr_log_file: ""
+repmgr_log_status_interval: 300
+
+# Notification
+repmgr_event_notification_command: ""
+repmgr_event_notifications: ""
+
+# Directories
+repmgr_pg_bindir: "{{postgresql_bin_directory}}"
+repmgr_repmgr_bindir: "{{postgresql_bin_directory}}"
+
+# Commands & options
+repmgr_pg_ctl_options: ""
+repmgr_pg_basebackup_options: ""
+repmgr_rsync_options: ""
+repmgr_tablespace_mapping: ""
+repmgr_restore_command: ""
+repmgr_archive_cleanup_command: ""
+repmgr_recovery_min_apply_delay: ""
+repmgr_ssh_options: "-o StrictHostKeyChecking=no"
+
+# Intervals & timeouts
+repmgr_promote_check_timeout: 60
+repmgr_promote_check_interval: 1
+repmgr_primary_follow_timeout: 60
+repmgr_standby_follow_timeout: 15
+repmgr_shutdown_check_timeout: 60
+repmgr_standby_reconnect_timeout: 60
+repmgr_node_rejoin_timeout: 60
+
+# Barman
+repmgr_barman_server: ""
+repmgr_barman_host: ""
+repmgr_barman_config: ""
+repmgr_repmgrd_pid_file: ""
+
+# Fail-over
+repmgr_failover: "manual"
+repmgr_priority: 100
+repmgr_reconnect_attempts: 6
+repmgr_reconnect_interval: 10
+repmgr_promote_command: ""
+repmgr_follow_command: ""
+repmgr_primary_notification_timeout: 60
+repmgr_repmgrd_standby_startup_timeout: 60
+
+# Monitoring
+repmgr_monitoring_history: "no"
+repmgr_monitor_interval_secs: 2
+repmgr_degraded_monitoring_timeout: -1
+repmgr_async_query_timeout: 60
+repmgr_keep_history_days: 14
+
+# Service commands
+repmgr_service_start_command :  "sudo systemctl start postgresql-{{postgresql_version}}"
+repmgr_service_stop_command :  "sudo systemctl stop postgresql-{{postgresql_version}}"
+repmgr_service_restart_command :  "sudo systemctl restart postgresql-{{postgresql_version}}"
+repmgr_service_reload_command :  "sudo systemctl reload postgresql-{{postgresql_version}}"
+repmgr_service_promote_command :  ""
+
+# Warning levels
+repmgr_archive_ready_warning: 16
+repmgr_archive_ready_critical: 128
+repmgr_replication_lag_warning: 300
+repmgr_replication_lag_critical: 600
+
+# Bi-Directional Replication
+repmgr_bdr_local_monitoring_only: "false"
+repmgr_bdr_recovery_timeout: 30

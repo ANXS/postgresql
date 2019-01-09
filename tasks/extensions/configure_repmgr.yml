@@ -1,0 +1,141 @@
+- name: Repmgr | Update configuration (repmgr.conf)
+  template:
+    src: "repmgr.conf.j2"
+    dest: "{{postgresql_conf_directory}}/repmgr.conf"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0640
+
+- name: Repmgr | Ensure systemd drop-in directory exists
+  file:
+    path: "/etc/systemd/system/repmgr{{postgresql_version}}.service.d/"
+    state: directory
+    mode: 0755
+
+- name: Repmgr | Update drop-in
+  template:
+    src: "repmgr.custom.conf.j2"
+    dest: "/etc/systemd/system/repmgr{{postgresql_version}}.service.d/custom.conf"
+
+- name: Repmgr | Allow passwordless restarts with postgres user
+  template:
+    src: "sudoers.postgresql.j2"
+    dest: "/etc/sudoers.d/postgresql"
+    mode: 0640
+
+- name: Repmgr | Update .pgpass for postgres user
+  template:
+    src: "pgpass.j2"
+    dest: "{{repmgr_passfile}}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0400
+    trim_blocks: no
+
+- name: Repmgr | Generate ssh keypair for postgres user
+  command: "ssh-keygen -b 4096 -f {{repmgr_private_key_path}} -N ''"
+  args:
+    creates: "{{repmgr_private_key_path}}"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  when: repmgr_master == ansible_hostname
+
+- name: Repmgr | Slurp ssh public key
+  slurp:
+    src: "{{repmgr_public_key_path}}"
+  register: ssh_public_key
+  when: repmgr_master == ansible_hostname
+
+- name: Repmgr | Slurp ssh private key
+  slurp:
+    src: "{{repmgr_private_key_path}}"
+  register: ssh_private_key
+  when: repmgr_master == ansible_hostname
+
+- name: Repmgr | Update authorized_keys for postgres user
+  authorized_key:
+    user: postgres
+    state: present
+    key: "{{ hostvars[repmgr_master]['ssh_public_key']['content'] | b64decode }}"
+
+- name: Repmgr | Update public ssh key for postgres user
+  copy:
+    content: "{{hostvars[repmgr_master]['ssh_public_key']['content'] | b64decode}}"
+    dest: "{{repmgr_public_key_path}}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0644
+
+- name: Repmgr | Update private ssh key for postgres user
+  copy:
+    content: "{{hostvars[repmgr_master]['ssh_private_key']['content'] | b64decode}}"
+    dest: "{{repmgr_private_key_path}}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    mode: 0600
+
+- name: Repmgr | Check cluster status
+  command: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster show"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  changed_when: repmgr_cluster_show.rc != 0
+  register: repmgr_cluster_show
+
+- name: Repmgr | Register as primary
+  command: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf primary register"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  when: repmgr_master == ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "primary" in repmgr_cluster_show.stdout
+
+- name: Repmgr | Ensure postgresql slave is stopped before clone
+  service:
+    name: "postgresql-{{postgresql_version}}"
+    state: stopped
+  when: repmgr_master != ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+
+- name: Repmgr | Clone standby
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby clone"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  when: repmgr_master != ansible_hostname and not ansible_hostname in  repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+
+- name: Repmgr | Ensure postgresql slave is running after clone
+  service:
+    name: "postgresql-{{postgresql_version}}"
+    state: started
+  when: repmgr_master != ansible_hostname
+
+- name: Repmgr | Wait for Postgres
+  wait_for:
+    timeout: 2
+  delegate_to: localhost
+
+- name: Repmgr | Register standby
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby register"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+  when: repmgr_master != ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+
+- name: Repmgr | Verify cluster functionality
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster crosscheck"
+  become: yes
+  become_user: "{{ postgresql_service_user }}"
+
+- name: Repmgr | Ensure repmgrd is running
+  service:
+    name: "repmgr{{postgresql_version}}"
+    state: started
+    enabled: yes
+  when: repmgr_monitoring_history == "true" or repmgr_failover == "automatic"
+
+- name: Repmgr | Ensure crontab is installed
+  package:
+    name: crontabs
+  when: repmgr_monitoring_history == "true" or repmgr_failover == "automatic"
+
+- name: Repmgr | Setup cluster monitoring history cleanup
+  copy:
+    content: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster cleanup --keep-history={{repmgr_keep_history_days}}"
+    dest: "/etc/cron.daily/repmgr_cleanup"
+    mode: 0755
+  when: repmgr_monitoring_history == "true" or repmgr_failover == "automatic"
