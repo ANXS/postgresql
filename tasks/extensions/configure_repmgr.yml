@@ -80,6 +80,7 @@
   become_user: "{{ postgresql_service_user }}"
   changed_when: repmgr_cluster_show.rc != 0
   register: repmgr_cluster_show
+  ignore_errors: True
 
 - name: Repmgr | Register as primary
   command: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf primary register"
