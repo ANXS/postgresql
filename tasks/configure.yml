@@ -95,6 +95,10 @@
          pgdata_dir_exist.changed or
          not pgdata_dir_initialized.stat.exists)
 
+- name: PostgreSQL | Verify postgresql cluster version
+  command: grep ^{{ postgresql_version }}$ {{ postgresql_data_directory }}/PG_VERSION
+  changed_when: false
+
 - name: PostgreSQL | Ensure configuration directory exists
   file:
     path: "{{ postgresql_conf_directory }}"
