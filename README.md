@@ -133,11 +133,11 @@ Maintainers:
 - [Jonathan Lozada D.](https://github.com/jlozadad)
 - [Jonathan Freedman](https://github.com/otakup0pe)
 - [Sergei Antipov](https://github.com/UnderGreen)
+- [Greg Clough](https://github.com/gclough)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)
 - [Jesse Lang](https://github.com/jesselang)
-- [Greg Clough](https://github.com/gclough)
 - [Michael Conrad](https://github.com/MichaelConrad)
 - [Sébastien Alix](https://github.com/sebalix)
 - [Copperfield](https://github.com/Copperfield)
