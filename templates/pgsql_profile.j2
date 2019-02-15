@@ -1,0 +1,362 @@
+#
+# Setup the PostgreSQL bash environment
+#
+# pgenv [-y] <cluster_name>  Setup the environment for <cluster_name>
+#                            -y assume YES, and do not prompt
+# export PGENV_ASK="0"       Do not prompt for a cluster name, just use the parameter
+# export PGENV_ASK="1"       Prompt for a cluster name, unless -y is used
+#
+# pga   - Change to the Archived WAL directory
+# pgb   - Change to the Backup directory
+# pgc   - View the postgresql.conf file (read-only mode, needs wq! to save)
+# pgd   - Change to the $PGDATA directory
+# pgh   - View the pg_hba.conf file (read-only mode, needs wq! to save)
+# pgl   - Change to the pg_log or log directory
+# pgr   - View the recovery.conf file (read-only mode, needs wq! to save)
+#
+# pglog - Tail the most recent log in pg_log or log
+#
+# pgport        - Output the current $PGPORT
+# pgclustername - Output the current $PGCLUSTERNAME
+#
+# The default .bash_profile created when postgresqlXX is installed on CentOS includes
+# this code below, so the name of this script matches that
+#
+# > # If you want to customize your settings,
+# > # Use the file below. This is not overridden
+# > # by the RPMS.
+# > [ -f /var/lib/pgsql/.pgsql_profile ] && source /var/lib/pgsql/.pgsql_profile
+#
+
+#
+# Copyright 2017 Greg Clough
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
+
+#
+# Change to the Archive directory
+#
+pga() {
+  if [ ! -d "$PGWALARCH" ]; then
+    PGWALARCH=${PGDATA}/../walarch
+  fi
+  [ -d $PGWALARCH ] || (echo ERROR: PGWALARCH $PGWALARCH does not exist >&2 ; return 1)
+  cd $PGWALARCH || (echo ERROR: Could not change Archive WAL directory $PGWALARCH >&2 ; return 1)
+  echo pwd: `pwd`
+}
+
+#
+# Change to the Backup directory
+#
+pgb() {
+  if [ ! -d "$PGBACKUPS" ]; then
+    PGBACKUPS=${PGDATA}/../backups
+  fi
+  [ -d $PGBACKUPS ] || (echo ERROR: PGBACKUPS $PGBACKUPS does not exist >&2 ; return 1)
+  cd $PGBACKUPS || (echo ERROR: Could not change Backup directory $PGBACKUPS >&2 ; return 1)
+  echo pwd: `pwd`
+}
+
+#
+# View the postgresql.conf file (read-only mode, needs wq! to save)
+#
+pgc() {
+  view $PGDATA/postgresql.conf
+}
+
+#
+# Change to the Data directory
+#
+pgd() {
+  [ -d $PGDATA ] || (echo ERROR: PGDATA $PGDATA does not exist >&2 ; return 1)
+  cd $PGDATA || (echo ERROR: Could not change directory >&2 ; return 1)
+  echo pwd: `pwd`
+}
+
+#
+# View the pg_hba.conf file (read-only mode, needs wq! to save)
+#
+pgh() {
+  view $PGDATA/pg_hba.conf
+}
+
+#
+# Change to the Log directory
+#
+pgl() {
+  #
+  # PostgreSQL >= v10 has "current_logfiles", and <= 9.6 we assume $PGDATA/pg_log
+  #
+  if [ -f ${PGDATA}/current_logfiles ]; then
+    LOGDIR="`grep ^'stderr ' ${PGDATA}/current_logfiles | cut -f2 -d' '`"
+    if [ "`echo $LOGDIR | cut -c1`" = "/" ]; then
+      LOGDIR="`dirname $LOGDIR`"
+    else
+      LOGDIR="`dirname ${PGDATA}/${LOGDIR}`"
+    fi
+  else
+    LOGDIR="${PGDATA}/pg_log/"
+  fi
+
+  #
+  # Change to the Log Directory
+  #
+  [ -d $LOGDIR ] || (echo ERROR: Logdir $LOGDIR does not exist >&2 ; return 1)
+  cd $LOGDIR || (echo ERROR: Could not change directory >&2 ; return 1)
+}
+
+#
+# View the recovery.conf file (read-only mode, needs wq! to save)
+#
+pgr() {
+  view $PGDATA/recovery.conf
+}
+
+#
+# Monitor the latest PostgreSQL.log file
+#
+pglog() {
+  #
+  # PostgreSQL >= v10 has "current_logfiles", and <= 9.6 we use the most recent file
+  #
+  if [ -f ${PGDATA}/current_logfiles ]; then
+    LOGFILE="`grep ^'stderr ' ${PGDATA}/current_logfiles | cut -f2 -d' '`"
+    if [ "`echo $LOGFILE | cut -c1`" = "/" ]; then
+      # Nothing, the logfile is fully qualified
+      :
+    else
+      LOGFILE="${PGDATA}/${LOGFILE}"
+    fi
+  else
+    LOGFILE="`ls -1rt ${PGDATA}/pg_log/*\.log | tail -1`"
+  fi
+
+  #
+  # Tail the current logfile
+  #
+  [ -f "$LOGFILE" ] || (echo ERROR: Could not locate PostgreSQL log >&2 ; return 1)
+  tail -100f $LOGFILE || (echo ERROR: Could not tail PostgreSQL log >&2 ; return 1)
+}
+
+#
+# Output the $PGCLUSTERNAME variable
+#
+pgclustername() {
+  /bin/echo -n \$PGCLUSTERNAME
+}
+
+#
+# Output the $PGPORT variable
+#
+pgport() {
+  /bin/echo -n \$PGPORT
+}
+
+#
+# Display PostgreSQL Environment
+#
+pge() {
+  #
+  # Validate the variables
+  #
+  [ ! -z "$PGDATA" ] || (echo ERROR: PGDATA is empty >&2 ; return 1)
+  expr "$PGPORT" + 1 > /dev/null 2>&1 || (echo ERROR: PGPORT "$PGPORT" is not a number >&2 ; return 1)
+  [ "$PGPORT" -gt 1024 -a "$PGPORT" -le 65535 ] || (echo ERROR: PGPORT "$PGPORT" is not between 1024 and 65535 >&2 ; return 1)
+
+  #
+  # Output some important variables
+  #
+  echo PGCLUSTERNAME: $PGCLUSTERNAME
+  echo PGRELEASE: $PGRELEASE
+  echo PGPORT: $PGPORT
+  echo PGDATA: $PGDATA
+  echo PGDATABASE: $PGDATABASE
+
+  #
+  # Check the PGDATA is valid
+  #
+  [ -d "$PGDATA" ] || echo WARNING: PGDATA $PGDATA does not exist >&2
+  [ -O "$PGDATA" ] || echo WARNING: PGDATA $PGDATA is not owned by `/usr/bin/whoami` >&2
+  [ -r "$PGDATA" -a -w "$PGDATA" -a -x "$PGDATA" ] || echo WARNING: PGDATA $PGDATA has wrong permissions >&2
+
+  #
+  # Check if PostgreSQL is running
+  #
+  pg_ctl status | head -1
+}
+
+#
+# Set different PGDATA locations
+#
+pgenv() {
+  #
+  # Find the pgtab file, or output an erorr
+  #
+  if [ -f /etc/pgtab ]; then
+    PGTAB=/etc/pgtab
+  elif [ -f ~/pgtab ]; then
+    PGTAB=~/pgtab
+  else
+    echo ERROR: pgtab missing in /etc/pgtab and ~/pgtab
+    echo
+    echo It should look like:
+    echo
+    echo '#  pgclustername : pgtab_version : pgrelease : pgport : pgdatabase : pgroot : pgbindir : [pgdata] : [pgwalarch] : [pgbackups] :'
+    echo default:1:10:5432:postgres:/var/lib/pgsql:/usr/pgsql-10/bin:/var/lib/pgsql/10/data:::
+    return 1
+  fi
+
+  #
+  # If the PGENV_ASK variable is not set, initialise it to YES, prompt the user
+  #
+  [ -z "$PGENV_ASK" ] && PGENV_ASK=1
+
+  #
+  # Save the current status of PGENV_ASK, and restore it when we exit
+  #
+  PGENV_ASK_SAVE=$PGENV_ASK
+  trap "PGENV_ASK=$PGENV_ASK_SAVE" RETURN
+
+  #
+  # Check the autorun parameter, and if "-y" then do not ask (override PGENV_ASK environment variable)
+  #
+  if [ "$1" = "-y" ]; then
+    PGENV_ASK=0
+    shift
+  fi
+
+  #
+  # Display the PGTAB file as needed (no parameter, or PGENV_ASK)
+  #
+  if [ $# -ne 1 -o "$PGENV_ASK" -eq 1 ]; then
+    cat $PGTAB | egrep -e ^"[a-z0-9_-]*:" -e ^'#  pgclustername : '
+  fi
+
+  #
+  # If PGENV_ASK is set, then ask the user for input
+  #
+  unset PARAM
+  if [ "$PGENV_ASK" -eq 1 ]; then
+    echo
+    if [ $# -eq 1 ]; then
+      echo -n "Cluster Name [${1}]: "
+    else
+      echo -n "Cluster Name [${PGCLUSTERNAME}]: "
+    fi
+    read PARAM
+  fi
+
+  #
+  # Figure out which parameter, either commandline or user input to use
+  #
+  if [ -z "$PARAM" ]; then
+    if [ $# -eq 1 ]; then
+      PARAM=$1
+    else
+      PARAM=$PGCLUSTERNAME
+    fi
+  fi
+
+  #
+  # Validate the parameter is set (nothing on the commandline, and nothing from user)
+  #
+  if [ -z "$PARAM" ]; then
+    echo 'USAGE: pgenv [cluster_name]' >&2
+    return 1
+  fi
+
+  #
+  # Exract the details from pgtab
+  #
+  LINE="`grep ^${PARAM}: $PGTAB | tail -1`"
+  if [ -z "$LINE" ]; then
+    echo ERROR: PGCLUSTERNAME: $PARAM not found in $PGTAB >&2
+    return 1
+  fi
+  #
+  export PGCLUSTERNAME="`echo $LINE | cut -f1 -d:`"
+  export PGTABVERSION="`echo $LINE | cut -f2 -d:`"
+  case "${PGTABVERSION}" in
+    '1')
+      export PGRELEASE="`echo $LINE | cut -f3 -d:`"
+      export PGPORT="`echo $LINE | cut -f4 -d:`"
+      export PGDATABASE="`echo $LINE | cut -f5 -d:`"
+      export PGROOT="`echo $LINE | cut -f6 -d:`"
+      export PGBINDIR="`echo $LINE | cut -f7 -d:`"
+      export PGDATA="`echo $LINE | cut -f8 -d:`"
+      export PGWALARCH="`echo $LINE | cut -f9 -d:`"
+      export PGBACKUPS="`echo $LINE | cut -f10 -d:`"
+      ;;
+    *)
+      echo ERROR: PGTABVERSION: $PGTABVERSION is not supported >&2
+      return 1
+      ;;
+  esac
+
+  #
+  # Validate pgtab data
+  #
+  [ -z "$PGCLUSTERNAME" ] && (echo ERROR: PGCLUSTERNAME: $PARAM not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGTABVERSION" ]  && (echo ERROR: PGTABVERSION: $PARAM not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGRELEASE" ]     && (echo ERROR: PGRELEASE: $PARAM not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGPORT" ]        && (echo ERROR: PGPORT not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGDATABASE" ]    && (echo ERROR: PGDATABASE not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGROOT" ]        && (echo ERROR: PGROOT not found in $PGTAB >&2 ; return 1)
+  [ -z "$PGBINDIR" ]      && (echo ERROR: PGBINDIR not found in $PGTAB >&2 ; return 1)
+  # PGDATA can be empty, and will use /${PGROOT}/${PGRELEASE}/${PGCLUSTERNAME}/data
+  # PGWALARCH can be empty, and will use a sensible default
+  # PGBACKUPS can be empty, and will use a sensible default
+  #
+
+  #
+  # Add the PGBINDIR to the front of the path (removing it if already duplicated)
+  #
+  export PATH="`echo :${PATH}: | sed s,:${PGBINDIR}:,:,g | sed s/::/:/g | sed s/^://`"
+  export PATH="$PGBINDIR:$PATH"
+
+  #
+  # Construct PGDATA if it is not specified
+  #
+  if [ -z "$PGDATA" ]; then
+    export PGDATA="`realpath -m /${PGROOT}/${PGRELEASE}/${PGCLUSTERNAME}/data`"
+  else
+    export PGDATA
+  fi
+
+  #
+  # Setup the PROMPT
+  #
+  export PS1="\u@\h[$(pgclustername):$(pgport)] \w/\\$ "
+
+  #
+  # Set variables for backwards/cross compatibility
+  #
+  export PGSERVERNAME=$PGCLUSTERNAME
+
+  #
+  # Display the environment
+  #
+  pge
+}
+
+#
+# Set the default environment
+#
+pgenv -y {{ postgresql_cluster_name }}

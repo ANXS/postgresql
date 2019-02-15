@@ -20,6 +20,7 @@ postgresql_default_auth_method: "trust"
 
 # The user/group that will run postgresql process or service
 postgresql_service_user: "{{ postgresql_admin_user }}"
+postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
 postgresql_service_enabled: true
 
