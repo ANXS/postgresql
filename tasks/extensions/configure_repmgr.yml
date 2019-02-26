@@ -134,6 +134,12 @@
     name: crontabs
   when: repmgr_monitoring_history == "true" or repmgr_failover == "automatic"
 
+- name: Repmgr | Ensure crond is running
+  service:
+    name: "crond"
+    state: started
+    enabled: yes
+
 - name: Repmgr | Setup cluster monitoring history cleanup
   copy:
     content: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster cleanup --keep-history={{repmgr_keep_history_days}}"
