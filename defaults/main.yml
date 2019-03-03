@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 11 # if you use postgis too check whether the postgresql/postgis versions work together
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
@@ -40,8 +40,12 @@ postgresql_ext_postgis_deps:
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
+
 # List of databases to be created (optional)
 postgresql_databases: []
+
+# List of schemas to be created (optional)
+postgresql_database_schemas: []
 
 # List of database extensions to be created (optional)
 postgresql_database_extensions: []
@@ -49,16 +53,13 @@ postgresql_database_extensions: []
 # List of users to be created (optional)
 postgresql_users: []
 
-# List of schemas to be created (optional)
-postgresql_database_schemas: []
-
 # List of user privileges to be applied (optional)
 postgresql_user_privileges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:
   - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "{{ postgresql_default_auth_method }}", comment: "" }
-  - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
+  - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: "'local' is for Unix domain socket connections only" }
   - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method }}", comment: "IPv4 local connections:" }
   - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method }}", comment: "IPv6 local connections:" }
   - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map=root_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
@@ -131,16 +132,17 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresal_ssl_dh_params_file: ""                                 # (>= 10)  
+postgresql_ssl_dh_params_file: ""                                 # (>= 10)
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
 postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
 postgresql_ssl_ca_file: ""                                        # (>= 9.2)
 postgresql_ssl_crl_file: ""                                       # (>= 9.2)
-postgresql_password_encryption: on
+postgresql_ssl_passphrase_command: ""                             # (>= 11)
+postgresql_ssl_passphrase_command_supports_reload: off            # (>= 11)
+postgresql_password_encryption: "md5"
 postgresql_db_user_namespace: off
 postgresql_row_security: off # (>= 9.5)
-
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ""
 postgresql_krb_srvname: "postgres" # (<= 9.3)
@@ -159,7 +161,7 @@ postgresql_tcp_keepalives_count: 0
 # - Memory -
 
 postgresql_shared_buffers:       128MB # min 128kB
-postgresql_huge_pages:           "try"   # on, off, or try
+postgresql_huge_pages:           "try" # on, off, or try
 postgresql_temp_buffers:         8MB   # min 800kB
 
 # Caution: it is not advisable to set max_prepared_transactions nonzero unless
@@ -168,7 +170,7 @@ postgresql_max_prepared_transactions: 0 # zero disables the feature
 
 postgresql_work_mem:                   1MB      # min 64kB
 postgresql_maintenance_work_mem:       16MB     # min 1MB
-postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
+postgresql_replacement_sort_tuples:    150000   # (>= 9.6, <11) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
 postgresql_max_stack_depth:            2MB      # min 100kB
 postgresql_dynamic_shared_memory_type: "posix"  # the default is the first option
@@ -189,7 +191,7 @@ postgresql_temp_file_limit: -1
 # - Kernel Resource Usage -
 
 postgresql_max_files_per_process: 1000  # min 25
-postgresql_shared_preload_libraries: []
+postgresql_shared_preload_libraries: ["pglogical"]
 
 
 # - Cost-Based Vacuum Delay -
@@ -216,10 +218,11 @@ postgresql_effective_io_concurrency:        1   # 1-1000; 0 disables prefetching
 postgresql_max_worker_processes:            8   # (change requires restart)
 postgresql_max_parallel_workers_per_gather: 0   # (>= 9.6) taken from max_worker_processes
 postgresql_max_parallel_workers:            8   # (>= 10)
+postgresql_max_parallel_maintenance_workers: 2  # (>= 11)
+postgresql_parallel_leader_participation:   on  # (>= 11)
 postgresql_old_snapshot_threshold:          -1  # (>= 9.6) 1min-60d; -1 disables; 0 is immediate
                                                 # (change requires restart)
 postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default is 0
-
 
 #------------------------------------------------------------------------------
 # WRITE AHEAD LOG
@@ -227,7 +230,7 @@ postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default i
 
 # - Settings -
 
-postgresql_wal_level: "minimal"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
+postgresql_wal_level: "logical"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
 postgresql_fsync:     on          # flush data to disk for crash safety
                                           # (turning this off can cause
                                           # unrecoverable data corruption)
@@ -275,7 +278,7 @@ postgresql_checkpoint_warning:           30s   # 0 disables
 # - Archiving -
 
 # allows archiving to be done
-postgresql_archive_mode: off   # Should be a string with quotes, but all templates need fixing first
+postgresql_archive_mode: off
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
@@ -296,15 +299,15 @@ postgresql_archive_timeout: 0
 # Set these on the master and on any standby that will send replication data.
 
 # max number of walsender processes
-postgresql_max_wal_senders: 0
+postgresql_max_wal_senders: 8
 postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
 postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
 postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables (>= 9.3)
-postgresql_max_replication_slots: 0 # max number of replication slots
+postgresql_max_replication_slots: 8 # max number of replication slots
 
-postgresql_track_commit_timestamp: off # (>= 9.5)
+postgresql_track_commit_timestamp: true # (>= 9.5)
 
 # - Master Server -
 
@@ -312,7 +315,8 @@ postgresql_track_commit_timestamp: off # (>= 9.5)
 
 # standby servers that provide sync rep.
 # number of sync standbys (>= 9.6) and comma-separated list of application_name from standby(s)
-postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable below)
+postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable belo
+w)
 postgresql_synchronous_standby_choose_sync: "FIRST" # >= 10
 postgresql_synchronous_standby_names: [] # '*' means 'all'
 
@@ -332,19 +336,16 @@ postgresql_max_standby_streaming_delay: 30s # -1 allows indefinite delay
 postgresql_wal_receiver_status_interval: 10s # 0 disables
 # send info from standby to prevent query conflicts
 postgresql_hot_standby_feedback: off
-#time that receiver waits for communication from master in milliseconds
+# time that receiver waits for communication from master in milliseconds
 postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
-# - Subscribers - (>= 10) 
-
+# - Subscribers - (>= 10)
 # These settings are ignored on a publisher.
 
-postgresql_max_logical_replication_workers: 4   # (>= 10) taken from max_worker_processes
-            # (change requires restart)
+postgresql_max_logical_replication_workers: 8 # (>= 10) taken from max_worker_processes (change requires restart)
 postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical_replication_workers
-
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -363,7 +364,10 @@ postgresql_enable_nestloop:            on
 postgresql_enable_seqscan:             on
 postgresql_enable_sort:                on
 postgresql_enable_tidscan:             on
-
+postgresql_enable_partitionwise_join:  off # (>= 11)
+enable_partitionwise_aggregaten:       off # (>= 11)
+postgresql_enable_parallel_hash:       on  # (>= 11)
+postgresql_enable_partition_pruning:   on  # (>= 11)
 
 # - Planner Cost Constants -
 
@@ -378,6 +382,12 @@ postgresql_min_parallel_relation_size: 8MB     # (= 9.6) replaced by below two p
 postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
 postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
 postgresql_effective_cache_size:       128MB
+# perform JIT compilation if available and query more expensive than this
+postgresq_jit_above_cost:              100000  # (>= 11) -1 disables
+# inline small functions if query is more expensive than this
+postgresq_jit_inline_above_cost:       500000  # (>= 11) -1 disables
+# use expensive JIT optimizations if query is more expensive than this
+postgresq_jit_optimize_above_cost:     500000  # (>= 11) -1 disables
 
 
 # - Genetic Query Optimizer -
@@ -399,7 +409,7 @@ postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        "off"        # (>= 9.6)
-
+postgresql_jit:                        "off"        # (>= 11) allow JIT compilation
 
 #------------------------------------------------------------------------------
 # ERROR REPORTING AND LOGGING
@@ -528,11 +538,10 @@ postgresql_log_line_prefix: "%t "
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
 postgresql_log_statement:  "none"  # none, ddl, mod, all
-postgresql_log_replication_commands: off
+postgresql_log_replication_commands: off  # (>= 10)
 # log temporary files equal or larger
 postgresql_log_temp_files: -1
 postgresql_log_timezone:   "UTC"
-
 
 
 #------------------------------------------------------------------------------
@@ -614,12 +623,13 @@ postgresql_vacuum_freeze_min_age:                 50000000
 postgresql_vacuum_freeze_table_age:               150000000
 postgresql_vacuum_multixact_freeze_min_age:       5000000     # (>= 9.3)
 postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
-
+# fraction of total number of tuples before index cleanup
+postgresql_vacuum_cleanup_index_scale_factor:     0.1         # (>= 11)  0 always performs index cleanup
 postgresql_bytea_output: "hex"  # hex, escape
 postgresql_xmlbinary:    "base64"
 postgresql_xmloption:    "content"
-postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2)
-postgresql_gin_pending_list_limit: 4MB  # (>= 9.5)
+postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2, >= 10)
+postgresql_gin_pending_list_limit: 4MB  # (>= 10)
 
 
 # - Locale and Formatting -
@@ -654,10 +664,16 @@ postgresql_lc_time: "{{ postgresql_locale }}"
 
 postgresql_default_text_search_config: "pg_catalog.english"
 
+# - Shared Library Preloading -
+
 postgresql_dynamic_library_path: "$libdir"
 postgresql_local_preload_libraries: []
 postgresql_session_preload_libraries: []
+postgresql_jit_provider: "llvmjit"  # (>= 11)
 
+# - Other Defaults -
+
+postgresql_dynamic_library_path: "$libdir"  #(>= 11)
 
 #------------------------------------------------------------------------------
 # LOCK MANAGEMENT
@@ -671,14 +687,14 @@ postgresql_max_locks_per_transaction: 64         # min 10
 # lock table slots.
 postgresql_max_pred_locks_per_transaction: 64    # min 10
 
-postgresql_max_pred_locks_per_relation: -2       # (>= 10) negative values mean
-               # (max_pred_locks_per_transaction
-               #  / -max_pred_locks_per_relation) - 1
+postgresql_max_pred_locks_per_relation: -2       # (>= 10) 
+    # negative values mean
+    # (max_pred_locks_per_transaction / -max_pred_locks_per_relation) - 1
 postgresql_max_pred_locks_per_page: 2            # (>= 10) min 0
 
 
 #------------------------------------------------------------------------------
-# VERSION/PLATFORM COMPATIBILITY
+# VERSION AND PLATFORM COMPATIBILITY
 #------------------------------------------------------------------------------
 
 # - Previous PostgreSQL Versions -
@@ -707,7 +723,8 @@ postgresql_transform_null_equals:       off
 postgresql_exit_on_error: off
 # Reinitialize after backend crash?
 postgresql_restart_after_crash: on
-
+# retry or panic on failure to fsync data?
+postgresql_data_sync_retry: off  # (>= 11)
 
 #------------------------------------------------------------------------------
 # PGTUNE
@@ -720,6 +737,8 @@ postgresql_pgtune_memory: no
 postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
+
+
 
 
 postgresql_env:
@@ -744,7 +763,6 @@ postgresql_pgdg_dists:
   SLC: sl
   OracleLinux: oraclelinux
   Fedora: fedora
-
 postgresql_pgdg_releases:
   redhat: {
       9.1: 8,
@@ -789,6 +807,7 @@ postgresql_fedora_releases:
      9.6: 8,
       10: 3,
       11: 1,
+      10: 2
   }
 
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
