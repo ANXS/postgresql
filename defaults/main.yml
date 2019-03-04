@@ -191,7 +191,7 @@ postgresql_temp_file_limit: -1
 # - Kernel Resource Usage -
 
 postgresql_max_files_per_process: 1000  # min 25
-postgresql_shared_preload_libraries: ["pglogical"]
+postgresql_shared_preload_libraries: []
 
 
 # - Cost-Based Vacuum Delay -
@@ -315,9 +315,8 @@ postgresql_track_commit_timestamp: true # (>= 9.5)
 
 # standby servers that provide sync rep.
 # number of sync standbys (>= 9.6) and comma-separated list of application_name from standby(s)
-postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable belo
-w)
-postgresql_synchronous_standby_choose_sync: "FIRST" # >= 10
+postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable below)
+postgresql_synchronous_standby_choose_sync: "FIRST"  # (>= 10)
 postgresql_synchronous_standby_names: [] # '*' means 'all'
 
 # number of xacts by which cleanup is delayed
@@ -807,7 +806,6 @@ postgresql_fedora_releases:
      9.6: 8,
       10: 3,
       11: 1,
-      10: 2
   }
 
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
