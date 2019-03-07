@@ -275,7 +275,7 @@ postgresql_checkpoint_warning:           30s   # 0 disables
 # - Archiving -
 
 # allows archiving to be done
-postgresql_archive_mode: off   # Should be a string with quotes, but all templates need fixing first
+postgresql_archive_mode: "off"
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
