@@ -1,6 +1,6 @@
 ---
 
-postgresql_version: 10 
+postgresql_version: 11
 
 postgresql_databases:
   - name: foobar
@@ -12,7 +12,6 @@ postgresql_users:
   - name: baz
     pass: md51a1dc91c907325c69271ddf0c944bc72
     encrypted: yes
-
 
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72

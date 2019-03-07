@@ -104,6 +104,8 @@
 #ssl_prefer_server_ciphers = on
 #ssl_ecdh_curve = 'prime256v1'
 #ssl_dh_params_file = ''
+#ssl_passphrase_command = ''
+#ssl_passphrase_command_supports_reload = off
 
 
 #------------------------------------------------------------------------------
@@ -139,7 +141,7 @@
 #temp_file_limit = -1			# limits per-process temp file space
 					# in kB, or -1 for no limit
 
-# - Kernel Resource -
+# - Kernel Resources -
 
 #max_files_per_process = 1000		# min 25
 					# (change requires restart)
@@ -304,7 +306,9 @@
 #enable_sort = on
 #enable_tidscan = on
 #enable_partitionwise_join = off
+#enable_partitionwise_aggregate = off
 #enable_parallel_hash = on
+#enable_partition_pruning = on
 
 # - Planner Cost Constants -
 
@@ -315,6 +319,16 @@
 #cpu_operator_cost = 0.0025		# same scale as above
 #parallel_tuple_cost = 0.1		# same scale as above
 #parallel_setup_cost = 1000.0	# same scale as above
+
+#jit_above_cost = 100000		# perform JIT compilation if available
+					# and query more expensive than this;
+					# -1 disables
+#jit_inline_above_cost = 500000		# inline small functions if query is
+					# more expensive than this; -1 disables
+#jit_optimize_above_cost = 500000	# use expensive JIT optimizations if
+					# query is more expensive than this;
+					# -1 disables
+
 #min_parallel_table_scan_size = 8MB
 #min_parallel_index_scan_size = 512kB
 #effective_cache_size = 4GB
@@ -338,6 +352,7 @@
 #join_collapse_limit = 8		# 1 disables collapsing of explicit
 					# JOIN clauses
 #force_parallel_mode = off
+#jit = off				# allow JIT compilation
 
 
 #------------------------------------------------------------------------------
@@ -389,17 +404,6 @@ log_rotation_size = 0			# Automatic rotation of logfiles will
 #event_source = 'PostgreSQL'
 
 # - When to Log -
-
-#client_min_messages = notice		# values in order of decreasing detail:
-					#   debug5
-					#   debug4
-					#   debug3
-					#   debug2
-					#   debug1
-					#   log
-					#   notice
-					#   warning
-					#   error
 
 #log_min_messages = warning		# values in order of decreasing detail:
 					#   debug5
@@ -545,6 +549,16 @@ log_line_prefix = '%m [%p] '		# special values:
 
 # - Statement Behavior -
 
+#client_min_messages = notice		# values in order of decreasing detail:
+					#   debug5
+					#   debug4
+					#   debug3
+					#   debug2
+					#   debug1
+					#   log
+					#   notice
+					#   warning
+					#   error
 #search_path = '"$user", public'	# schema names
 #row_security = on
 #default_tablespace = ''		# a tablespace name, '' uses the default
@@ -562,6 +576,9 @@ log_line_prefix = '%m [%p] '		# special values:
 #vacuum_freeze_table_age = 150000000
 #vacuum_multixact_freeze_min_age = 5000000
 #vacuum_multixact_freeze_table_age = 150000000
+#vacuum_cleanup_index_scale_factor = 0.1	# fraction of total number of tuples
+						# before index cleanup, 0 always performs
+						# index cleanup
 #bytea_output = 'hex'			# hex, escape
 #xmlbinary = 'base64'
 #xmloption = 'content'
@@ -599,6 +616,7 @@ log_line_prefix = '%m [%p] '		# special values:
 #shared_preload_libraries = ''	# (change requires restart)
 #local_preload_libraries = ''
 #session_preload_libraries = ''
+#jit_provider = 'llvmjit'		# JIT library to use
 
 # - Other Defaults -
 
@@ -647,6 +665,7 @@ log_line_prefix = '%m [%p] '		# special values:
 
 #exit_on_error = off			# terminate session on any error?
 #restart_after_crash = on		# reinitialize after backend crash?
+#data_sync_retry = off			# retry or panic on failure to fsync data?
 
 
 #------------------------------------------------------------------------------

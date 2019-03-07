@@ -131,7 +131,9 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresal_ssl_dh_params_file: ""                                 # (>= 10)  
+postgresql_ssl_dh_params_file: ""                                 # (>= 10)  
+postgresql_ssl_passphrase_command: ""                             # (>= 11)
+postgresql_ssl_passphrase_command_supports_reload: off            # (>= 11)
 postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
 postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
@@ -354,20 +356,22 @@ postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical
 
 # - Planner Method Configuration -
 
-postgresql_enable_bitmapscan:          on
-postgresql_enable_hashagg:             on
-postgresql_enable_hashjoin:            on
-postgresql_enable_indexscan:           on
-postgresql_enable_indexonlyscan:       on
-postgresql_enable_material:            on
-postgresql_enable_mergejoin:           on
-postgresql_enable_nestloop:            on
-postgresql_enable_parallel_append:     on   # (>= 11)
-postgresql_enable_seqscan:             on
-postgresql_enable_sort:                on
-postgresql_enable_tidscan:             on
-postgresql_enable_partitionwise_join:  off  # (>= 11)
-postgresql_enable_parallel_hash:       on   # (>= 11)
+postgresql_enable_bitmapscan:              on
+postgresql_enable_hashagg:                 on
+postgresql_enable_hashjoin:                on
+postgresql_enable_indexscan:               on
+postgresql_enable_indexonlyscan:           on
+postgresql_enable_material:                on
+postgresql_enable_mergejoin:               on
+postgresql_enable_nestloop:                on
+postgresql_enable_parallel_append:         on    # (>= 11)
+postgresql_enable_seqscan:                 on
+postgresql_enable_sort:                    on
+postgresql_enable_tidscan:                 on
+postgresql_enable_partitionwise_join:  off       # (>= 11)
+postgresql_enable_partitionwise_aggregate: off   # (>= 11)
+postgresql_enable_parallel_hash:           on    # (>= 11)
+postgresql_enable_partition_pruning:       on    # (>= 11)
 
 
 # - Planner Cost Constants -
@@ -379,6 +383,10 @@ postgresql_cpu_index_tuple_cost:       0.005   # same scale as above
 postgresql_cpu_operator_cost:          0.0025  # same scale as above
 postgresql_parallel_tuple_cost:        0.1     # same scale as above (>= 9.6)
 postgresql_parallel_setup_cost:        1000.0  # same scale as above (>= 9.6)
+postgresql_jit_above_cost:             100000  # perform JIT compilation if available
+postgresql_jit_inline_above_cost:      500000  # inline small functions if query is
+postgresql_jit_optimize_above_cost:    500000  # use expensive JIT optimizations if
+
 postgresql_min_parallel_relation_size: 8MB     # (= 9.6) replaced by below two parameters in 10
 postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
 postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
@@ -404,6 +412,7 @@ postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        "off"        # (>= 9.6)
+postgresql_jit:                        off          # (>= 11)
 
 
 #------------------------------------------------------------------------------
@@ -617,6 +626,7 @@ postgresql_lock_timeout:                          0           # in milliseconds,
 postgresql_idle_in_transaction_session_timeout:   0           # in milliseconds, 0 is disabled (>= 9.6)
 postgresql_vacuum_freeze_min_age:                 50000000
 postgresql_vacuum_freeze_table_age:               150000000
+postgresql_vacuum_cleanup_index_scale_factor:     0.1         # (>= 11)
 postgresql_vacuum_multixact_freeze_min_age:       5000000     # (>= 9.3)
 postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 
@@ -662,6 +672,7 @@ postgresql_default_text_search_config: "pg_catalog.english"
 postgresql_dynamic_library_path: "$libdir"
 postgresql_local_preload_libraries: []
 postgresql_session_preload_libraries: []
+postgresql_jit_provider: "llvmjit"
 
 
 #------------------------------------------------------------------------------
@@ -712,6 +723,8 @@ postgresql_transform_null_equals:       off
 postgresql_exit_on_error: off
 # Reinitialize after backend crash?
 postgresql_restart_after_crash: on
+# Retry or panic on failure to fsync data?
+postgresql_data_sync_retry: off
 
 
 #------------------------------------------------------------------------------
