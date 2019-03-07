@@ -131,17 +131,18 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresql_ssl_dh_params_file: ""                                 # (>= 10)  
-postgresql_ssl_passphrase_command: ""                             # (>= 11)
-postgresql_ssl_passphrase_command_supports_reload: off            # (>= 11)
-postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
-postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
-postgresql_ssl_ca_file: ""                                        # (>= 9.2)
-postgresql_ssl_crl_file: ""                                       # (>= 9.2)
+postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
+postgresal_ssl_dh_params_file: "{{postgresql_ssl_dh_params_file}}"  # Typo in previous v10 role
+postgresql_ssl_passphrase_command: ""                               # (>= 11)
+postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
+postgresql_ssl_renegotiation_limit: 512MB                           # amount of data between renegotiations
+postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"    # (>= 9.2)
+postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
+postgresql_ssl_ca_file: ""                                          # (>= 9.2)
+postgresql_ssl_crl_file: ""                                         # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
-postgresql_row_security: off # (>= 9.5)
+postgresql_row_security: off                                        # (>= 9.5)
 
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ""
