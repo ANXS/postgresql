@@ -82,7 +82,9 @@ ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
 ssl_prefer_server_ciphers = {{ 'on' if postgresql_ssl_prefer_server_ciphers else 'off' }}		# (change requires restart)
 ssl_ecdh_curve = '{{postgresql_ssl_ecdh_curve}}'		# (change requires restart)
-ssl_dh_params_file = '{{postgresal_ssl_dh_params_file}}'
+ssl_dh_params_file = '{{postgresql_ssl_dh_params_file}}'
+ssl_passphrase_command = '{{postgresql_ssl_passphrase_command}}'
+ssl_passphrase_command_supports_reload = {{ 'on' if postgresql_ssl_passphrase_command_supports_reload else 'off' }}
 ssl_cert_file = '{{postgresql_ssl_cert_file}}'		# (change requires restart)
 ssl_key_file = '{{postgresql_ssl_key_file}}'		# (change requires restart)
 ssl_ca_file = '{{postgresql_ssl_ca_file}}'			# (change requires restart)
@@ -139,7 +141,7 @@ dynamic_shared_memory_type = {{postgresql_dynamic_shared_memory_type}}	# the def
 temp_file_limit = {{postgresql_temp_file_limit}}			# limits per-process temp file space
 					# in kB, or -1 for no limit
 
-# - Kernel Resource Usage -
+# - Kernel Resources -
 
 max_files_per_process = {{postgresql_max_files_per_process}}		# min 25
 					# (change requires restart)
@@ -309,7 +311,9 @@ enable_seqscan = {{'on' if postgresql_enable_seqscan else 'off'}}
 enable_sort = {{'on' if postgresql_enable_sort else 'off'}}
 enable_tidscan = {{'on' if postgresql_enable_tidscan else 'off'}}
 enable_partitionwise_join = {{'on' if postgresql_enable_partitionwise_join else 'off'}}  # (>= 11)
+enable_partitionwise_aggregate = {{'on' if postgresql_enable_partitionwise_aggregate else 'off'}}  # (>= 11)
 enable_parallel_hash = {{'on' if postgresql_enable_parallel_hash else 'off'}}  # (>= 11)
+enable_partition_pruning = {{'on' if postgresql_enable_partition_pruning else 'off'}}  # (>= 11)
 
 # - Planner Cost Constants -
 
@@ -320,6 +324,15 @@ cpu_index_tuple_cost = {{postgresql_cpu_index_tuple_cost}}		# same scale as abov
 cpu_operator_cost = {{postgresql_cpu_operator_cost}}		# same scale as above
 parallel_tuple_cost = {{postgresql_parallel_tuple_cost}}		# same scale as above
 parallel_setup_cost = {{postgresql_parallel_setup_cost}}	# same scale as above
+jit_above_cost = {{postgresql_jit_above_cost}}                # perform JIT compilation if available
+                                        # and query more expensive than this;
+                                        # -1 disables
+jit_inline_above_cost = {{postgresql_jit_inline_above_cost}}         # inline small functions if query is
+                                        # more expensive than this; -1 disables
+jit_optimize_above_cost = {{postgresql_jit_optimize_above_cost}}       # use expensive JIT optimizations if
+                                        # query is more expensive than this;
+                                        # -1 disables
+
 min_parallel_table_scan_size = {{postgresql_min_parallel_table_scan_size}}
 min_parallel_index_scan_size = {{postgresql_min_parallel_index_scan_size}}
 effective_cache_size = {{postgresql_effective_cache_size}}
@@ -343,6 +356,8 @@ from_collapse_limit = {{postgresql_from_collapse_limit}}
 join_collapse_limit = {{postgresql_join_collapse_limit}}		# 1 disables collapsing of explicit
 					# JOIN clauses
 force_parallel_mode = {{'on' if postgresql_force_parallel_mode else 'off'}}
+jit = {{'on' if postgresql_jit else 'off'}}                              # allow JIT compilation
+
 
 
 #------------------------------------------------------------------------------
@@ -566,6 +581,9 @@ vacuum_freeze_min_age = {{postgresql_vacuum_freeze_min_age}}
 vacuum_freeze_table_age = {{postgresql_vacuum_freeze_table_age}}
 vacuum_multixact_freeze_min_age = {{postgresql_vacuum_multixact_freeze_min_age}}
 vacuum_multixact_freeze_table_age = {{postgresql_vacuum_multixact_freeze_table_age}}
+vacuum_cleanup_index_scale_factor = {{postgresql_vacuum_cleanup_index_scale_factor}}       # fraction of total number of tuples
+                                                # before index cleanup, 0 always performs
+                                                # index cleanup
 bytea_output = '{{postgresql_bytea_output}}'			# hex, escape
 xmlbinary = '{{postgresql_xmlbinary}}'
 xmloption = '{{postgresql_xmloption}}'
@@ -607,6 +625,7 @@ default_text_search_config = '{{postgresql_default_text_search_config}}'
 dynamic_library_path = '{{postgresql_dynamic_library_path}}'
 local_preload_libraries = '{{postgresql_local_preload_libraries|join(',')}}'
 session_preload_libraries = '{{postgresql_session_preload_libraries|join(',')}}'
+jit_provider = '{{postgresql_jit_provider}}'               # JIT library to use
 
 
 #------------------------------------------------------------------------------
@@ -650,6 +669,7 @@ transform_null_equals = {{'on' if postgresql_transform_null_equals else 'off'}}
 
 exit_on_error = {{'on' if postgresql_exit_on_error else 'off'}}			# terminate session on any error?
 restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# reinitialize after backend crash?
+data_sync_retry = {{'on' if postgresql_data_sync_retry else 'off'}}                  # retry or panic on failure to fsync data?
 
 
 #------------------------------------------------------------------------------
