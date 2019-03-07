@@ -320,7 +320,7 @@ cursor_tuple_fraction = {{postgresql_cursor_tuple_fraction}}		# range 0.0-1.0
 from_collapse_limit = {{postgresql_from_collapse_limit}}
 join_collapse_limit = {{postgresql_join_collapse_limit}}		# 1 disables collapsing of explicit
 					# JOIN clauses
-force_parallel_mode = {{'on' if postgresql_force_parallel_mode else 'off'}}
+force_parallel_mode = {{ 'on' if ( postgresql_force_parallel_mode|bool == true or postgresql_force_parallel_mode == 'on' ) else ( 'regress' if postgresql_force_parallel_mode == 'regress' else 'off' ) }}
 
 
 #------------------------------------------------------------------------------
