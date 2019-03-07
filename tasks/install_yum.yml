@@ -19,20 +19,18 @@
         
       - name: PostgreSQL | Make sure the dependencies are installed | yum
         yum:
-         name: "{{ item }}"
+         name: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
          state: present
          update_cache: yes
-        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL | yum
         yum:
-          name: "{{ item }}"
+          name:
+            - "postgresql{{ postgresql_version_terse }}-server"
+            - "postgresql{{ postgresql_version_terse }}"
+            - "postgresql{{ postgresql_version_terse }}-contrib"
           state: present
         environment: "{{ postgresql_env }}"
-        with_items:
-          - "postgresql{{ postgresql_version_terse }}-server"
-          - "postgresql{{ postgresql_version_terse }}"
-          - "postgresql{{ postgresql_version_terse }}-contrib"
 
       - name: PostgreSQL | Setup service users profile | yum
         template:
