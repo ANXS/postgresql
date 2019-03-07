@@ -26,15 +26,15 @@ ansible-galaxy install ANXS.postgresql
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.2 | 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 |
-| ------------------------- |:------:|:---:|:---:|:---:|:---:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 16.04 | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Fedora latest | :no_entry: | :no_entry:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 |
+| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|
+| Ubuntu 14.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Fedora latest | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
