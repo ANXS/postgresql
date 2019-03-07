@@ -213,7 +213,7 @@ checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
 
-archive_mode = {{'on' if postgresql_archive_mode else 'off'}} # enables archiving; off, on, or always
+archive_mode = {{ postgresql_archive_mode }} # enables archiving; off, on, or always
 archive_command = '{{postgresql_archive_command}}'            # command to use to archive a logfile segment
 				# placeholders: %p = path of file to archive
 				#               %f = file name only
