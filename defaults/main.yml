@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 10
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
@@ -33,7 +33,7 @@ postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
-postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
+postgresql_ext_postgis_version: "2.5" # be careful: check whether the postgresql/postgis versions work together
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
