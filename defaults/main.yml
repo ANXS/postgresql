@@ -368,7 +368,7 @@ postgresql_enable_parallel_append:         on    # (>= 11)
 postgresql_enable_seqscan:                 on
 postgresql_enable_sort:                    on
 postgresql_enable_tidscan:                 on
-postgresql_enable_partitionwise_join:  off       # (>= 11)
+postgresql_enable_partitionwise_join:      off   # (>= 11)
 postgresql_enable_partitionwise_aggregate: off   # (>= 11)
 postgresql_enable_parallel_hash:           on    # (>= 11)
 postgresql_enable_partition_pruning:       on    # (>= 11)
