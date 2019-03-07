@@ -413,7 +413,6 @@ postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        off          # (>= 9.6)
 postgresql_jit:                        off          # (>= 11)
->>>>>>> Clean up parameter file
 
 
 #------------------------------------------------------------------------------
