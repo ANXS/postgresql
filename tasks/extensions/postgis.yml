@@ -31,4 +31,3 @@
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
     - restart postgresql
-
