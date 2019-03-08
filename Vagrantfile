@@ -87,24 +87,21 @@ Vagrant.configure('2') do |config|
 
   end
 
-#
-# Broken, raised https://github.com/ANXS/postgresql/issues/390 to investigate
-#
-#  config.vm.define 'fedora27.local' do |machine|
-#
-#    machine.vm.box = "fedora/27-cloud-base"
-#    machine.vm.network :private_network, ip: '192.168.88.27'
-#    machine.vm.hostname = 'fedora27.local'
-#
-#    machine.vm.provision 'ansible' do |ansible|
-#      ansible.playbook = 'tests/playbook.yml'
-#      ansible.verbose = "vvv"
-#      ansible.become = true
-#      ansible.inventory_path = 'vagrant-inventory'
-#      ansible.host_key_checking = false
-#    end
-#
-#  end
+  config.vm.define 'fedora27.local' do |machine|
+
+    machine.vm.box = "fedora/27-cloud-base"
+    machine.vm.network :private_network, ip: '192.168.88.27'
+    machine.vm.hostname = 'fedora27.local'
+
+    machine.vm.provision 'ansible' do |ansible|
+      ansible.playbook = 'tests/playbook.yml'
+      ansible.verbose = "vvv"
+      ansible.become = true
+      ansible.inventory_path = 'vagrant-inventory'
+      ansible.host_key_checking = false
+    end
+
+  end
 
   config.vm.define 'trusty64.local' do |machine|
 
