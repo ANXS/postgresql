@@ -605,6 +605,7 @@ backslash_quote = {{postgresql_backslash_quote}}	# on, off, or safe_encoding
 default_with_oids = {{'on' if postgresql_default_with_oids else 'off'}}
 escape_string_warning = {{'on' if postgresql_escape_string_warning else 'off'}}
 lo_compat_privileges = {{'on' if postgresql_lo_compat_privileges else 'off'}}
+operator_precedence_warning = {{ 'on' if postgresql_operator_precedence_warning else 'off' }}
 quote_all_identifiers = {{'on' if postgresql_quote_all_identifiers else 'off'}}
 sql_inheritance = {{'on' if postgresql_sql_inheritance else 'off'}}
 standard_conforming_strings = {{'on' if postgresql_standard_conforming_strings else 'off'}}
