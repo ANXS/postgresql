@@ -438,6 +438,7 @@ log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					# e.g. '<%u%%%d> '
 log_lock_waits = {{'on' if postgresql_log_lock_waits else 'off'}}			# log lock waits >= deadlock_timeout
 log_statement = '{{postgresql_log_statement}}'			# none, ddl, mod, all
+log_replication_commands = {{'on' if postgresql_log_replication_commands else 'off'}}
 log_temp_files = {{postgresql_log_temp_files}}			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
