@@ -659,7 +659,7 @@ postgresql_timezone:           "UTC"
 postgresql_timezone_abbreviations: "Default"
 
 postgresql_extra_float_digits: 0          # min -15, max 3
-postgresql_client_encoding:    False  # actually defaults to database encoding
+postgresql_client_encoding:    false  # actually defaults to database encoding
                                       # 'sql_ascii', 'UTF8', ...
 
 # These settings are initialized by initdb, but they can be changed.
@@ -710,6 +710,7 @@ postgresql_backslash_quote:             "safe_encoding" # on, off, or safe_encod
 postgresql_default_with_oids:           off
 postgresql_escape_string_warning:       on
 postgresql_lo_compat_privileges:        off
+postgresql_operator_precedence_warning: off
 postgresql_quote_all_identifiers:       off
 postgresql_sql_inheritance:             on
 postgresql_standard_conforming_strings: on
@@ -731,6 +732,19 @@ postgresql_exit_on_error: off
 postgresql_restart_after_crash: on
 # Retry or panic on failure to fsync data?
 postgresql_data_sync_retry: off
+
+
+#------------------------------------------------------------------------------
+# CONFIG FILE INCLUDES
+#------------------------------------------------------------------------------
+
+# include files ending in '.conf' from
+# directory 'conf.d'
+postgresql_include_dir:        "conf.d"
+# include file only if it exists
+postgresql_include_if_exists:  false
+# include file
+postgresql_include:            false
 
 
 #------------------------------------------------------------------------------
