@@ -86,7 +86,7 @@ postgresql_users:
     encrypted: no       # denotes if the password is already encrypted.
 
 # List of schemas to be created (optional)
-postgresql_schemas:
+postgresql_database_schemas:
   - database: foobar           # database name
     schema: acme               # schema name
     state: present
