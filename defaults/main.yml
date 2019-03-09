@@ -742,9 +742,9 @@ postgresql_data_sync_retry: off
 # directory 'conf.d'
 postgresql_include_dir:        "conf.d"
 # include file only if it exists
-postgresql_include_if_exists:  "exists.conf"
+postgresql_include_if_exists:  ""
 # include file
-postgresql_include:            "special.conf"
+postgresql_include:            ""
 
 
 #------------------------------------------------------------------------------
