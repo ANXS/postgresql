@@ -683,8 +683,8 @@ data_sync_retry = {{ 'on' if postgresql_data_sync_retry else 'off' }}			# retry 
 
 include_dir = '{{ postgresql_include_dir }}'			# include files ending in '.conf' from
 					# directory 'conf.d'
-include_if_exists = '{{ postgresql_include_if_exists }}'	# include file only if it exists
-include = '{{ postgresql_include }}'		# include file
+{% if not postgresql_include_if_exists %}#{% endif %}include_if_exists = '{{ postgresql_include_if_exists }}'	# include file only if it exists
+{% if not postgresql_include %}#{% endif %}include = '{{ postgresql_include }}'		# include file
 
 
 #------------------------------------------------------------------------------
