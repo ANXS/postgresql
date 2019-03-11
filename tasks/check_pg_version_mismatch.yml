@@ -3,7 +3,7 @@
 # Check binary version
 - name: PostgreSQL | Check binary version
   shell: >
-    psql --version | sed 's/^psql (//' | sed 's/)//'
+    psql --version | sed 's/^psql (//' | sed 's/)//' | awk '{print $1, $2}'
   become: yes
   become_user: "{{ postgresql_service_user }}"
   changed_when: false
