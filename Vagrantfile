@@ -7,6 +7,22 @@ Vagrant.configure('2') do |config|
   config.ssh.insert_key = false
   config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
 
+  config.vm.define 'ubuntu18.local' do |machine|
+
+    machine.vm.box = "bento/ubuntu-18.04"
+    machine.vm.network :private_network, ip: '192.168.88.21'
+    machine.vm.hostname = 'ubuntu18.local'
+
+    machine.vm.provision 'ansible' do |ansible|
+      ansible.playbook = 'tests/playbook.yml'
+      ansible.verbose = "vvv"
+      ansible.become = true
+      ansible.inventory_path = 'vagrant-inventory'
+      ansible.host_key_checking = false
+    end
+
+  end
+
   config.vm.define 'ubuntu16.local' do |machine|
 
     machine.vm.box = "bento/ubuntu-16.04"
@@ -23,21 +39,7 @@ Vagrant.configure('2') do |config|
 
   end
 
-  config.vm.define 'ubuntu18.local' do |machine|
 
-      machine.vm.box = "bento/ubuntu-18.04"
-      machine.vm.network :private_network, ip: '192.168.88.30'
-      machine.vm.hostname = 'ubuntu18.local'
-
-      machine.vm.provision 'ansible' do |ansible|
-        ansible.playbook = 'tests/playbook.yml'
-        ansible.verbose = "vvv"
-        ansible.become = true
-        ansible.inventory_path = 'vagrant-inventory'
-        ansible.host_key_checking = false
-      end
-
-    end
 
   config.vm.define 'jessie64.local' do |machine|
 
