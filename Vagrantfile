@@ -39,8 +39,6 @@ Vagrant.configure('2') do |config|
 
   end
 
-
-
   config.vm.define 'jessie64.local' do |machine|
 
     machine.vm.box = "debian/jessie64"
