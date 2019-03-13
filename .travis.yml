@@ -11,7 +11,7 @@ env:
   matrix:
     - IMAGE_NAME="ubuntu-upstart:14.04"
     - IMAGE_NAME="ubuntu:16.04-builded"
-    - IMAGE_NAME="ubuntu:18.04-builded"
+    - IMAGE_NAME="ubuntu:18.04"
     - IMAGE_NAME="debian:8-builded"
     - IMAGE_NAME="debian:9-builded"
     - IMAGE_NAME="centos:7-builded"
