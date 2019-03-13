@@ -9,6 +9,7 @@
   changed_when: false
   failed_when: postgresql_binary_version.stdout == ""
   register: postgresql_binary_version
+  check_mode: no
 
 # Check database version
 - name: PostgreSQL | Check database version
@@ -19,6 +20,7 @@
   changed_when: false
   failed_when: postgresql_database_version.stdout == ""
   register: postgresql_database_version
+  check_mode: no
 
 # If versions do not match, then restart PostgreSQL
 - name: PostgreSQL | Verify binary and database versions match
