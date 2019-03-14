@@ -82,8 +82,8 @@ postgresql_database_extensions:
 # List of users to be created (optional)
 postgresql_users:
   - name: baz
-    pass: pass
-    encrypted: no       # denotes if the password is already encrypted.
+    pass: md51a1dc91c907325c69271ddf0c944bc72 # md5 encrypted 'pass', postgresql >= 10 does not accept unencrypted passwords
+    encrypted: yes                            # denotes if the password is already encrypted
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:
