@@ -1,0 +1,9 @@
+---
+# PostgreSQL vars for Archlinux
+#
+postgresql_service_name: "postgresql"
+
+postgresql_varlib_directory_name: "postgres"
+postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/data"
+postgresql_conf_directory: "{{ postgresql_data_directory }}"
+postgresql_bin_directory: "/usr/bin"

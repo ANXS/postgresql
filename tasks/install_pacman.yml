@@ -1,0 +1,9 @@
+# file: postgresql/tasks/install_pacman.yml
+
+- name: PostgreSQL | Install PostgreSQL | pacman
+  pacman:
+    name:
+      - "postgresql"
+    state: present
+    update_cache: yes
+  environment: "{{postgresql_env}}"

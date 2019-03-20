@@ -18,6 +18,10 @@
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
+- import_tasks: install_pacman.yml
+  when: ansible_pkg_mgr == "pacman"
+  tags: [postgresql, postgresql-install]
+
 - import_tasks: extensions.yml
   tags: [postgresql, postgresql-extensions]
 

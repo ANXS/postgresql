@@ -91,15 +91,15 @@
     name: "{{ postgresql_service_name }}"
     state: started
   become: yes
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family in "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
-- name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat
+- name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat & Arch
   stat:
     path: "{{ postgresql_data_directory }}/PG_VERSION"
-  when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
+  when: ansible_os_family in ["RedHat", "Archlinux"] and not postgresql_cluster_reset
   register: pgdata_dir_initialized
 
-- name: PostgreSQL | Initialize the database | RedHat
+- name: PostgreSQL | Initialize the database | RedHat & Arch
   command: >
     {{ postgresql_bin_directory }}/initdb -D {{ postgresql_data_directory }}
     --locale={{ postgresql_locale }} --encoding={{ postgresql_encoding }}
@@ -109,7 +109,7 @@
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "RedHat" and
+  when: ansible_os_family in ["RedHat", "Archlinux"] and
         (postgresql_cluster_reset or
          pgdata_dir_exist.changed or
          not pgdata_dir_initialized.stat.exists)
