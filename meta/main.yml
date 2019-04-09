@@ -19,6 +19,9 @@ galaxy_info:
     versions:
     - 6
     - 7
+  - name: Fedora
+    versions:
+    - 27
   categories:
   - database
   - database:sql
@@ -32,5 +35,6 @@ galaxy_info:
   - ubuntu
   - centos
   - redhat
+  - fedora
 
 dependencies: []
