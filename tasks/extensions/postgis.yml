@@ -5,12 +5,29 @@
     - "../vars/{{ ansible_distribution_release }}.yml"
     - "../vars/empty.yml"
 
-- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Debian
   apt:
-    name: "{{item}}"
+    name: "{{ postgresql_ext_postgis_deps }}"
     state: present
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
-  with_items: "{{ postgresql_ext_postgis_deps }}"
+  when: ansible_os_family == "Debian"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
+  yum:
+    name: "{{ postgresql_ext_postgis_deps }}"
+    state: present
+    update_cache: yes
+  when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora
+  dnf:
+    name: "{{ postgresql_ext_postgis_deps }}"
+    state: present
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
     - restart postgresql
