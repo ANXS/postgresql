@@ -17,7 +17,6 @@
       docker_container:
         name: "postgresql-{{ item }}"
         image: "{{ image_name }}"
-        command: "/sbin/init"
         state: started
         privileged: true
       with_items:

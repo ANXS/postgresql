@@ -4,6 +4,7 @@
   pacman:
     name:
       - "postgresql"
+      - "python-psycopg2"
     state: present
     update_cache: yes
   environment: "{{postgresql_env}}"

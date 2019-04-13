@@ -1,0 +1,9 @@
+FROM archlinux/base:latest
+
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm python systemd sudo grep awk
+
+RUN sed -ri /etc/systemd/journald.conf \
+			-e 's!^#?Storage=.*!Storage=volatile!'
+
+ENTRYPOINT ["/usr/lib/systemd/systemd"]

@@ -9,26 +9,36 @@ services:
 
 env:
   matrix:
-    - IMAGE_NAME="ubuntu-upstart:14.04"
-    - IMAGE_NAME="ubuntu:16.04-builded"
-    - IMAGE_NAME="debian:8-builded"
-    - IMAGE_NAME="debian:9-builded"
-    - IMAGE_NAME="centos:7-builded"
-    - IMAGE_NAME="centos:6-builded"
-    - IMAGE_NAME="fedora:27-builded"
+    - IMAGE_NAME="ubuntu-upstart:14.04" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="ubuntu:16.04-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="debian:8-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="debian:9-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="centos:7-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="centos:6-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
+    - IMAGE_NAME="archlinux:builded" PG_VERSIONS="[11]"
+    - IMAGE_NAME="fedora:27-builded" PG_VERSIONS="[9.4, 9.5, 9.6, 10, 11]"
 install:
   - pip install ansible=="2.4.4.0" docker-py
   - ln -s ${PWD} tests/docker/ANXS.postgresql
 
 script:
   # Syntax check
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml --syntax-check
+  - >
+    ansible-playbook -i tests/docker/hosts
+    -e "{\"image_name\": \"${IMAGE_NAME}\", \"postgresql_versions\": ${PG_VERSIONS}}"
+    tests/docker/site.yml --syntax-check
 
   # Play test
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml
+  - >
+    ansible-playbook -i tests/docker/hosts
+    -e "{\"image_name\": \"${IMAGE_NAME}\", \"postgresql_versions\": ${PG_VERSIONS}}"
+    tests/docker/site.yml
 
   # Idempotence test
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
+  - >
+    ansible-playbook -i tests/docker/hosts
+    -e "{\"image_name\": \"${IMAGE_NAME}\", \"postgresql_versions\": ${PG_VERSIONS}}"
+    tests/docker/site.yml > idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
 
 notifications:

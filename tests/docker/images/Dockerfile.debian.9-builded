@@ -29,3 +29,5 @@ RUN sed -ri /etc/systemd/journald.conf \
 			-e 's!^#?Storage=.*!Storage=volatile!'
 
 RUN ln -s /lib/systemd/systemd /sbin/init
+
+ENTRYPOINT ["/sbin/init"]
