@@ -2,6 +2,7 @@
 
 # Basic settings
 postgresql_version: 11
+postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
@@ -14,6 +15,10 @@ postgresql_ctype_parts:
   - "en_US" # Locale
   - "UTF-8" # Encoding
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
+
+postgresql_env:
+  LC_ALL: "{{ postgresql_locale }}"
+  LC_LCTYPE: "{{ postgresql_locale }}"
 
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"
@@ -116,10 +121,6 @@ postgresql_unix_socket_directories:     # (>= 9.3)
   - "{{ postgresql_pid_directory }}"
 postgresql_unix_socket_group: ""
 postgresql_unix_socket_permissions: "0777" # begin with 0 to use octal notation
-
-# Automatic pg_ctl configuration. Specify a list of options containing
-# cluster specific options to be passed to pg_ctl(1).
-postgresql_pg_ctl_options: []
 
 postgresql_bonjour: off      # advertise server via Bonjour
 postgresql_bonjour_name: ""  # defaults to the computer name
@@ -759,10 +760,9 @@ postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
 
-
-postgresql_env:
-  LC_ALL: "{{ postgresql_locale }}"
-  LC_LCTYPE: "{{ postgresql_locale }}"
+#------------------------------------------------------------------------------
+# INSTALL/REPO
+#------------------------------------------------------------------------------
 
 # Install repo, or rely on existing configuration (Satellite, Artifactory, etc.)
 postgresql_install_repository: true
@@ -773,67 +773,6 @@ postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
-
-# Yum settings
-postgresql_pgdg_dists:
-  RedHat: redhat
-  CentOS: centos
-  Scientific: sl
-  SLC: sl
-  OracleLinux: oraclelinux
-  Fedora: fedora
-
-postgresql_pgdg_releases:
-  redhat: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-       11: 2,
-  }
-  centos: {
-      9.1: 7,
-      9.2: 8,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-       11: 2,
-  }
-  sl: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-       11: 2,
-  }
-  oraclelinux: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-       11: 2,
-  }
-
-postgresql_fedora_releases:
-  fedora: {
-     9.5: 12,
-     9.6: 8,
-      10: 3,
-      11: 2,
-  }
-
-postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 
 # YUM repository locations
 postgresql_yum_repository_url: "http://yum.postgresql.org"
