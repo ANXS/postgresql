@@ -53,7 +53,7 @@ postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
 
 postgresql_admin_user: "postgres"
-postgresql_default_auth_method: "trust"
+postgresql_default_auth_method: "peer"
 
 postgresql_service_enabled: false # should the service be enabled, default is true
 
