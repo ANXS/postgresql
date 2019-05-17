@@ -6,6 +6,7 @@ galaxy_info:
   description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
   min_ansible_version: 2.4.0
   license: MIT
+
   platforms:
   - name: Debian
     versions:
@@ -19,18 +20,21 @@ galaxy_info:
     versions:
     - 6
     - 7
-  categories:
-  - database
-  - database:sql
+  - name: Fedora
+    versions:
+    - 27
+
   galaxy_tags:
   - postgresql
   - postgres
-  - sql
   - database
+  - database:sql
+  - sql
   - postgis
   - debian
   - ubuntu
   - centos
   - redhat
+  - fedora
 
 dependencies: []
