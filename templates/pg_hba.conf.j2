@@ -34,6 +34,13 @@ host  all  all  {{host}}  md5
 {% for host in postgresql_pg_hba_passwd_hosts %}
 host  all  all  {{host}}  password
 {% endfor %}
+# Password hosts per user
+
+{% for user, hosts in postgresql_pg_hba_passwd_hosts_per_user.items() %}
+{% for host in hosts %}
+host  all  {{user}}  {{host}}  password
+{% endfor %}
+{% endfor %}
 
 # Trusted hosts
 {% for host in postgresql_pg_hba_trust_hosts %}

@@ -75,6 +75,7 @@ postgresql_pg_hba_default:
 
 postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_passwd_hosts: []
+postgresql_pg_hba_passwd_per_user: {}
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
