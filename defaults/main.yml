@@ -75,7 +75,7 @@ postgresql_pg_hba_default:
 
 postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_passwd_hosts: []
-postgresql_pg_hba_passwd_per_user: {}
+postgresql_pg_hba_passwd_hosts_per_user: {}
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
 
@@ -139,7 +139,7 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
+postgresql_ssl_dh_params_file: ""                                   # (>= 10)
 postgresql_ssl_passphrase_command: ""                               # (>= 11)
 postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
 postgresql_ssl_renegotiation_limit: 512MB                           # amount of data between renegotiations
@@ -349,7 +349,7 @@ postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
-# - Subscribers - (>= 10) 
+# - Subscribers - (>= 10)
 
 # These settings are ignored on a publisher.
 
