@@ -1,4 +1,4 @@
-{% for server in groups[repmgr_target_group] %}
+{% for server in repmgr_target_group_hosts %}
 {{ server }}:{{postgresql_port}}:{{repmgr_database}}:{{repmgr_user}}:{% for user in postgresql_users if user['name'] == repmgr_user %}{{user['pass']}}{% endfor %}
 {{ server }}:{{postgresql_port}}:replication:{{repmgr_replication_user}}:{% for user in postgresql_users if user['name'] == repmgr_user %}{{user['pass']}}{% endfor %}
 {% endfor %}
