@@ -672,6 +672,7 @@ postgresql_search_path: # schema names
 postgresql_default_tablespace: "" # a tablespace name, "" uses the default
 postgresql_temp_tablespaces: [] # a list of tablespace names
 postgresql_default_table_access_method: "heap"
+postgresql_tablespaces_dirs: [] # a list of directories for tablespaces to be created
 
 postgresql_check_function_bodies:          on
 postgresql_default_transaction_isolation:  "read committed"

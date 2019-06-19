@@ -16,6 +16,15 @@
     mode: 0700
   register: pgdata_dir_exist
 
+- name: PostgreSQL | Make sure postgres tablespaces directories exist
+  file:
+    path: "{{ item }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    state: directory
+    mode: 0700
+  with_items: "{{ postgresql_tablespaces_dirs }}"
+
 - name: PostgreSQL | Make sure the postgres WAL directory exists
   file:
     path: "{{ postgresql_wal_directory }}"
