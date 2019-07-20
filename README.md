@@ -18,6 +18,14 @@ To install:
 ansible-galaxy install ANXS.postgresql
 ```
 
+#### Example Playbook
+
+Including an example of how to use your role:
+
+    - hosts: postgresql-server
+      become: yes
+      roles:
+         - { role: anxs.postgresql }
 
 #### Dependencies
 
