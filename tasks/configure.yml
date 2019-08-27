@@ -207,6 +207,7 @@
     dest: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d/custom.conf"
   when: ansible_os_family == "RedHat"
   register: postgresql_systemd_custom_conf
+  notify: reload systemd
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
   file:

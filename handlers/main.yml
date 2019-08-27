@@ -1,5 +1,9 @@
 # file: postgresql/handlers/main.yml
 
+  - name: reload systemd
+    systemd:
+      daemon_reload: yes
+      
   - name: restart postgresql
     service:
       name: "{{ postgresql_service_name }}"
