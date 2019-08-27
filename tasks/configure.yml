@@ -200,8 +200,10 @@
     mode: 0755
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version >= "7"
-  notify: restart postgresql
+    - ansible_service_mgr == "systemd"
+  notify:
+    - reload systemd
+    - restart postgresql
 
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
   template:
@@ -209,7 +211,7 @@
     dest: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d/custom.conf"
   when: 
     - ansible_os_family == "RedHat"
-    - ansible_distribution_major_version >= "7"
+    - ansible_service_mgr == "systemd"
   register: postgresql_systemd_custom_conf
   notify: 
     - reload systemd
