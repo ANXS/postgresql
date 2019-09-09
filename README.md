@@ -35,7 +35,7 @@ ansible-galaxy install ANXS.postgresql
 | CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 | CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
 | CentOS 8.x | :no_entry: | :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:|
-| Fedora latest | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :grey_question:|
+| Fedora latest | :no_entry: | :x:| :x:| :x:| :x:| :x:| :x:|
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
