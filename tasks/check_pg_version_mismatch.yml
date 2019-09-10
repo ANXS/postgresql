@@ -21,6 +21,8 @@
   failed_when: postgresql_database_version.stdout == ""
   register: postgresql_database_version
   check_mode: no
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 # If versions do not match, then restart PostgreSQL
 - name: PostgreSQL | Verify binary and database versions match

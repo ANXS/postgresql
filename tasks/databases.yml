@@ -43,6 +43,8 @@
   failed_when: hstore_ext_result.rc != 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
   changed_when: hstore_ext_result.rc == 0 and ("already exists, skipping" not in hstore_ext_result.stderr)
   when: item.hstore is defined and item.hstore
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | Add uuid-ossp to the database with the requirement
   become: yes
@@ -53,6 +55,8 @@
   failed_when: uuid_ext_result.rc != 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
   changed_when: uuid_ext_result.rc == 0 and ("already exists, skipping" not in uuid_ext_result.stderr)
   when: item.uuid_ossp is defined and item.uuid_ossp
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | Add postgis to the databases with the requirement
   become: yes
@@ -60,6 +64,8 @@
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{postgresql_admin_user}} -c 'CREATE EXTENSION IF NOT EXISTS postgis;'&&psql {{item.name}} -c 'CREATE EXTENSION IF NOT EXISTS postgis_topology;'"
   with_items: "{{postgresql_databases}}"
   when: item.gis is defined and item.gis
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | add cube to the database with the requirement
   become: yes
@@ -67,6 +73,8 @@
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists cube;'"
   with_items: "{{postgresql_databases}}"
   when: item.cube is defined and item.cube
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | Add plpgsql to the database with the requirement
   become: yes
@@ -74,6 +82,8 @@
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'CREATE EXTENSION IF NOT EXISTS plpgsql;'"
   with_items: "{{postgresql_databases}}"
   when: item.plpgsql is defined and item.plpgsql
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | add earthdistance to the database with the requirement
   become: yes
@@ -81,6 +91,8 @@
   shell: "{{ postgresql_bin_directory}}/psql {{item.name}} --username {{ postgresql_admin_user }} -c 'create extension if not exists earthdistance;'"
   with_items: "{{postgresql_databases}}"
   when: item.earthdistance is defined and item.earthdistance
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
 
 - name: PostgreSQL | Add citext to the database with the requirement
   become: yes
@@ -91,3 +103,5 @@
   failed_when: citext_ext_result.rc != 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   changed_when: citext_ext_result.rc == 0 and ("already exists, skipping" not in citext_ext_result.stderr)
   when: item.citext is defined and item.citext
+  environment:
+    - PGPORT: "{{ postgresql_port }}"
