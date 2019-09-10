@@ -94,7 +94,7 @@ row_security = {{'on' if postgresql_row_security else 'off'}}
 
 # GSSAPI using Kerberos
 krb_server_keyfile = '{{postgresql_krb_server_keyfile}}'
-krb_caseins_users = {{'on' if postgresql_db_user_namespace else 'off'}}
+krb_caseins_users = {{'on' if postgresql_krb_caseins_users else 'off'}}
 
 # - TCP Keepalives -
 # see "man 7 tcp" for details
@@ -206,7 +206,8 @@ checkpoint_warning = {{postgresql_checkpoint_warning}}		# 0 disables
 
 # - Archiving -
 
-archive_mode = {{'on' if postgresql_archive_mode else 'off'}} # enables archiving; off, on, or always
+archive_mode = {{ 'on' if ( postgresql_archive_mode|bool == true or postgresql_archive_mode == 'on' ) else ( 'always' if postgresql_archive_mode == 'always' else 'off' ) }}	# enables archiving; off, on, or always
+				# (change requires restart)
 archive_command = '{{postgresql_archive_command}}'            # command to use to archive a logfile segment
 				# placeholders: %p = path of file to archive
 				#               %f = file name only
@@ -256,7 +257,7 @@ max_standby_streaming_delay = {{postgresql_max_standby_streaming_delay}}	# max d
 					# -1 allows indefinite delay
 wal_receiver_status_interval = {{postgresql_wal_receiver_status_interval}}	# send replies at least this often
 					# 0 disables
-hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback or 'off'}}		# send info from standby to prevent
+hot_standby_feedback = {{'on' if postgresql_hot_standby_feedback else 'off'}}		# send info from standby to prevent
 					# query conflicts
 wal_receiver_timeout = {{postgresql_wal_receiver_timeout}}		# time that receiver waits for
 					# communication from master
@@ -293,7 +294,7 @@ effective_cache_size = {{postgresql_effective_cache_size}}
 
 # - Genetic Query Optimizer -
 
-geqo = {{'on' if postgresql_enable_tidscan else 'off'}}
+geqo = {{'on' if postgresql_geqo else 'off'}}
 geqo_threshold = {{postgresql_geqo_threshold}}
 geqo_effort = {{postgresql_geqo_effort}}			# range 1-10
 geqo_pool_size = {{postgresql_geqo_pool_size}}			# selects default based on effort
@@ -414,7 +415,7 @@ log_connections = {{'on' if postgresql_log_connections else 'off'}}
 log_disconnections = {{'on' if postgresql_log_disconnections else 'off'}}
 log_duration = {{'on' if postgresql_log_duration else 'off'}}
 log_error_verbosity = {{postgresql_log_error_verbosity}}		# terse, default, or verbose messages
-log_hostname = {{'on' if postgresql_log_duration else 'off'}}
+log_hostname = {{'on' if postgresql_log_hostname else 'off'}}
 log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					#   %a = application name
 					#   %u = user name
@@ -437,10 +438,18 @@ log_line_prefix = '{{postgresql_log_line_prefix}}'			# special values:
 					# e.g. '<%u%%%d> '
 log_lock_waits = {{'on' if postgresql_log_lock_waits else 'off'}}			# log lock waits >= deadlock_timeout
 log_statement = '{{postgresql_log_statement}}'			# none, ddl, mod, all
+log_replication_commands = {{'on' if postgresql_log_replication_commands else 'off'}}
 log_temp_files = {{postgresql_log_temp_files}}			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
 log_timezone = '{{postgresql_log_timezone}}'
+
+
+# - Process Title -
+
+cluster_name = '{{postgresql_cluster_name}}'			# added to process titles if nonempty
+					# (change requires restart)
+update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
 
 
 #------------------------------------------------------------------------------
@@ -454,7 +463,6 @@ track_counts = {{'on' if postgresql_track_counts else 'off'}}
 track_io_timing = {{'on' if postgresql_track_io_timing else 'off'}}
 track_functions = {{postgresql_track_functions}}			# none, pl, all
 track_activity_query_size = {{postgresql_track_activity_query_size}}	# (change requires restart)
-update_process_title = {{'on' if postgresql_update_process_title else 'off'}}
 stats_temp_directory = '{{postgresql_stats_temp_directory}}'
 
 
@@ -585,6 +593,7 @@ backslash_quote = {{postgresql_backslash_quote}}	# on, off, or safe_encoding
 default_with_oids = {{'on' if postgresql_default_with_oids else 'off'}}
 escape_string_warning = {{'on' if postgresql_escape_string_warning else 'off'}}
 lo_compat_privileges = {{'on' if postgresql_lo_compat_privileges else 'off'}}
+operator_precedence_warning = {{ 'on' if postgresql_operator_precedence_warning else 'off' }}
 quote_all_identifiers = {{'on' if postgresql_quote_all_identifiers else 'off'}}
 sql_inheritance = {{'on' if postgresql_sql_inheritance else 'off'}}
 standard_conforming_strings = {{'on' if postgresql_standard_conforming_strings else 'off'}}
@@ -610,14 +619,13 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# r
 # These options allow settings to be loaded from files other than the
 # default postgresql.conf.
 
-include_dir = 'conf.d'			# include files ending in '.conf' from
+include_dir = '{{ postgresql_include_dir }}'			# include files ending in '.conf' from
 					# directory 'conf.d'
-#include_if_exists = 'exists.conf'	# include file only if it exists
-#include = 'special.conf'		# include file
+{{ '#' if not postgresql_include_if_exists | bool else '' }}include_if_exists = '{{ postgresql_include_if_exists }}'	# include file only if it exists
+{{ '#' if not postgresql_include | bool else '' }}include = '{{ postgresql_include }}'		# include file
 
 
 #------------------------------------------------------------------------------
 # CUSTOMIZED OPTIONS
 #------------------------------------------------------------------------------
-
 # Add settings for extensions here

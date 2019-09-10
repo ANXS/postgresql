@@ -1,5 +1,5 @@
 ---
-# PostgreSQL vars for Ubuntu Xenial (16.04LTS)
+# PostgreSQL vars for Ubuntu Bionic (18.04LTS)
 
 postgresql_ext_postgis_deps:
   - libgeos-c1v5

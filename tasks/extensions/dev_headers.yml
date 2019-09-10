@@ -5,29 +5,28 @@
     name: libpq-dev
     state: present
     update_cache: yes
-    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+    cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when: ansible_os_family == "Debian"
   notify:
     - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
   yum: 
-    name: "{{ item }}" 
+    name:
+      - "postgresql{{ postgresql_version_terse }}-libs"
+      - "postgresql{{ postgresql_version_terse }}-devel"
     state: present 
     update_cache: yes
-  with_items:
-    - "postgresql{{ postgresql_version_terse }}-libs"
-    - "postgresql{{ postgresql_version_terse }}-devel"
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
-    - restart postgresql with service
-    - restart postgresql with systemd
+    - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | Fedora
   dnf:
-    name: "postgresql{{ postgresql_version_terse }}-libs, postgresql{{ postgresql_version_terse }}-devel"
+    name:
+      - "postgresql{{ postgresql_version_terse }}-libs"
+      - "postgresql{{ postgresql_version_terse }}-devel"
     state: present
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
-    - restart postgresql with systemd
-
+    - restart postgresql

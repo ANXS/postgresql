@@ -19,20 +19,69 @@
         
       - name: PostgreSQL | Make sure the dependencies are installed | yum
         yum:
-         name: "{{ item }}"
+         name: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
          state: present
          update_cache: yes
-        with_items: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
 
       - name: PostgreSQL | Install PostgreSQL | yum
         yum:
-          name: "{{ item }}"
+          name:
+            - "postgresql{{ postgresql_version_terse }}-server"
+            - "postgresql{{ postgresql_version_terse }}"
+            - "postgresql{{ postgresql_version_terse }}-contrib"
           state: present
         environment: "{{ postgresql_env }}"
-        with_items:
-          - "postgresql{{ postgresql_version_terse }}-server"
-          - "postgresql{{ postgresql_version_terse }}"
-          - "postgresql{{ postgresql_version_terse }}-contrib"
+
+      - name: PostgreSQL | Setup service users profile | yum
+        template:
+          src: pgsql_profile.j2
+          dest: "~{{ postgresql_service_user }}/.pgsql_profile"
+          owner: "{{ postgresql_service_user }}"
+          group: "{{ postgresql_service_group }}"
+          mode: 0700
+        when: postgresql_service_user_pgsql_profile
+
+      - name: PostgreSQL | Create ~/pgtab.example | yum
+        template:
+          src: pgtab.j2
+          dest: "~{{ postgresql_service_user }}/pgtab.example"
+          owner: "{{ postgresql_service_user }}"
+          group: "{{ postgresql_service_group }}"
+          mode: 0644
+        when: postgresql_service_user_pgsql_profile
+
+      - name: PostgreSQL | Create ~/pgtab header | yum
+        lineinfile:
+          path: "~{{ postgresql_service_user }}/pgtab"
+          owner: "{{ postgresql_service_user }}"
+          group: "{{ postgresql_service_group }}"
+          mode: 0644
+          create: yes
+          insertbefore: BOF
+          regexp: "^#  pgclustername :.*$"
+          line: "#  pgclustername : pgtabversion : pgrelease : pgport : pgdatabase : pgroot : pgbindir : [pgdata] : [pgwalarch] : [pgbackups]"
+        when: postgresql_service_user_pgsql_profile
+
+      - name: PostgreSQL | Create ~/pgtab Ansible warning | yum
+        lineinfile:
+          path: "~{{ postgresql_service_user }}/pgtab"
+          owner: "{{ postgresql_service_user }}"
+          group: "{{ postgresql_service_group }}"
+          mode: 0644
+          insertbefore: BOF
+          regexp: "^#  NOTICE: This file is managed by Ansible. Do not modify it.$"
+          line: "#  NOTICE: This file is managed by Ansible. Do not modify it."
+        when: postgresql_service_user_pgsql_profile
+
+      - name: PostgreSQL | Add database to ~/pgtab | yum
+        lineinfile:
+          path: "~{{ postgresql_service_user }}/pgtab"
+          owner: "{{ postgresql_service_user }}"
+          group: "{{ postgresql_service_group }}"
+          mode: 0644
+          regexp: "{{ postgresql_cluster_name }}:.*$"
+          line: "{{ postgresql_cluster_name }}:1:{{ postgresql_version }}:{{ postgresql_port }}:{{ postgresql_service_user }}:/var/lib/pgsql:/usr/pgsql-{{ postgresql_version }}/bin:{{ postgresql_data_directory }}:::"
+        when: postgresql_service_user_pgsql_profile
 
       - name: PostgreSQL | PGTune | yum
         yum:

@@ -1,7 +1,8 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 9.6
+postgresql_version: 11
+postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
@@ -15,11 +16,17 @@ postgresql_ctype_parts:
   - "UTF-8" # Encoding
 postgresql_ctype: "{{ postgresql_ctype_parts | join('.') }}"
 
+postgresql_env:
+  LC_ALL: "{{ postgresql_locale }}"
+  LC_LCTYPE: "{{ postgresql_locale }}"
+
 postgresql_admin_user: "postgres"
-postgresql_default_auth_method: "trust"
+postgresql_default_auth_method: "peer"
+postgresql_default_auth_method_hosts: "md5"
 
 # The user/group that will run postgresql process or service
 postgresql_service_user: "{{ postgresql_admin_user }}"
+postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
 postgresql_service_enabled: true
 
@@ -27,17 +34,22 @@ postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
+
 # Extensions
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
-postgresql_ext_postgis_version: "2.1" # be careful: check whether the postgresql/postgis versions work together
+postgresql_ext_postgis_version: "2.5" # be careful: check whether the postgresql/postgis versions work together
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
+
+# Foreign Data Wrapper(s)
+postgresql_fdw_mysql: no
+postgresql_fdw_ogr: no
 
 # List of databases to be created (optional)
 postgresql_databases: []
@@ -56,12 +68,12 @@ postgresql_user_privileges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:
-  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "{{ postgresql_default_auth_method }}", comment: "" }
   - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
-  - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method }}", comment: "IPv4 local connections:" }
-  - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method }}", comment: "IPv6 local connections:" }
+  - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method_hosts }}", comment: "IPv4 local connections:" }
+  - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method_hosts }}", comment: "IPv6 local connections:" }
   - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map=root_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
 
+postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_passwd_hosts: []
 postgresql_pg_hba_trust_hosts: []
 postgresql_pg_hba_custom: []
@@ -110,10 +122,6 @@ postgresql_unix_socket_directories:     # (>= 9.3)
 postgresql_unix_socket_group: ""
 postgresql_unix_socket_permissions: "0777" # begin with 0 to use octal notation
 
-# Automatic pg_ctl configuration. Specify a list of options containing
-# cluster specific options to be passed to pg_ctl(1).
-postgresql_pg_ctl_options: []
-
 postgresql_bonjour: off      # advertise server via Bonjour
 postgresql_bonjour_name: ""  # defaults to the computer name
 
@@ -130,15 +138,17 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresal_ssl_dh_params_file: ""                                 # (>= 10)  
-postgresql_ssl_renegotiation_limit: 512MB # amount of data between renegotiations
-postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"  # (>= 9.2)
-postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key" # (>= 9.2)
-postgresql_ssl_ca_file: ""                                        # (>= 9.2)
-postgresql_ssl_crl_file: ""                                       # (>= 9.2)
+postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
+postgresql_ssl_passphrase_command: ""                               # (>= 11)
+postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
+postgresql_ssl_renegotiation_limit: 512MB                           # amount of data between renegotiations
+postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"    # (>= 9.2)
+postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
+postgresql_ssl_ca_file: ""                                          # (>= 9.2)
+postgresql_ssl_crl_file: ""                                         # (>= 9.2)
 postgresql_password_encryption: on
 postgresql_db_user_namespace: off
-postgresql_row_security: off # (>= 9.5)
+postgresql_row_security: off                                        # (>= 9.5)
 
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ""
@@ -211,13 +221,15 @@ postgresql_bgwriter_flush_after:    0      # (>= 9.6) 0 disables,
 
 # - Asynchronous Behavior -
 
-postgresql_effective_io_concurrency:        1   # 1-1000; 0 disables prefetching
-postgresql_max_worker_processes:            8   # (change requires restart)
-postgresql_max_parallel_workers_per_gather: 0   # (>= 9.6) taken from max_worker_processes
-postgresql_max_parallel_workers:            8   # (>= 10)
-postgresql_old_snapshot_threshold:          -1  # (>= 9.6) 1min-60d; -1 disables; 0 is immediate
-                                                # (change requires restart)
-postgresql_backend_flush_after:             0   # (>= 9.6) 0 disables, default is 0
+postgresql_effective_io_concurrency:         1   # 1-1000; 0 disables prefetching
+postgresql_max_worker_processes:             8   # (change requires restart)
+postgresql_max_parallel_maintenance_workers: 2   # (>= 11) taken from max_parallel_workers
+postgresql_max_parallel_workers_per_gather:  0   # (>= 9.6) taken from max_worker_processes
+postgresql_parallel_leader_participation:    on  # (>= 11)
+postgresql_max_parallel_workers:             8   # (>= 10)
+postgresql_old_snapshot_threshold:           -1  # (>= 9.6) 1min-60d; -1 disables; 0 is immediate
+                                                 # (change requires restart)
+postgresql_backend_flush_after:              0   # (>= 9.6) 0 disables, default is 0
 
 
 #------------------------------------------------------------------------------
@@ -274,7 +286,7 @@ postgresql_checkpoint_warning:           30s   # 0 disables
 # - Archiving -
 
 # allows archiving to be done
-postgresql_archive_mode: off   # Should be a string with quotes, but all templates need fixing first
+postgresql_archive_mode: "off"
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
@@ -351,17 +363,22 @@ postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical
 
 # - Planner Method Configuration -
 
-postgresql_enable_bitmapscan:          on
-postgresql_enable_hashagg:             on
-postgresql_enable_hashjoin:            on
-postgresql_enable_indexscan:           on
-postgresql_enable_indexonlyscan:       on
-postgresql_enable_material:            on
-postgresql_enable_mergejoin:           on
-postgresql_enable_nestloop:            on
-postgresql_enable_seqscan:             on
-postgresql_enable_sort:                on
-postgresql_enable_tidscan:             on
+postgresql_enable_bitmapscan:              on
+postgresql_enable_hashagg:                 on
+postgresql_enable_hashjoin:                on
+postgresql_enable_indexscan:               on
+postgresql_enable_indexonlyscan:           on
+postgresql_enable_material:                on
+postgresql_enable_mergejoin:               on
+postgresql_enable_nestloop:                on
+postgresql_enable_parallel_append:         on    # (>= 11)
+postgresql_enable_seqscan:                 on
+postgresql_enable_sort:                    on
+postgresql_enable_tidscan:                 on
+postgresql_enable_partitionwise_join:      off   # (>= 11)
+postgresql_enable_partitionwise_aggregate: off   # (>= 11)
+postgresql_enable_parallel_hash:           on    # (>= 11)
+postgresql_enable_partition_pruning:       on    # (>= 11)
 
 
 # - Planner Cost Constants -
@@ -373,6 +390,10 @@ postgresql_cpu_index_tuple_cost:       0.005   # same scale as above
 postgresql_cpu_operator_cost:          0.0025  # same scale as above
 postgresql_parallel_tuple_cost:        0.1     # same scale as above (>= 9.6)
 postgresql_parallel_setup_cost:        1000.0  # same scale as above (>= 9.6)
+postgresql_jit_above_cost:             100000  # perform JIT compilation if available
+postgresql_jit_inline_above_cost:      500000  # inline small functions if query is
+postgresql_jit_optimize_above_cost:    500000  # use expensive JIT optimizations if
+
 postgresql_min_parallel_relation_size: 8MB     # (= 9.6) replaced by below two parameters in 10
 postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
 postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
@@ -397,7 +418,8 @@ postgresql_constraint_exclusion:       "partition"  # on, off, or partition
 postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
-postgresql_force_parallel_mode:        "off"        # (>= 9.6)
+postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6)
+postgresql_jit:                        off          # (>= 11)
 
 
 #------------------------------------------------------------------------------
@@ -611,6 +633,7 @@ postgresql_lock_timeout:                          0           # in milliseconds,
 postgresql_idle_in_transaction_session_timeout:   0           # in milliseconds, 0 is disabled (>= 9.6)
 postgresql_vacuum_freeze_min_age:                 50000000
 postgresql_vacuum_freeze_table_age:               150000000
+postgresql_vacuum_cleanup_index_scale_factor:     0.1         # (>= 11)
 postgresql_vacuum_multixact_freeze_min_age:       5000000     # (>= 9.3)
 postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 
@@ -637,7 +660,7 @@ postgresql_timezone:           "UTC"
 postgresql_timezone_abbreviations: "Default"
 
 postgresql_extra_float_digits: 0          # min -15, max 3
-postgresql_client_encoding:    False  # actually defaults to database encoding
+postgresql_client_encoding:    false  # actually defaults to database encoding
                                       # 'sql_ascii', 'UTF8', ...
 
 # These settings are initialized by initdb, but they can be changed.
@@ -656,6 +679,7 @@ postgresql_default_text_search_config: "pg_catalog.english"
 postgresql_dynamic_library_path: "$libdir"
 postgresql_local_preload_libraries: []
 postgresql_session_preload_libraries: []
+postgresql_jit_provider: "llvmjit"
 
 
 #------------------------------------------------------------------------------
@@ -687,6 +711,7 @@ postgresql_backslash_quote:             "safe_encoding" # on, off, or safe_encod
 postgresql_default_with_oids:           off
 postgresql_escape_string_warning:       on
 postgresql_lo_compat_privileges:        off
+postgresql_operator_precedence_warning: off
 postgresql_quote_all_identifiers:       off
 postgresql_sql_inheritance:             on
 postgresql_standard_conforming_strings: on
@@ -706,6 +731,21 @@ postgresql_transform_null_equals:       off
 postgresql_exit_on_error: off
 # Reinitialize after backend crash?
 postgresql_restart_after_crash: on
+# Retry or panic on failure to fsync data?
+postgresql_data_sync_retry: off
+
+
+#------------------------------------------------------------------------------
+# CONFIG FILE INCLUDES
+#------------------------------------------------------------------------------
+
+# include files ending in '.conf' from
+# directory 'conf.d'
+postgresql_include_dir:        "conf.d"
+# include file only if it exists
+postgresql_include_if_exists:  false
+# include file
+postgresql_include:            false
 
 
 #------------------------------------------------------------------------------
@@ -720,10 +760,9 @@ postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
 
-
-postgresql_env:
-  LC_ALL: "{{ postgresql_locale }}"
-  LC_LCTYPE: "{{ postgresql_locale }}"
+#------------------------------------------------------------------------------
+# INSTALL/REPO
+#------------------------------------------------------------------------------
 
 # Install repo, or rely on existing configuration (Satellite, Artifactory, etc.)
 postgresql_install_repository: true
@@ -734,63 +773,6 @@ postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
-
-# Yum settings
-postgresql_pgdg_dists:
-  RedHat: redhat
-  CentOS: centos
-  Scientific: sl
-  SLC: sl
-  OracleLinux: oraclelinux
-  Fedora: fedora
-
-postgresql_pgdg_releases:
-  redhat: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-  }
-  centos: {
-      9.1: 7,
-      9.2: 8,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-  }
-  sl: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-  }
-  oraclelinux: {
-      9.1: 8,
-      9.2: 9,
-      9.3: 3,
-      9.4: 3,
-      9.5: 3,
-      9.6: 3,
-       10: 2,
-  }
-
-postgresql_fedora_releases:
-  fedora: {
-     9.5: 12,
-     9.6: 8,
-      10: 3,
-      11: 1,
-  }
-
-postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"
 
 # YUM repository locations
 postgresql_yum_repository_url: "http://yum.postgresql.org"
