@@ -1,6 +1,7 @@
 ---
 
-postgresql_version: 11
+postgresql_version: 12
+postgresql_port: 5433
 
 postgresql_databases:
   - name: foobar
@@ -8,7 +9,7 @@ postgresql_databases:
 
 postgresql_users:
 
-  # postgresql >=10 does not accept unencrypted passwords 
+  # postgresql >=10 does not accept unencrypted passwords
   - name: baz
     pass: md51a1dc91c907325c69271ddf0c944bc72
     encrypted: yes

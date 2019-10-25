@@ -590,8 +590,8 @@ restart_after_crash = {{'on' if postgresql_restart_after_crash else 'off'}}		# r
 
 include_dir = '{{ postgresql_include_dir }}'			# include files ending in '.conf' from
 					# directory 'conf.d'
-include_if_exists = '{{ postgresql_include_if_exists }}'	# include file only if it exists
-include = '{{ postgresql_include }}'		# include file
+{{ '#' if not postgresql_include_if_exists | bool else '' }}include_if_exists = '{{ postgresql_include_if_exists }}'	# include file only if it exists
+{{ '#' if not postgresql_include | bool else '' }}include = '{{ postgresql_include }}'		# include file
 
 
 #------------------------------------------------------------------------------

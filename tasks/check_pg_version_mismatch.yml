@@ -14,7 +14,7 @@
 # Check database version
 - name: PostgreSQL | Check database version
   shell: >
-    psql --quiet --tuples-only --command="select substring(version(),'[^\s]+\s+[^\s]+');" | sed 's/^ //'
+    psql --quiet --tuples-only --port={{ postgresql_port | int }} --command="select substring(version(),'[^\s]+\s+[^\s]+');" | sed 's/^ //'
   become: yes
   become_user: "{{ postgresql_service_user }}"
   changed_when: false

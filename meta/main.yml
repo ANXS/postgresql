@@ -15,14 +15,17 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - xenial
-    - trusty
+    - bionic
   - name: EL
     versions:
     - 6
     - 7
-  - name: Fedora
-    versions:
-    - 27
+#
+# DISABLED
+#
+#  - name: Fedora
+#    versions:
+#    - 27
 
   galaxy_tags:
   - postgresql
