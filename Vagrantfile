@@ -104,7 +104,7 @@ Vagrant.configure('2') do |config|
 ##      ansible.host_key_checking = false
 ##    end
 
-  end
+ # end
 
   config.vm.define 'trusty64.local' do |machine|
 
