@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 11
+postgresql_version: 12
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
@@ -138,6 +138,8 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
+postgresql_ssl_min_protocol_version: "TLSv1"                        # (>= 12)
+postgresql_ssl_max_protocol_version: ""                             # (>= 12)
 postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
 postgresql_ssl_passphrase_command: ""                               # (>= 11)
 postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
@@ -159,6 +161,7 @@ postgresql_krb_caseins_users: off
 postgresql_tcp_keepalives_idle: 0
 postgresql_tcp_keepalives_interval: 0
 postgresql_tcp_keepalives_count: 0
+postgresql_tcp_user_timeout: 0                                      # (>= 12)
 
 
 #------------------------------------------------------------------------------
@@ -180,6 +183,8 @@ postgresql_maintenance_work_mem:       16MB     # min 1MB
 postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
 postgresql_max_stack_depth:            2MB      # min 100kB
+postgresql_shared_memory_type:         "mmap"   # (>= 12)
+
 postgresql_dynamic_shared_memory_type: "posix"  # the default is the first option
                                                 # supported by the operating system:
                                                 #   posix
@@ -263,6 +268,8 @@ postgresql_wal_sync_method: "fsync"
 postgresql_full_page_writes: on
 postgresql_wal_compression: off     # (>= 9.5)
 postgresql_wal_log_hints: off       # also do full page writes of non-critical updates
+postgresql_wal_init_zero: on                      # zero-fill new WAL files
+postgresql_wal_recycle: on                        # recycle WAL files
 
 postgresql_wal_buffers:            -1     # min 32kB, -1 sets based on shared_buffers
 postgresql_wal_writer_delay:       200ms  # 1-10000 milliseconds
@@ -297,6 +304,23 @@ postgresql_archive_command: ""
 # force a logfile segment switch after this
 postgresql_archive_timeout: 0
 
+# - Archive Recovery -
+
+postgresql_restore_command: ""                     # (>= 12)
+postgresql_archive_cleanup_command: ""             # (>= 12)
+postgresql_recovery_end_command: ""                # (>= 12)
+postgresql_recovery_target: ""                     # (>= 12)
+postgresql_recovery_target_name: ""                # (>= 12)
+postgresql_recovery_target_time: ""                # (>= 12)
+postgresql_recovery_target_xid: ""                 # (>= 12)
+postgresql_recovery_target_lsn: ""                 # (>= 12)
+postgresql_recovery_target_inclusive: ""           # (>= 12)
+postgresql_recovery_target_timeline: "latest"      # (>= 12)
+postgresql_recovery_target_action: "pause"         # (>= 12)
+postgresql_primary_conninfo: ""                    # (>= 12)
+postgresql_primary_slot_name: ""                   # (>= 12)
+postgresql_promote_trigger_file: ""                # (>= 12)
+postgresql_recovery_min_apply_delay: 0             # (>= 12)
 
 #------------------------------------------------------------------------------
 # REPLICATION
@@ -419,7 +443,8 @@ postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6)
-postgresql_jit:                        off          # (>= 11)
+postgresql_jit:                        on           # (>= 11: off, 12: on)
+postgresql_plan_cache_mode:            "auto"       # (>= 12)
 
 
 #------------------------------------------------------------------------------
@@ -509,6 +534,7 @@ postgresql_log_min_error_statement: "error"
 # -1 is disabled, 0 logs all statements and their durations, > 0 logs only
 # statements running at least this number of milliseconds
 postgresql_log_min_duration_statement: -1
+postgresql_log_transaction_sample_rate: 0.0     # (>= 12)
 
 
 # - What to Log -
@@ -605,7 +631,7 @@ postgresql_autovacuum_freeze_max_age: 200000000
 # maximum Multixact age before forced vacuum (>= 9.3)
 postgresql_autovacuum_multixact_freeze_max_age: 400000000
 # default vacuum cost delay for autovacuum, in milliseconds
-postgresql_autovacuum_vacuum_cost_delay: 20ms
+postgresql_autovacuum_vacuum_cost_delay: 2ms     # (<= 11: 20ms, >=12 2ms)
 # default vacuum cost limit for autovacuum,
 postgresql_autovacuum_vacuum_cost_limit: -1
 
@@ -621,6 +647,7 @@ postgresql_search_path: # schema names
   - "public"
 postgresql_default_tablespace: "" # a tablespace name, "" uses the default
 postgresql_temp_tablespaces: [] # a list of tablespace names
+postgresql_default_table_access_method: "heap"
 
 postgresql_check_function_bodies:          on
 postgresql_default_transaction_isolation:  "read committed"
