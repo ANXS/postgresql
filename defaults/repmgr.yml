@@ -5,6 +5,10 @@ repmgr_database: "repmgr"
 repmgr_master: "{{ groups[repmgr_target_group][0] }}"
 repmgr_conninfo: "host={{ansible_hostname}} user={{repmgr_user}} dbname={{repmgr_database}} connect_timeout=2"
 repmgr_data_directory: "{{postgresql_data_directory}}"
+repmgr_version: "4.2"
+repmgr_gpg_key_url: "https://dl.2ndquadrant.com/gpg-key.asc"
+repmgr_baseurl: "https://dl.2ndquadrant.com/default/release/rpm/packages/centos/$releasever/$basearch/{{postgresql_version}}/"
+repmgr_apt_repository: "deb [arch=amd64] https://dl.2ndquadrant.com/default/release/apt {{ ansible_distribution_release }}-2ndquadrant main"
 
 # Optional configuration items
 #

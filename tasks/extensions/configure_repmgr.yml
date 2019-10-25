@@ -1,6 +1,23 @@
+- name: Repmgr | Detect primary
+  shell: "{{ postgresql_bin_directory }}/repmgr -f {{ postgresql_conf_directory }}/repmgr.conf cluster show | grep primary | cut -d '|' -f 2"
+  register: repmgr_primary_check
+  become: yes
+  become_user: postgres
+  ignore_errors: True
+
+- name: Repmgr | Declare as primary for existing installation
+  set_fact:
+    repmgr_primary: "{{ True if ansible_hostname == repmgr_primary_check.stdout.strip() else False }}"
+  when: "repmgr_primary_check.stdout is defined"
+
+- name: Repmgr | Declare as primary for new installation
+  set_fact:
+    repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] else False }}"
+  when: "repmgr_primary_check.stdout is not defined"
+
 - name: Repmgr | Update configuration (repmgr.conf)
   template:
-    src: "repmgr.conf.j2"
+    src: "repmgr.conf-{{ repmgr_version }}.j2"
     dest: "{{postgresql_conf_directory}}/repmgr.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"

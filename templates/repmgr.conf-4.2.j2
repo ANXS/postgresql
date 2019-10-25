@@ -14,7 +14,7 @@
 # repmgr and repmgrd require the following items to be explicitly configured.
 
 
-node_id='{{ repmgr_target_group_hosts.index(ansible_hostname) + 1 }}'			# A unique integer greater than zero
+node_id='{{ repmgr_node_id if repmgr_node_id is defined else range(1, 65535) | random(seed=ansible_hostname) }}'			# A unique integer greater than zero
 node_name='{{ansible_hostname}}'		# An arbitrary (but unique) string; we recommend
 				# using the server's hostname or another identifier
 				# unambiguously associated with the server to avoid
