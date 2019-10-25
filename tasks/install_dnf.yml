@@ -4,7 +4,7 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
-      - name: PostgrSQL | Install all the required depedencies | dnf
+      - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
           name: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
           state: present
