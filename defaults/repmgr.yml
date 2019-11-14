@@ -26,6 +26,8 @@ repmgr_use_primary_conninfo_password: "false"
 repmgr_passfile: "/var/lib/pgsql/.pgpass"
 repmgr_private_key_path: "/var/lib/pgsql/.ssh/id_rsa"
 repmgr_public_key_path: "/var/lib/pgsql/.ssh/id_rsa.pub"
+repmgr_ssh_key_bits: "2048"
+repmgr_ssh_key_type: "rsa"
 
 # Logging
 repmgr_log_level: "INFO"

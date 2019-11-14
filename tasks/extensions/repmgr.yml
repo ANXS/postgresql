@@ -2,7 +2,7 @@
 
 - name: PostgreSQL | Extensions | Add 2nd Quadrant repo gpg key | apt
   apt_key:
-    url: https://dl.2ndquadrant.com/gpg-key.asc
+    url: "{{repmgr_gpg_key_url}}"
   when: ansible_pkg_mgr == "apt"
 
 - name: PostgreSQL | Extensions | Add 2nd Quadrant repo for repmgr | apt

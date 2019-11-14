@@ -33,7 +33,7 @@
     trim_blocks: no
 
 - name: Repmgr | Generate ssh keypair for postgres user
-  command: "ssh-keygen -b 4096 -f {{repmgr_private_key_path}} -N ''"
+  command: "ssh-keygen -b {{repmgr_ssh_key_bits}} -t {{repmgr_ssh_key_type}} -f {{repmgr_private_key_path}} -N ''"
   args:
     creates: "{{repmgr_private_key_path}}"
   become: yes
