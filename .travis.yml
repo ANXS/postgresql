@@ -32,3 +32,10 @@ script:
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+
+jobs:
+  include:
+    - language: python
+      python: 2.7
+      script:
+      - ansible-playbook -i tests/docker/hosts -e image_name=centos:7-builded tests/docker/replication.yml

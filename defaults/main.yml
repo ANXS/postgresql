@@ -6,7 +6,7 @@ postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
 postgresql_pwfile: ""
-postgresql_primary: true
+repmgr_primary: True # Default to True to work without repmgr
 
 postgresql_locale_parts:
   - "en_US" # Locale

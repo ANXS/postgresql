@@ -19,7 +19,7 @@
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_databases}}"
-  when: postgresql_databases|length > 0
+  when: postgresql_databases|length > 0 and repmgr_primary
 
 - name: PostgreSQL | Add extensions to the databases
   become: yes

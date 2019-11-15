@@ -1,20 +1,3 @@
-- name: Repmgr | Detect primary
-  shell: "{{ postgresql_bin_directory }}/repmgr -f {{ postgresql_conf_directory }}/repmgr.conf cluster show | grep primary | cut -d '|' -f 2"
-  register: repmgr_primary_check
-  become: yes
-  become_user: postgres
-  ignore_errors: True
-
-- name: Repmgr | Declare as primary for existing installation
-  set_fact:
-    repmgr_primary: "{{ True if ansible_hostname == repmgr_primary_check.stdout.strip() else False }}"
-  when: "repmgr_primary_check.stdout is defined"
-
-- name: Repmgr | Declare as primary for new installation
-  set_fact:
-    repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] else False }}"
-  when: "repmgr_primary_check.stdout is not defined"
-
 - name: Repmgr | Update configuration (repmgr.conf)
   template:
     src: "repmgr.conf-{{ repmgr_version }}.j2"
@@ -55,29 +38,29 @@
     creates: "{{repmgr_private_key_path}}"
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: repmgr_master == ansible_hostname
+  when: repmgr_primary
 
 - name: Repmgr | Slurp ssh public key
   slurp:
     src: "{{repmgr_public_key_path}}"
   register: ssh_public_key
-  when: repmgr_master == ansible_hostname
+  when: repmgr_primary
 
 - name: Repmgr | Slurp ssh private key
   slurp:
     src: "{{repmgr_private_key_path}}"
   register: ssh_private_key
-  when: repmgr_master == ansible_hostname
+  when: repmgr_primary
 
 - name: Repmgr | Update authorized_keys for postgres user
   authorized_key:
     user: postgres
     state: present
-    key: "{{ hostvars[repmgr_master]['ssh_public_key']['content'] | b64decode }}"
+    key: "{% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ vars['ssh_public_key']['content'] | b64decode }}{% endfor %}"
 
 - name: Repmgr | Update public ssh key for postgres user
   copy:
-    content: "{{hostvars[repmgr_master]['ssh_public_key']['content'] | b64decode}}"
+    content: "{% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ vars['ssh_public_key']['content'] | b64decode }}{% endfor %}"
     dest: "{{repmgr_public_key_path}}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
@@ -85,7 +68,7 @@
 
 - name: Repmgr | Update private ssh key for postgres user
   copy:
-    content: "{{hostvars[repmgr_master]['ssh_private_key']['content'] | b64decode}}"
+    content: "{% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ vars['ssh_private_key']['content'] | b64decode }}{% endfor %}"
     dest: "{{repmgr_private_key_path}}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
@@ -103,25 +86,25 @@
   command: "{{postgresql_bin_directory}}/repmgr -f {{postgresql_conf_directory}}/repmgr.conf primary register"
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: repmgr_master == ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "primary" in repmgr_cluster_show.stdout
+  when: repmgr_primary and not ansible_hostname in repmgr_cluster_show.stdout and not "primary" in repmgr_cluster_show.stdout
 
 - name: Repmgr | Ensure postgresql slave is stopped before clone
   service:
     name: "postgresql-{{postgresql_version}}"
     state: stopped
-  when: repmgr_master != ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+  when: not repmgr_primary and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
 
 - name: Repmgr | Clone standby
-  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby clone"
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ host }}{% endfor %} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby clone"
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: repmgr_master != ansible_hostname and not ansible_hostname in  repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+  when: not repmgr_primary and not ansible_hostname in  repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
 
 - name: Repmgr | Ensure postgresql slave is running after clone
   service:
     name: "postgresql-{{postgresql_version}}"
     state: started
-  when: repmgr_master != ansible_hostname
+  when: not repmgr_primary
 
 - name: Repmgr | Wait for Postgres
   wait_for:
@@ -129,13 +112,13 @@
   delegate_to: localhost
 
 - name: Repmgr | Register standby
-  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby register"
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ host }}{% endfor %} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf standby register"
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: repmgr_master != ansible_hostname and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
+  when: not repmgr_primary and not ansible_hostname in repmgr_cluster_show.stdout and not "standby" in repmgr_cluster_show.stdout
 
 - name: Repmgr | Verify cluster functionality
-  command: "{{postgresql_bin_directory}}/repmgr -F -h {{repmgr_master}} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster crosscheck"
+  command: "{{postgresql_bin_directory}}/repmgr -F -h {% for host, vars in hostvars.items() if 'repmgr_primary' in vars and vars['repmgr_primary'] == True %}{{ host }}{% endfor %} -U repmgr -d repmgr -f {{postgresql_conf_directory}}/repmgr.conf cluster crosscheck"
   become: yes
   become_user: "{{ postgresql_service_user }}"
 
