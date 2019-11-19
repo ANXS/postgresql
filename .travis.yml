@@ -37,5 +37,10 @@ jobs:
   include:
     - language: python
       python: 2.7
+      env: IMAGE_NAME="centos:7-builded"
+      install:
+        - pip install ansible=="2.4.4.0" docker-py
+        - ln -s ${PWD} tests/docker/ANXS.postgresql
       script:
-      - ansible-playbook -i tests/docker/hosts -e image_name=centos:7-builded tests/docker/replication.yml
+        - find . -iname repmgr.yml
+        - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/replication.yml

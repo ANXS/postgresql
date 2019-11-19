@@ -15,3 +15,9 @@
   set_fact:
     repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] else False }}"
   when: "repmgr_existing_installation_detected is skipped"
+
+- debug:
+    var: repmgr_primary
+
+- debug:
+    var: ansible_hostname

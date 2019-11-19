@@ -33,6 +33,7 @@
     - "{{ postgresql_database_extensions }}"
     - extensions
   register: result
+  when: repmgr_primary
 
 - name: PostgreSQL | Add hstore to the databases with the requirement
   become: yes
