@@ -13,7 +13,7 @@
 
 - name: Repmgr | Declare as primary for new installation
   set_fact:
-    repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] else False }}"
+    repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] or inventory_hostname == ansible_play_hosts[0] else False }}"
   when: "repmgr_existing_installation_detected is skipped"
 
 - debug:

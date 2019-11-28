@@ -7,6 +7,10 @@ postgresql_databases:
   - name: foobar
     owner: baz
 
+  - name: repmgr
+    owner: "repmgr"
+    encoding: "UTF-8"
+
 # NOTE: postgresql >= 10 does not accept unencrypted passwords
 postgresql_users:
   - name: baz
@@ -19,6 +23,10 @@ postgresql_users:
 
   - name: zabaz
 
+  - name: "repmgr"
+    pass: "repmgr"
+    encrypted: true # required with postgres >= 10 and ansible <= 2.6
+
 postgresql_database_schemas:
   - database: foobar
     state: present
@@ -28,6 +36,11 @@ postgresql_database_schemas:
 postgresql_user_privileges:
   - name: baz
     db: foobar
+
+  - name: "repmgr"
+    db: repmgr
+    priv: "ALL"
+    role_attr_flags: "SUPERUSER,REPLICATION"
 
 postgresql_ext_install_contrib: true
 

@@ -13,4 +13,4 @@
   become: yes
   become_user: "{{ postgresql_admin_user }}"
   with_items: "{{ postgresql_database_schemas }}"
-  when: postgresql_databases|length > 0
+  when: postgresql_databases|length > 0 and repmgr_primary

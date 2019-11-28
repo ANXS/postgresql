@@ -1,3 +1,14 @@
+# Role default overrides to work with replication
+postgresql_wal_level: "replica"
+postgresql_max_wal_senders: 10
+postgresql_max_replication_slots: 10
+postgresql_wal_keep_segments: 256 # Needs to be big enough for pg_basebackup to complete before this starts rotating files, 16MB each
+postgresql_hot_standby: on
+postgresql_archive_mode: off
+postgresql_archive_command: "/bin/true"
+postgresql_shared_preload_libraries:
+  - repmgr
+
 # Required configuration items
 repmgr_target_group: ""
 repmgr_user: "repmgr"

@@ -1,5 +1,6 @@
-# site.yml
+# replication.yml
 ---
+# vim: set syntax=yaml expandtab shiftwidth=2 tabstop=2 softtabstop=2 autoindent:
 
 - hosts: localhost
   become: false
@@ -13,21 +14,31 @@
         path: "{{ 'images' if 'builded' in image_name else '' }}"
         force: "{{ force_build_image | default(false) }}"
 
+    - name: Create docker network
+      docker_network:
+        name: replication
+
     - name: Run docker machines for testing PostgreSQL role
       docker_container:
         name: "postgresql-10-1"
+        hostname: "postgresql-10-1"
         image: "{{ image_name }}"
         command: "/sbin/init"
         state: started
         privileged: true
+        networks:
+          - name: replication
 
     - name: Run docker machines for testing PostgreSQL role 2
       docker_container:
         name: "postgresql-10-2"
+        hostname: "postgresql-10-2"
         image: "{{ image_name }}"
         command: "/sbin/init"
         state: started
         privileged: true
+        networks:
+          - name: replication
 
     - name: Add new machines into postgresql inventory group
       add_host:
@@ -48,8 +59,54 @@
   vars_files:
     # are these paths relative to the playbook path?
     - ../../defaults/repmgr.yml
-  vars:
-    postgresql_version: 10
-    postgresql_ext_install_repmgr: yes
-  roles:
-    - ANXS.postgresql
+  tasks:
+    - name: install ssh
+      package:
+        name: openssh
+        state: present
+    - name: install ssh-client
+      package:
+        name: openssh-clients
+        state: present
+    - name: install ssh-server
+      package:
+        name: openssh-server
+        state: present
+    - name: install cron
+      package:
+        name: cronie
+        state: present
+    - name: ensure sshd is running
+      systemd:
+        name: sshd
+        state: started
+    - name: ensure cron is running
+      systemd:
+        name: crond
+        state: started
+
+    - import_role:
+        name: ANXS.postgresql
+      vars:
+        # see tests/docker/group_vars/postgresql.yml for more configuration
+        repmgr_target_group: "postgresql"
+        postgresql_version: 10
+        postgresql_ext_install_repmgr: yes
+        postgresql_listen_addresses:
+          - "*"
+          #- "localhost"
+          #- "{{ ansible_default_ipv4.address }}"
+        postgresql_pg_hba_custom:
+          - type: host
+            database: repmgr
+            user: "repmgr"
+            address: "0.0.0.0/0"
+            #address: "{{ ansible_default_ipv4['network'] }}/{{ [ansible_default_ipv4['network'], ansible_default_ipv4['netmask']] | join('/') | ipaddr('prefix') }}"
+            method: "md5"
+            comment: ""
+          - type: host
+            database: replication
+            user: "repmgr"
+            address: "0.0.0.0/0"
+            method: "md5"
+            comment: ""
