@@ -1,4 +1,4 @@
 ---
 # PostgreSQL vars for v9.6
 
-postgresql_autovacuum_vacuum_cost_delay: 20ms
+postgresql_autovacuum_vacuum_cost_delay: 5ms
