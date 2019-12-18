@@ -89,7 +89,7 @@ tcp_user_timeout = {{ postgresql_tcp_user_timeout }}                   # TCP_USE
 # - Authentication -
 
 authentication_timeout = {{ postgresql_authentication_timeout }}		# 1s-600s
-password_encryption = {{ 'on' if postgresql_password_encryption else 'off' }}		# md5 or scram-sha-256
+password_encryption = {{ 'md5' if postgresql_password_encryption != 'scram-sha-256' else 'scram-sha-256' }}     # md5 or scram-sha-256
 db_user_namespace = {{ 'on' if postgresql_db_user_namespace else 'off' }}
 
 # GSSAPI using Kerberos
