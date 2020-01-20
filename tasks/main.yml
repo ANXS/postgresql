@@ -1,5 +1,8 @@
 # file: postgresql/tasks/main.yml
 
+#
+# Override defaults/main.yml with OS specific values
+#
 - include_vars: "{{ item }}"
   with_first_found:
     - "../vars/{{ ansible_os_family }}.yml"

@@ -25,12 +25,13 @@ postgresql_default_auth_method: "peer"
 postgresql_default_auth_method_hosts: "md5"
 
 # The user/group that will run postgresql process or service
+postgresql_service_name: "{{ __postgresql_service_name | default('postgresql', true) }}"
 postgresql_service_user: "{{ postgresql_admin_user }}"
 postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
 postgresql_service_enabled: true
 
-postgresql_cluster_name: "main"
+postgresql_cluster_name: "{{ __postgresql_cluster_name | default('main', true) }}"
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
@@ -42,14 +43,18 @@ postgresql_ext_install_postgis: no
 
 postgresql_ext_postgis_version: "2.5" # be careful: check whether the postgresql/postgis versions work together
 
-postgresql_ext_postgis_deps:
+postgresql_ext_postgis_default_deps:
   - libgeos-c1
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
+postgresql_ext_postgis_deps: "{{ __postgresql_ext_postgis_deps | default(postgresql_ext_postgis_default_deps, true) }}"
+
 # Foreign Data Wrapper(s)
 postgresql_fdw_mysql: no
+postgresql_fdw_mysql_packages: "{{ __postgresql_fdw_mysql_packages | default(omit) }}"
 postgresql_fdw_ogr: no
+postgresql_fdw_ogr_packages: "{{ __postgresql_fdw_ogr_packages | default(omit) }}"
 
 # List of databases to be created (optional)
 postgresql_databases: []
@@ -90,7 +95,8 @@ postgresql_pg_ident:
 #------------------------------------------------------------------------------
 # FILE LOCATIONS
 #------------------------------------------------------------------------------
-
+# Location of postgres binaries used to execute initdb
+postgresql_bin_directory: "{{ __postgresql_bin_directory | default('/usr/bin') }}"
 # Location of postgres configuration files here
 postgresql_conf_directory: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 # HBA (Host Based Authentication) file
@@ -98,7 +104,7 @@ postgresql_hba_file: "{{ postgresql_conf_directory }}/pg_hba.conf"
 # Ident configuration file
 postgresql_ident_file: "{{ postgresql_conf_directory }}/pg_ident.conf"
 # Use data in another directory
-postgresql_varlib_directory_name: "postgresql"
+postgresql_varlib_directory_name: "{{ __postgresql_varlib_directory_name | default('postgresql') }}"
 postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 postgresql_wal_directory: ""
 postgresql_pid_directory: "/var/run/postgresql"
@@ -119,6 +125,8 @@ postgresql_superuser_reserved_connections: 3
 postgresql_unix_socket_directory: ""    # (<= 9.2)
 postgresql_unix_socket_directories:     # (>= 9.3)
   - "{{ postgresql_pid_directory }}"
+  - "{{ __postgresql_unix_socket_additional_directories | default(omit, true) }}"
+
 postgresql_unix_socket_group: ""
 postgresql_unix_socket_permissions: "0777" # begin with 0 to use octal notation
 
@@ -140,7 +148,7 @@ postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
 postgresql_ssl_min_protocol_version: "TLSv1"                        # (>= 12)
 postgresql_ssl_max_protocol_version: ""                             # (>= 12)
-postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
+postgresql_ssl_dh_params_file: ""                                   # (>= 10)
 postgresql_ssl_passphrase_command: ""                               # (>= 11)
 postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
 postgresql_ssl_renegotiation_limit: 512MB                           # amount of data between renegotiations
@@ -372,7 +380,7 @@ postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
-# - Subscribers - (>= 10) 
+# - Subscribers - (>= 10)
 
 # These settings are ignored on a publisher.
 
@@ -443,7 +451,7 @@ postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6)
-postgresql_jit:                        on           # (>= 11: off, 12: on)
+postgresql_jit:                        "{{ __postgresql_jit | default('off') }}"           # (>= 11: off, 12: on)
 postgresql_plan_cache_mode:            "auto"       # (>= 12)
 
 

@@ -1,19 +1,19 @@
 ---
 # PostgreSQL vars for RedHat based distributions
+# prefix names with 2 undescores to avoir name collision (example: __var_name )
 #
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service
-postgresql_cluster_name: "data"
-postgresql_service_name: "postgresql-{{ postgresql_version }}"
+__postgresql_cluster_name: "data"
+__postgresql_service_name: "postgresql-{{ postgresql_version }}"
 
-postgresql_varlib_directory_name: "pgsql"
+__postgresql_varlib_directory_name: "pgsql"
 
 # Used to execute initdb
-postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
+__postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
 
-postgresql_unix_socket_directories:
-  - "{{ postgresql_pid_directory }}"
+__postgresql_unix_socket_additional_directories:
   - /tmp
 
-postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
-postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
+__postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
+__postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"

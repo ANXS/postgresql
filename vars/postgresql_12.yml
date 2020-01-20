@@ -1,4 +1,5 @@
 ---
 # PostgreSQL vars for v12
+# prefix names with 2 undescores to avoir name collision (example: __var_name )
 
-# None yet. Add them here if needed.
+__postgresql_jit: on

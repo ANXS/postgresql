@@ -1,9 +1,6 @@
 ---
 # PostgreSQL vars for Debian based distributions
+# prefix names with 2 undescores to avoir name collision (example: __var_name )
 
-postgresql_service_name: "postgresql"
-
-postgresql_bin_directory: /usr/bin
-
-postgresql_fdw_mysql_packages: "postgresql-{{ postgresql_version }}-mysql-fdw"
-postgresql_fdw_ogr_packages: "postgresql-{{ postgresql_version }}-ogr-fdw"
+__postgresql_fdw_mysql_packages: "postgresql-{{ postgresql_version }}-mysql-fdw"
+__postgresql_fdw_ogr_packages: "postgresql-{{ postgresql_version }}-ogr-fdw"
