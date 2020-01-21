@@ -1,5 +1,4 @@
 # file: postgresql/tasks/main.yml
-
 #
 # Override defaults/main.yml with OS specific values
 #
