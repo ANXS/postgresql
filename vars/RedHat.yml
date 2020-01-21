@@ -1,6 +1,6 @@
 ---
 # PostgreSQL vars for RedHat based distributions
-# prefix names with 2 undescores to avoir name collision (example: __var_name )
+# prefix names with 2 underscores to avoir name collision (example: __var_name )
 #
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service

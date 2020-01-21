@@ -1,5 +1,5 @@
 ---
 # PostgreSQL vars for v12
-# prefix names with 2 undescores to avoir name collision (example: __var_name )
+# prefix names with 2 underscores to avoir name collision (example: __var_name )
 
 __postgresql_jit: on

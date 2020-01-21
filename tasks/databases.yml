@@ -16,6 +16,7 @@
     template: "template0"
     state: present
     login_user: "{{postgresql_admin_user}}"
+    login_unix_socket: "{{ postgresql_unix_socket_directories | first | default(omit, true) }}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_databases}}"
@@ -29,6 +30,7 @@
     login_user: "{{ postgresql_service_user }}"
     port: "{{ postgresql_port }}"
     name: "{{ item.1 }}"
+    login_host: "{{ postgresql_unix_socket_directories | first | default(omit, true) }}"
   with_subelements:
     - "{{ postgresql_database_extensions }}"
     - extensions

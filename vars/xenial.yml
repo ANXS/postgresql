@@ -1,6 +1,6 @@
 ---
 # PostgreSQL vars for Ubuntu Xenial (16.04LTS)
-# prefix names with 2 undescores to avoir name collision (example: __var_name )
+# prefix names with 2 underscores to avoir name collision (example: __var_name )
 
 __postgresql_ext_postgis_deps:
   - libgeos-c1v5
