@@ -38,7 +38,7 @@
     name:
       - "postgresql-{{postgresql_version}}"
       - "postgresql-client-{{postgresql_version}}"
-      - "postgresql-contrib-{{postgresql_version}}"
+      - "postgresql-contrib{% if postgresql_version is version_compare('10', '<') %}-{{ postgresql_version }}{% endif %}"
     state: present
     update_cache: yes
     default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
