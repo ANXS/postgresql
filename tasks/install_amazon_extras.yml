@@ -1,0 +1,9 @@
+
+- block:
+    - name: PostgreSQL install Amazon Extras | Postgres 10
+      shell: amazon-linux-extras install postgresql{{ postgresql_version }}
+      when: postgresql_version == "10"
+
+    - name: PostgreSQL install Amazon Extras | Postgres 9.6
+      shell: amazon-linux-extras install postgresql{{ postgresql_version }}
+      when: postgresql_version == "9.6"
