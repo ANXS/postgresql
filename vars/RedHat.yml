@@ -4,14 +4,16 @@
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service
 postgresql_cluster_name: "data"
-#postgresql_service_name: "postgresql-{{ postgresql_version }}"
-postgresql_service_name: "postgresql"
+postgresql_service_name_redhat: "postgresql-{{ postgresql_version }}"
+postgresql_service_name_amazon: "postgresql"
+postgresql_service_name: {{ postgresql_service_name_redhat if ansible_distribution != 'Amazon Linux' else postgresql_service_name_amazon }}
 
 postgresql_varlib_directory_name: "pgsql"
 
 # Used to execute initdb
-#postgresql_bin_directory: "/usr/pgsql-{{postgresql_version}}/bin"
-postgresql_bin_directory: "/usr/bin"
+postgresql_bin_directory_redhat: "/usr/pgsql-{{postgresql_version}}/bin"
+postgresql_bin_directory_amazon: "/usr/bin"
+postgresql_bin_directory: {{ postgresql_bin_directory_redhat if ansible_distribution != 'Amazon Linux' else postgresql_bin_directory_amazon }}
 
 postgresql_unix_socket_directories:
   - "{{ postgresql_pid_directory }}"
