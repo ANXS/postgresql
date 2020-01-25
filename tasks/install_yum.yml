@@ -4,9 +4,17 @@
 # validate www.postgresql.org (or probably any other source).
 
   - block:
+      - name: PostgreSQL | Install epel-release | yum
+        yum:
+          name: [ "epel-release" ]
+          state: present
+        when:
+          - ansible_os_family == "RedHat"
+          - ansible_distribution != "Amazon"
+
       - name: PostgreSQL | Install all the required dependencies | yum
         yum:
-          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
+          name: [ "ca-certificates", "python-psycopg2", "python-pycurl", "glibc-common", "libselinux-python" ]
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository | yum

@@ -198,14 +198,37 @@
     name: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d"
     state: directory
     mode: 0755
-  when: ansible_os_family == "RedHat"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution != "Amazon"
+  notify: restart postgresql
+
+- name: PostgreSQL | Ensure the systemd directory for PostgreSQL exists | Amazon Linux
+  file:
+    name: "/etc/systemd/system/postgresql.service.d"
+    state: directory
+    mode: 0755
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution == "Amazon"
   notify: restart postgresql
 
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
   template:
     src: etc_systemd_system_postgresql.service.d_custom.conf.j2
     dest: "/etc/systemd/system/postgresql-{{ postgresql_version }}.service.d/custom.conf"
-  when: ansible_os_family == "RedHat"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution != "Amazon"
+  register: postgresql_systemd_custom_conf
+
+- name: PostgreSQL | Use the conf directory when starting the Postgres service | Amazon Linux
+  template:
+    src: etc_systemd_system_postgresql_amazon.service.d_custom.conf.j2
+    dest: "/etc/systemd/system/postgresql.service.d/custom.conf"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution == "Amazon"
   register: postgresql_systemd_custom_conf
 
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists

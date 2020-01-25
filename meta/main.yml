@@ -20,6 +20,10 @@ galaxy_info:
     versions:
     - 6
     - 7
+  - name: Amazon
+    versions:
+    - 2
+    - 2018.12
 #
 # DISABLED
 #
