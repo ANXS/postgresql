@@ -6,7 +6,7 @@
   - block:
       - name: PostgreSQL | Install all the required dependencies | yum
         yum:
-          name: ["ca-certificates","python-psycopg2", "python-pycurl", "glibc-common","epel-release","libselinux-python"]
+          name: "{{ dependencies_rpms }}"
           state: present
 
       - name: PostgreSQL | Add PostgreSQL repository | yum
@@ -25,10 +25,7 @@
 
       - name: PostgreSQL | Install PostgreSQL | yum
         yum:
-          name:
-            - "postgresql{{ postgresql_version_terse }}-server"
-            - "postgresql{{ postgresql_version_terse }}"
-            - "postgresql{{ postgresql_version_terse }}-contrib"
+          name: "{{ postgresql_rpms }}"
           state: present
         environment: "{{ postgresql_env }}"
 

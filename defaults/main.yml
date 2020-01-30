@@ -1,4 +1,16 @@
 # file: postgresql/defaults/main.yml
+# yum packages lists
+dependencies_rpms:
+  - ca-certificates
+  - python-psycopg2
+  - python-pycurl
+  - glibc-common
+  - epel-release
+  - libselinux-python
+postgresql_rpms:
+  - "postgresql{{ postgresql_version_terse }}-server"
+  - "postgresql{{ postgresql_version_terse }}"
+  - "postgresql{{ postgresql_version_terse }}-contrib"
 
 # Basic settings
 postgresql_version: 12
@@ -108,9 +120,11 @@ postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_vers
 #------------------------------------------------------------------------------
 # CONNECTIONS AND AUTHENTICATION
 #------------------------------------------------------------------------------
-
+pgdb_iface: "{{ lookup('env','PGDB_IFACE') | default(ansible_default_ipv4.interface, true) }}"
+pgdb_address: "{{ hostvars[inventory_hostname]['ansible_'+pgdb_iface]['ipv4']['address'] }}"
 postgresql_listen_addresses:
   - "localhost"
+  - "{{pgdb_address}}"
 postgresql_port: 5432
 
 postgresql_max_connections: 100
