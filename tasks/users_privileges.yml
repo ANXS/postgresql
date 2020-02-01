@@ -1,5 +1,10 @@
 # file: postgresql/tasks/users_privileges.yml
 
+- name: PostgreSQL | Ensure PostgreSQL is running
+  service:
+    name: "{{ postgresql_service_name }}"
+    state: started
+
 - name: PostgreSQL | Update the user privileges
   postgresql_user:
     name: "{{item.name}}"
@@ -14,3 +19,26 @@
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0
+
+# Iterate over postgresql_privileges to grant and revoke privileges
+# on objects using the built in module
+# http://docs.ansible.com/ansible/postgresql_privs_module.html
+- name: PostgreSQL | Update the privileges
+  postgresql_privs:
+    db: "{{item.db}}"
+    login_host: "{{item.host | default(omit)}}"
+    login_user: "{{postgresql_admin_user}}"
+    port: "{{postgresql_port}}"
+
+    grant_option: "{{item.grant_option | default(omit)}}"
+    obj: "{{item.obj | default(omit)}}"
+    priv: "{{item.priv | default(omit)}}"
+    role: "{{item.role}}"
+    schema: "{{item.schema | default(omit)}}"
+
+    state: "{{item.state | default(omit)}}"
+    type: "{{item.type | default(omit)}}"
+  become: yes
+  become_user: "{{postgresql_admin_user}}"
+  with_items: "{{postgresql_privileges}}"
+  when: "{{postgresql_privileges|length > 0}}"

@@ -29,3 +29,11 @@ postgresql_database_schemas:
     state: present
     schema: acme
     owner: baz
+
+postgresql_privileges:
+  - db: foobar
+    obj: public
+    role: baz
+    state: present
+    type: schema
+    priv: CREATE,USAGE
