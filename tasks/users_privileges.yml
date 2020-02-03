@@ -41,4 +41,4 @@
   become: yes
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_privileges}}"
-  when: "{{postgresql_privileges|length > 0}}"
+  when: postgresql_privileges|length > 0
