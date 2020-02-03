@@ -9,7 +9,7 @@
     login_password: "{{ item.password | default(omit) }}"
     login_user: "{{ postgresql_admin_user }}"
     port: "{{ postgresql_port }}"
-    state: "{{ item.state | default(present) }}"
+    state: "{{ item.state | default('present') }}"
   become: yes
   become_user: "{{ postgresql_admin_user }}"
   with_items: "{{ postgresql_database_schemas }}"
