@@ -80,7 +80,9 @@
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  #and pgdata_dir_exist.changed because of second run will then fail
+  ignore_errors: yes
 
 - name: PostgreSQL | Update systemd | Debian
   command: systemctl daemon-reload
