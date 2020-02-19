@@ -62,10 +62,10 @@
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
-  shell: pg_dropcluster {{ postgresql_version }} {{ postgresql_cluster_name }}
+  shell: pg_dropcluster {{ postgresql_version }} main
   become: yes
   become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
