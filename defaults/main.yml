@@ -1,6 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
+postgresql_service_user_uid: 5000
 postgresql_version: 12
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
