@@ -102,7 +102,8 @@
     name: "{{ postgresql_service_name }}"
     state: started
   become: yes
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  #and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat
   stat:
