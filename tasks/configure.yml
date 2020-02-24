@@ -68,9 +68,13 @@
   when: ansible_os_family == "Debian" and postgresql_cluster_reset
   ignore_errors: yes
 
+- name: PostgreSQL | Register cluster owner id
+  shell: id {{ postgresql_service_user }} -u
+  register: postgresql_service_user_id
+
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
-    pg_createcluster --locale {{ postgresql_locale }} --u {{ postgresql_service_user_uid }}
+    pg_createcluster --locale {{ postgresql_locale }} --u {{ postgresql_service_user_id }}
     -e {{ postgresql_encoding }} -d {{ postgresql_data_directory }}
     {{ postgresql_version }} {{ postgresql_cluster_name }}
     --
@@ -83,7 +87,7 @@
   when: ansible_os_family == "Debian" and postgresql_cluster_reset
   #and pgdata_dir_exist.changed because of second run will then fail
   ignore_errors: yes
-  
+
 - name:
   debug:
     msg: Reset on postgresql_cluster_reset {{ postgresql_cluster_reset }} {{ postgresql_cluster_name }}
