@@ -74,7 +74,7 @@
 
 - name: PostgreSQL | Reset the cluster - create a new one (with specified encoding and locale) | Debian
   shell: >
-    pg_createcluster --locale {{ postgresql_locale }} --u {{ postgresql_service_user_id }}
+    pg_createcluster --locale {{ postgresql_locale }} --u {{ postgresql_service_user_id.stdout }}
     -e {{ postgresql_encoding }} -d {{ postgresql_data_directory }}
     {{ postgresql_version }} {{ postgresql_cluster_name }}
     --
