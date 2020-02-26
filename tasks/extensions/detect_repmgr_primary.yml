@@ -1,5 +1,5 @@
 - name: Repmgr | Detect primary
-  shell: "set -o pipefail ; {{ postgresql_bin_directory }}/repmgr -f {{ postgresql_conf_directory }}/repmgr.conf cluster show | grep primary | cut -d '|' -f 2"
+  shell: "set -o pipefail ; {{ postgresql_bin_directory }}/repmgr -f {{ postgresql_conf_directory }}/repmgr.conf cluster show | grep primary | cut -d '|' -f 2 | sed 's/\ //g'"
   register: repmgr_primary_check
   become: yes
   become_user: postgres
@@ -7,17 +7,25 @@
 
 - name: Repmgr | Declare as primary for existing installation
   set_fact:
-    repmgr_primary: "{{ True if ansible_hostname == repmgr_primary_check.stdout.strip() else False }}"
+    repmgr_primary: True
   register: repmgr_existing_installation_detected
-  when: "repmgr_primary_check.stdout is defined and repmgr_primary_check.rc == 0"
+  when: "repmgr_primary_check.rc == 0 and repmgr_primary_check.stdout == ansible_hostname"
+
+- name: Repmgr | Share state between hosts
+  delegate_to: localhost
+  delegate_facts: True
+  set_fact:
+    repmgr_primary_declared: True
+  when: "repmgr_existing_installation_detected is not skipped"
 
 - name: Repmgr | Declare as primary for new installation
   set_fact:
     repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] or inventory_hostname == ansible_play_hosts[0] else False }}"
-  when: "repmgr_existing_installation_detected is skipped"
+  when: "hostvars['localhost']['repmgr_primary_declared'] != true"
 
 - debug:
     var: repmgr_primary
 
 - debug:
-    var: ansible_hostname
+    var: repmgr_primary_check
+    verbosity: 1
