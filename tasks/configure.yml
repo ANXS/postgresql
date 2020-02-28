@@ -65,7 +65,7 @@
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster {{ postgresql_version }} main
   become: yes
-  become_user: "{{ postgresql_service_user }}"
+  #become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset
   ignore_errors: yes
 
