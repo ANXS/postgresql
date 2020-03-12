@@ -1,10 +1,11 @@
 - name: Repmgr | Update configuration (repmgr.conf)
   template:
-    src: "repmgr.conf-{{ repmgr_version }}.j2"
+    src: "repmgr.conf-{{ repmgr_version[:3] }}.j2"
     dest: "{{postgresql_conf_directory}}/repmgr.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
+  notify: restart repmgr
 
 - name: Repmgr | Ensure systemd drop-in directory exists
   file:

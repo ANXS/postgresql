@@ -54,7 +54,7 @@ Including an example of how to use your role:
 
 #### Replication with repmgr
 
-There is initial support for setting up and running with replication managed by [repmgr](https://repmgr.org/). In it's current state it has only been tested with repmgr-4.2 on Centos 7 and requires Systemd.
+There is initial support for setting up and running with replication managed by [repmgr](https://repmgr.org/). In it's current state it has only been tested with repmgr-4.2 and repmgr-5.0 on Centos 7 and requires Systemd.
 
 
 #### Variables

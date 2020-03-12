@@ -21,7 +21,7 @@
 - name: Repmgr | Declare as primary for new installation
   set_fact:
     repmgr_primary: "{{ True if ansible_hostname == ansible_play_hosts[0] or inventory_hostname == ansible_play_hosts[0] else False }}"
-  when: "hostvars['localhost']['repmgr_primary_declared'] != true"
+  when: "hostvars['localhost'].get('repmgr_primary_declared', false) != true"
 
 - debug:
     var: repmgr_primary

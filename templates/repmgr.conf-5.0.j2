@@ -303,11 +303,11 @@ reconnect_attempts={{repmgr_reconnect_attempts}}			# Number of attempts which wi
 					# primary (or other upstream node)
 reconnect_interval={{repmgr_reconnect_interval}}			# Interval between attempts to reconnect to an unreachable
 					# primary (or other upstream node)
-{{ '' if repmgr_promote_command else '#' }}promote_command={{repmgr_promote_command}}		# command repmgrd executes when promoting a new primary; use something like:
+{{ '' if repmgr_promote_command else '#' }}promote_command='{{repmgr_promote_command}}'		# command repmgrd executes when promoting a new primary; use something like:
 					#
 					#     repmgr standby promote -f /etc/repmgr.conf
 					#
-{{ '' if repmgr_follow_command else '#' }}follow_command={{repmgr_follow_command}}		# command repmgrd executes when instructing a standby to follow a new primary;
+{{ '' if repmgr_follow_command else '#' }}follow_command='{{repmgr_follow_command}}'		# command repmgrd executes when instructing a standby to follow a new primary;
 					# use something like:
 					#
 					#     repmgr standby follow -f /etc/repmgr.conf -W --upstream-node-id=%n
@@ -333,13 +333,13 @@ async_query_timeout={{repmgr_async_query_timeout}}		# Interval (in seconds) whic
 					# "--no-pid-file" will force PID file creation to be skipped.
 					# Note: there is normally no need to set this, particularly if
 					# repmgr was installed from packages.
-#standby_disconnect_on_failover=false	# If "true", in a failover situation wait for all standbys to
+standby_disconnect_on_failover={{repmgr_standby_disconnect_on_failover}}	# If "true", in a failover situation wait for all standbys to
 					# disconnect their WAL receivers before electing a new primary
 					# (PostgreSQL 9.5 and later only; repmgr user must be a superuser for this)
 #sibling_nodes_disconnect_timeout=30	# If "standby_disconnect_on_failover" is true, the maximum length of time
 					#  (in seconds) to wait for other standbys to confirm they have disconnected their
 					# WAL receivers
-#primary_visibility_consensus=false	# If "true", only continue with failover if no standbys have seen
+primary_visibility_consensus={{repmgr_primary_visibility_consensus}}	# If "true", only continue with failover if no standbys have seen
 					# the primary node recently. *Must* be the same on all nodes.
 #failover_validation_command=''		# Script to execute for an external mechanism to validate the failover
 					# decision made by repmgrd. One or both of the following parameter placeholders

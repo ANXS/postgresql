@@ -1,7 +1,15 @@
+---
+# vim: set syntax=yaml expandtab shiftwidth=2 tabstop=2 softtabstop=2 autoindent smartindent:
 # file: postgresql/handlers/main.yml
 
   - name: restart postgresql
     service:
       name: "{{ postgresql_service_name }}"
+      state: restarted
+      enabled: yes
+
+  - name: restart repmgr
+    service:
+      name: "repmgr{{postgresql_version}}"
       state: restarted
       enabled: yes

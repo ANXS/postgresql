@@ -81,6 +81,8 @@ repmgr_repmgrd_pid_file: ""
 
 # Fail-over
 repmgr_failover: "manual"
+repmgr_standby_disconnect_on_failover: "false"
+repmgr_primary_visibility_consensus: "false"
 repmgr_priority: 100
 repmgr_reconnect_attempts: 6
 repmgr_reconnect_interval: 10
