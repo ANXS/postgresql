@@ -16,6 +16,7 @@
 
 - name: PostgreSQL | Add PostgreSQL repository | apt
   apt_repository:
+    filename: postgres
     repo: "{{ postgresql_apt_repository }}"
     state: present
   when: postgresql_apt_repository | default('') != '' and postgresql_install_repository
