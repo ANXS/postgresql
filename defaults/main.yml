@@ -793,6 +793,7 @@ postgresql_pgtune_connections: no
 
 # Install repo, or rely on existing configuration (Satellite, Artifactory, etc.)
 postgresql_install_repository: true
+postgresql_install_epel: true
 
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
