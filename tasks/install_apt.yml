@@ -12,6 +12,7 @@
     id: "{{ postgresql_apt_key_id }}"
     url: "{{ postgresql_apt_key_url }}"
     state: present
+    become: yes
   when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
 
 - name: PostgreSQL | Add PostgreSQL repository | apt
@@ -19,6 +20,7 @@
     filename: postgres
     repo: "{{ postgresql_apt_repository }}"
     state: present
+  become: yes
   when: postgresql_apt_repository | default('') != '' and postgresql_install_repository
 
 - name: PostgreSQL | Add PostgreSQL repository preferences | apt
