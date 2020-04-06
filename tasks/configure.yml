@@ -1,5 +1,12 @@
 # file: postgresql/tasks/configure.yml
 
+- name: PostgreSQL | Make sure the postgres data directory exists
+  file:
+    path: "{{postgresql_data_directory}}"
+    state: absent
+    mode: 0700
+  register: postgresql_cluster_reset
+
 - name: PostgreSQL | Drop the data directory | RedHat
   file:
     path: "{{ postgresql_data_directory }}"
