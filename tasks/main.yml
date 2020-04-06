@@ -24,7 +24,7 @@
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_dnf.yml
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_pkg_mgr == "dnf" and ( ansible_distribution == "Fedora" or ( ansible_os_family == "RedHat" and ansible_distribution_major_version == "8" ))
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml

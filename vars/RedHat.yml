@@ -17,3 +17,4 @@ postgresql_unix_socket_directories:
 
 postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
 postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
+postgresql_dnf_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/redhat/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"

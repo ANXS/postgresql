@@ -6,7 +6,7 @@
   - block:
       - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
-          name: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
+          name: "ca-certificates, python*-pycurl, glibc-common, python3-libselinux, python*-psycopg2"
           state: present
 
       - name: PostgreSQL | Add yum Repository | dnf
@@ -17,6 +17,11 @@
           baseurl: "{{ postgresql_dnf_repository_baseurl }}"
           gpgkey: "{{ postgresql_dnf_repository_gpgkey }}"
         when: postgresql_install_repository
+
+      - name: disable system postgresql
+        shell:
+          cmd: dnf -qy module disable postgresql
+        when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "8"
 
       - name: PostgreSQL | Install PostgreSQL | dnf
         dnf:

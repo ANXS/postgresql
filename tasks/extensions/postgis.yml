@@ -24,10 +24,10 @@
   notify:
     - restart postgresql
 
-- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora/RedHat8
   dnf:
     name: "{{ postgresql_ext_postgis_deps }}"
     state: present
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_pkg_mgr == "dnf" and (ansible_distribution == "Fedora" or ( ansible_os_family == "RedHat" and ansible_distribution_major_version == "8" ))
   notify:
     - restart postgresql
