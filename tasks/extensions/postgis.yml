@@ -1,14 +1,33 @@
 # file: postgresql/tasks/extensions/postgis.yml
 
-- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution_release }}.yml"
+    - "../vars/empty.yml"
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Debian
   apt:
-    name: "{{item}}"
+    name: "{{ postgresql_ext_postgis_deps }}"
     state: present
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
-  with_items:
-    - libgeos-c1
-    - "postgresql-{{postgresql_version}}-postgis-{{postgresql_ext_postgis_version}}"
-    - "postgresql-{{postgresql_version}}-postgis-scripts"
+  when: ansible_os_family == "Debian"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
+  yum:
+    name: "{{ postgresql_ext_postgis_deps }}"
+    state: present
+    update_cache: yes
+  when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
+  notify:
+    - restart postgresql
+
+- name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora
+  dnf:
+    name: "{{ postgresql_ext_postgis_deps }}"
+    state: present
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
     - restart postgresql

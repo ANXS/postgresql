@@ -4,14 +4,40 @@ galaxy_info:
   author: pjan vandaele
   company: ANXS
   description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
-  min_ansible_version: 1.9.4
+  min_ansible_version: 2.4.0
   license: MIT
+
   platforms:
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
   - name: Ubuntu
     versions:
-    - all
-  categories:
+    - xenial
+    - bionic
+  - name: EL
+    versions:
+    - 6
+    - 7
+#
+# DISABLED
+#
+#  - name: Fedora
+#    versions:
+#    - 27
+
+  galaxy_tags:
+  - postgresql
+  - postgres
   - database
   - database:sql
+  - sql
+  - postgis
+  - debian
+  - ubuntu
+  - centos
+  - redhat
+  - fedora
 
 dependencies: []

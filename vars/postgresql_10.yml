@@ -1,0 +1,4 @@
+---
+# PostgreSQL vars for v10
+
+postgresql_autovacuum_vacuum_cost_delay: 20ms

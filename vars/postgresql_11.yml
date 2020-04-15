@@ -1,0 +1,5 @@
+---
+# PostgreSQL vars for v11
+
+postgresql_jit: off
+postgresql_autovacuum_vacuum_cost_delay: 20ms
