@@ -1,18 +1,15 @@
 # file: postgresql/tasks/configure.yml
-
-- name: PostgreSQL | Make sure the postgres data directory exists
-  file:
-    path: "{{postgresql_data_directory}}"
-    state: absent
-    mode: 0700
-  register: postgresql_cluster_reset
+- name: PostgreSQL | Set not postgresql_cluster.stat.exists only when no cluster exists
+  stat:
+    path: "{{ postgresql_data_directory }}/PG_VERSION"
+  register: postgresql_cluster
 
 - name: PostgreSQL | Drop the data directory | RedHat
   file:
     path: "{{ postgresql_data_directory }}"
     state: absent
   register: pgdata_dir_remove
-  when: ansible_os_family == "RedHat" and postgresql_cluster_reset
+  when: ansible_os_family == "RedHat" and not postgresql_cluster.stat.exists
 
 - name: PostgreSQL | Make sure the postgres data directory exists
   file:
@@ -66,14 +63,14 @@
     name: "{{ postgresql_service_name }}"
     state: stopped
   become: yes
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  when: ansible_os_family == "Debian" and not postgresql_cluster.stat.exists
   #and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster {{ postgresql_version }} main
   become: yes
   #become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  when: ansible_os_family == "Debian" and not postgresql_cluster.stat.exists
   ignore_errors: yes
 
 - name: PostgreSQL | Register cluster owner id
@@ -92,27 +89,27 @@
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
   become: yes
   #become_user: "{{ postgresql_service_user }}"
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  when: ansible_os_family == "Debian" and not postgresql_cluster.stat.exists
   #and pgdata_dir_exist.changed because of second run will then fail
   ignore_errors: yes
 
 - name: PostgreSQL | Update systemd | Debian
   command: systemctl daemon-reload
   become: yes
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
+  when: ansible_os_family == "Debian" and not postgresql_cluster.stat.exists and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Start PostgreSQL | Debian
   service:
     name: "{{ postgresql_service_name }}"
     state: started
   become: yes
-  when: ansible_os_family == "Debian" and postgresql_cluster_reset
+  when: ansible_os_family == "Debian" and not postgresql_cluster.stat.exists
   #and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat
   stat:
     path: "{{ postgresql_data_directory }}/PG_VERSION"
-  when: ansible_os_family == "RedHat" and not postgresql_cluster_reset
+  when: ansible_os_family == "RedHat" and not postgresql_cluster.stat.exists
   register: pgdata_dir_initialized
 
 - name: PostgreSQL | Initialize the database | RedHat
@@ -126,7 +123,7 @@
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
-        (postgresql_cluster_reset or
+        (not postgresql_cluster.stat.exists or
          pgdata_dir_exist.changed or
          not pgdata_dir_initialized.stat.exists)
 
@@ -199,7 +196,7 @@
     group: "{{ postgresql_service_group }}"
     mode: 0640
   register: postgresql_configuration_pt4
-  notify: restart postgresql
+  notify: reload postgresql
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
@@ -215,7 +212,7 @@
     state: directory
     mode: 0755
   when: ansible_os_family == "RedHat"
-  notify: restart postgresql
+  notify: reload postgresql
 
 - name: PostgreSQL | Use the conf directory when starting the Postgres service | RedHat
   template:
@@ -231,7 +228,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: u=rwX,g=rwXs,o=rx
-  notify: restart postgresql
+  notify: reload postgresql
 
 - name: PostgreSQL | Reload all conf files
   service:

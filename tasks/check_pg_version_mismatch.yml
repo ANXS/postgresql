@@ -23,10 +23,10 @@
   check_mode: no
   ignore_errors: yes
 
-# If versions do not match, then restart PostgreSQL
+# If versions do not match, then reload postgresql
 - name: PostgreSQL | Verify binary and database versions match
   debug:
     msg: "WARNING: Binary ({{ postgresql_binary_version.stdout }}) and Database ({{ postgresql_database_version.stdout }}) version mismatch. Restart required!"
   when: postgresql_binary_version.stdout != postgresql_database_version.stdout
   changed_when: postgresql_binary_version.stdout != postgresql_database_version.stdout
-  notify: restart postgresql
+  notify: reload postgresql

@@ -13,7 +13,7 @@
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_os_family == "Debian"
   notify:
-    - restart postgresql
+    - reload postgresql
 
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | RedHat
   yum:
@@ -22,7 +22,7 @@
     update_cache: yes
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
-    - restart postgresql
+    - reload postgresql
 
 - name: PostgreSQL | Extensions | Make sure the postgis extensions are installed | Fedora
   dnf:
@@ -30,4 +30,4 @@
     state: present
   when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   notify:
-    - restart postgresql
+    - reload postgresql

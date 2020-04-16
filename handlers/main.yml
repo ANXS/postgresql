@@ -1,6 +1,6 @@
 # file: postgresql/handlers/main.yml
 
-  - name: restart postgresql
+  - name: reload postgresql
     service:
       name: "{{ postgresql_service_name }}"
       state: reloaded
