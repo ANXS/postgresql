@@ -46,6 +46,9 @@
 - import_tasks: schemas.yml
   tags: [postgresql, postgresql-schemas]
 
+- import_tasks: db_extensions.yml
+  tags: [postgresql, postgresql-db-extensions]
+
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]
 

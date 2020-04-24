@@ -1,0 +1,16 @@
+# file: postgresql/tasks/db_extensions.yml
+
+- name: PostgreSQL | Add extensions to the databases
+  become: yes
+  become_user: "{{ postgresql_admin_user }}"
+  postgresql_ext:
+    db: "{{ item.0.db }}"
+    login_user: "{{ postgresql_service_user }}"
+    port: "{{ postgresql_port }}"
+    schema: "{{ item.0.schema }}"
+    name: "{{ item.1 }}"
+  with_subelements:
+    - "{{ postgresql_database_extensions }}"
+    - extensions
+  when: postgresql_databases|length > 0
+
