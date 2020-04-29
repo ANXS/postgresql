@@ -49,7 +49,7 @@ postgresql_postgis_release_compatibility:
   13: "3.1"
 
 postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
-postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
+postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.', '') }}" # Short version of the postgresql_ext_postgis_version, used in some path and filenames
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
@@ -832,6 +832,7 @@ postgresql_yum_repository_url: "http://yum.postgresql.org"
 postgresql_pgdg_repository_url: "https://download.postgresql.org/pub/repos/yum/"
 
 # YUM (RedHat, CentOS, etc.) baseurl/gpgkey
+postgresql_common_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/common/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 postgresql_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
 postgresql_yum_repository_gpgkey: "{{ postgresql_pgdg_repository_url }}/RPM-GPG-KEY-PGDG-{{ postgresql_version_terse }}"
 
