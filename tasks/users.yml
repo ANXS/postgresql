@@ -5,6 +5,10 @@
     name: "{{ postgresql_service_name }}"
     state: started
 
+- name: Postgresql | Sleep for 30 seconds to wait for PostgreSQL to be ready and continue with play
+  wait_for:
+    timeout: 30
+
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:
     name: "{{item.name}}"
