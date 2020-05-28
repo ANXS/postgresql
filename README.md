@@ -18,6 +18,14 @@ To install:
 ansible-galaxy install ANXS.postgresql
 ```
 
+#### Example Playbook
+
+Including an example of how to use your role:
+
+    - hosts: postgresql-server
+      become: yes
+      roles:
+         - { role: anxs.postgresql }
 
 #### Dependencies
 
@@ -26,34 +34,36 @@ ansible-galaxy install ANXS.postgresql
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 |
-| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Fedora latest | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 | 12 |
+| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|:--:|
+| Ubuntu 14.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
+| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| CentOS 8.x | :no_entry: | :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:|
+| Fedora latest | :no_entry: | :x:| :x:| :x:| :x:| :x:| :x:|
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
 - :grey_question: - will work in the future (help out if you can)
 - :interrobang: - maybe works, not tested
-- :no_entry: - PostgreSQL has reached EOL
+- :no_entry: - Has reached End of Life (EOL)
+
 
 
 #### Variables
 
 ```yaml
 # Basic settings
-postgresql_version: 11
+postgresql_version: 12
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
 
 postgresql_admin_user: "postgres"
-postgresql_default_auth_method: "trust"
+postgresql_default_auth_method: "peer"
 
 postgresql_service_enabled: false # should the service be enabled, default is true
 

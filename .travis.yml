@@ -9,13 +9,12 @@ services:
 
 env:
   matrix:
-    - IMAGE_NAME="ubuntu-upstart:14.04"
     - IMAGE_NAME="ubuntu:16.04-builded"
     - IMAGE_NAME="debian:8-builded"
     - IMAGE_NAME="debian:9-builded"
     - IMAGE_NAME="centos:7-builded"
     - IMAGE_NAME="centos:6-builded"
-    - IMAGE_NAME="fedora:27-builded"
+## DISABLED ##    - IMAGE_NAME="fedora:27-builded"
 install:
   - pip install ansible=="2.4.4.0" docker-py
   - ln -s ${PWD} tests/docker/ANXS.postgresql
@@ -28,7 +27,7 @@ script:
   - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml
 
   # Idempotence test
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
+  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml | tee idempotence_out
   - ./tests/idempotence_check.sh idempotence_out
 
 notifications:
