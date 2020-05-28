@@ -83,7 +83,7 @@ postgresql_database_extensions:
 postgresql_users:
   - name: baz
     pass: pass
-    encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
+    encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords, ansible module default
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:
