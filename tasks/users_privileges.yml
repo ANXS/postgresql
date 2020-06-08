@@ -14,3 +14,18 @@
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0
+
+- name: PostgreSQL | Grant extra privs for schemas and tables
+  postgresql_privs:
+    database: "{{item.database | default(omit)}}"
+    state: present
+    privs: "{{item.privs}}"
+    type: "{{item.type}}"
+    objs: "{{item.objs | default(omit)}}"
+    schema: "{{item.schema | default(omit)}}"
+    roles: "{{item.roles}}"
+    grant_option: "{{item.option | default('no')}}"
+  become: yes
+  become_user: "{{postgresql_admin_user}}"
+  with_items: "{{postgresql_extra_privileges}}"
+  when: postgresql_extra_privileges is defined

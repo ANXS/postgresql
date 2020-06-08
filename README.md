@@ -136,6 +136,17 @@ postgresql_user_privileges:
     db: foobar                  # database
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
+
+# List of extra privileges for grant access to tables and schemas (optional)
+# https://docs.ansible.com/ansible/latest/modules/postgresql_privs_module.html
+postgresql_extra_privileges:
+  - database: baz              # database
+    privs: "ALL"               # privilege string format: example: INSERT,UPDATE/table:SELECT
+    type: table                # type
+    objs: "ALL_IN_SCHEMA"      # objects: example: public,math
+    schema: public             # schema name
+    roles: reader              # role name
+    grant_option: no           # use GRANT OPTION (see https://postgrespro.ru/docs/postgresql/12/sql-grant)
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
