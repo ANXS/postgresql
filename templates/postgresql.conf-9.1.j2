@@ -82,7 +82,7 @@ ssl = {{'on' if postgresql_ssl else 'off'}}				# (change requires restart)
 ssl_ciphers = '{{postgresql_ssl_ciphers|join(':')}}'	# allowed SSL ciphers
 					# (change requires restart)
 ssl_renegotiation_limit = {{postgresql_ssl_renegotiation_limit}}	# amount of data between renegotiations
-password_encryption = {{'on' if postgresql_password_encryption else 'off'}}
+password_encryption = {{postgresql_password_encryption}}
 db_user_namespace = {{'on' if postgresql_db_user_namespace else 'off'}}
 
 # Kerberos and GSSAPI
