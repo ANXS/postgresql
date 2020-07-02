@@ -42,7 +42,7 @@
   with_items:
     - "{{ postgresql_locale }}"
     - "{{ postgresql_ctype }}"
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and item != "C.UTF-8"
 
 - name: PostgreSQL | Ensure the locale is generated | RedHat
   become: yes
