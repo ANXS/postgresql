@@ -6,7 +6,7 @@
   - block:
       - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
-          name: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
+          name: "{{ postgresql_dnf_dependencies }}"
           state: present
 
       - name: PostgreSQL | Add yum Repository | dnf
@@ -22,6 +22,8 @@
         dnf:
           name: "postgresql{{ postgresql_version_terse }}-server,postgresql{{ postgresql_version_terse }},postgresql{{ postgresql_version_terse }}-contrib"
           state: present
+          disablerepo: "*"
+          enablerepo: "{{ postgresql_dnf_repository_name | default('postgresql') }}"
         environment: "{{ postgresql_env }}"
 
       - name: PostgreSQL | PGTune | dnf

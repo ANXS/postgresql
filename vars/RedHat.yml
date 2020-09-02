@@ -17,3 +17,5 @@ postgresql_unix_socket_directories:
 
 postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
 postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
+
+postgresql_dnf_dependencies: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
