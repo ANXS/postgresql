@@ -2,4 +2,4 @@
 # PostgreSQL vars for RedHat 8 based distributions
 #
 
-postgresql_dnf_dependencies: "ca-certificates, python3-pycurl, glibc-common, python3-libselinux, python3-psycopg2"
+postgresql_dnf_dependencies: "ca-certificates, python3-pycurl, glibc-common, python3-libselinux, python3-psycopg2, libicu"
