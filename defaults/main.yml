@@ -263,6 +263,9 @@ postgresql_synchronous_commit: "on"
 # - fsync_writethrough
 # - open_sync
 postgresql_wal_sync_method: "fsync"
+postgresql_wal_skip_threshold: 2MB
+postgresql_wal_keep_size: 0
+postgresql_max_slot_wal_keep_size: -1
 
 # recover from partial page writes
 postgresql_full_page_writes: on
@@ -334,7 +337,7 @@ postgresql_recovery_min_apply_delay: 0             # (>= 12)
 postgresql_max_wal_senders: 0
 postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
-postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
+# postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
 postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables (>= 9.3)
 postgresql_max_replication_slots: 0 # max number of replication slots
@@ -534,6 +537,7 @@ postgresql_log_min_error_statement: "error"
 # -1 is disabled, 0 logs all statements and their durations, > 0 logs only
 # statements running at least this number of milliseconds
 postgresql_log_min_duration_statement: -1
+
 postgresql_log_transaction_sample_rate: 0.0     # (>= 12)
 
 
@@ -816,3 +820,9 @@ postgresql_dnf_repository_gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
 postgresql_apt_py3_dependencies: ["python3-psycopg2", "locales"]
 postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
 postgresql_apt_dependencies: "{{ postgresql_apt_py3_dependencies if 'python3' in ansible_python_interpreter|default('') else postgresql_apt_py2_dependencies }}"
+
+
+# TODO move
+postgresql_log_min_duration_sample: -1
+postgresql_log_statement_sample_rate: 1.0
+postgresql_autovacuum_vacuum_insert_threshold: 1000
