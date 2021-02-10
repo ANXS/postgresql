@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 12
+postgresql_version: 13
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
@@ -40,7 +40,16 @@ postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
 
-postgresql_ext_postgis_version: "2.5" # be careful: check whether the postgresql/postgis versions work together
+# PostGIS
+postgresql_postgis_release_compatibility:
+  9.5: "3.0"
+  9.6: "3.1"
+  10: "3.1"
+  12: "3.1"
+  13: "3.1"
+
+postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
+postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
 
 postgresql_ext_postgis_deps:
   - libgeos-c1
@@ -138,7 +147,7 @@ postgresql_ssl_ciphers:
   - "@STRENGTH"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
-postgresql_ssl_min_protocol_version: "TLSv1"                        # (>= 12)
+postgresql_ssl_min_protocol_version: "TLSv1.2"                      # (>= 12)
 postgresql_ssl_max_protocol_version: ""                             # (>= 12)
 postgresql_ssl_dh_params_file: ""                                   # (>= 10)
 postgresql_ssl_passphrase_command: ""                               # (>= 11)
@@ -179,9 +188,11 @@ postgresql_temp_buffers:         8MB   # min 800kB
 postgresql_max_prepared_transactions: 0 # zero disables the feature
 
 postgresql_work_mem:                   1MB      # min 64kB
+postgresql_hash_mem_multiplier:        1.0      # (>= 13)
 postgresql_maintenance_work_mem:       16MB     # min 1MB
 postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
+postgresql_logical_decoding_work_mem:  64MB     # (>= 13)
 postgresql_max_stack_depth:            2MB      # min 100kB
 postgresql_shared_memory_type:         "mmap"   # (>= 12)
 
@@ -227,6 +238,7 @@ postgresql_bgwriter_flush_after:    0      # (>= 9.6) 0 disables,
 # - Asynchronous Behavior -
 
 postgresql_effective_io_concurrency:         1   # 1-1000; 0 disables prefetching
+postgresql_maintenance_io_concurrency:       10  # (>= 13)
 postgresql_max_worker_processes:             8   # (change requires restart)
 postgresql_max_parallel_maintenance_workers: 2   # (>= 11) taken from max_parallel_workers
 postgresql_max_parallel_workers_per_gather:  0   # (>= 9.6) taken from max_worker_processes
@@ -274,6 +286,7 @@ postgresql_wal_recycle: on                        # recycle WAL files
 postgresql_wal_buffers:            -1     # min 32kB, -1 sets based on shared_buffers
 postgresql_wal_writer_delay:       200ms  # 1-10000 milliseconds
 postgresql_wal_writer_flush_after: 1MB    # (>= 9.6) 0 disables
+postgresql_wal_skip_threshold:     2MB    # (>= 13)
 postgresql_commit_delay:           0      # range 0-100000, in microseconds
 postgresql_commit_siblings:        5      # range 1-1000
 
@@ -321,6 +334,7 @@ postgresql_primary_slot_name: ""                   # (>= 12)
 postgresql_promote_trigger_file: ""                # (>= 12)
 postgresql_recovery_min_apply_delay: 0             # (>= 12)
 
+
 #------------------------------------------------------------------------------
 # REPLICATION
 #------------------------------------------------------------------------------
@@ -333,7 +347,10 @@ postgresql_recovery_min_apply_delay: 0             # (>= 12)
 postgresql_max_wal_senders: 0
 postgresql_wal_sender_delay: 1s     # walsender cycle time, 1-10000 milliseconds (<= 9.1)
 
-postgresql_wal_keep_segments:  0    # in logfile segments, 16MB each; 0 disables
+postgresql_wal_keep_segments:        0   # in logfile segments, 16MB each; 0 disables
+postgresql_wal_keep_size:            0   # (>= 13)
+postgresql_max_slot_wal_keep_size:   -1  # (>= 13)
+
 postgresql_replication_timeout: 60s # in milliseconds; 0 disables (<= 9.2)
 postgresql_wal_sender_timeout: 60s  # in milliseconds; 0 disables (>= 9.3)
 postgresql_max_replication_slots: 0 # max number of replication slots
@@ -362,6 +379,7 @@ postgresql_hot_standby: off
 postgresql_max_standby_archive_delay: 30s # -1 allows indefinite delay
 # max delay before canceling queries when reading streaming WAL;
 postgresql_max_standby_streaming_delay: 30s # -1 allows indefinite delay
+postgresql_wal_receiver_create_temp_slot: off  # (>= 13)
 # send replies at least this often
 postgresql_wal_receiver_status_interval: 10s # 0 disables
 # send info from standby to prevent query conflicts
@@ -397,6 +415,7 @@ postgresql_enable_nestloop:                on
 postgresql_enable_parallel_append:         on    # (>= 11)
 postgresql_enable_seqscan:                 on
 postgresql_enable_sort:                    on
+postgresql_enable_incremental_sort:        on    # (>= 13)
 postgresql_enable_tidscan:                 on
 postgresql_enable_partitionwise_join:      off   # (>= 11)
 postgresql_enable_partitionwise_aggregate: off   # (>= 11)
@@ -533,6 +552,8 @@ postgresql_log_min_error_statement: "error"
 # -1 is disabled, 0 logs all statements and their durations, > 0 logs only
 # statements running at least this number of milliseconds
 postgresql_log_min_duration_statement: -1
+postgresql_log_min_duration_sample:    -1       # (>= 13)
+postgresql_log_statement_sample_rate:   1.0     # (>= 13)
 postgresql_log_transaction_sample_rate: 0.0     # (>= 12)
 
 
@@ -573,6 +594,8 @@ postgresql_log_line_prefix: "%t "
 
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
+postgresql_log_parameter_max_length: -1          # (>= 13)
+postgresql_log_parameter_max_length_on_error: 0  # (>= 13)
 postgresql_log_statement:  "none"  # none, ddl, mod, all
 postgresql_log_replication_commands: off
 # log temporary files equal or larger
@@ -619,10 +642,12 @@ postgresql_autovacuum_max_workers: 3
 postgresql_autovacuum_naptime: 1min
 # min number of row updates before vacuum
 postgresql_autovacuum_vacuum_threshold: 50
+postgresql_autovacuum_vacuum_insert_threshold: 1000  # (>= 13)
 # min number of row updates before analyze
 postgresql_autovacuum_analyze_threshold: 50
 # fraction of table size before vacuum
 postgresql_autovacuum_vacuum_scale_factor: 0.2
+postgresql_autovacuum_vacuum_insert_scale_factor: 0.2  # (>= 13)
 # fraction of table size before analyze
 postgresql_autovacuum_analyze_scale_factor: 0.1
 # maximum XID age before forced vacuum
@@ -666,7 +691,7 @@ postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 postgresql_bytea_output: "hex"  # hex, escape
 postgresql_xmlbinary:    "base64"
 postgresql_xmloption:    "content"
-postgresql_gin_fuzzy_search_limit:  0   # (<= 9.2)
+postgresql_gin_fuzzy_search_limit: 0    # (<= 9.2)
 postgresql_gin_pending_list_limit: 4MB  # (>= 9.5)
 
 
@@ -785,6 +810,7 @@ postgresql_pgtune_memory: no
 postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
 postgresql_pgtune_connections: no
+
 
 #------------------------------------------------------------------------------
 # INSTALL/REPO
