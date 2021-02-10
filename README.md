@@ -79,6 +79,7 @@ postgresql_databases:
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
     citext: yes         # flag to install the citext extension on this database (yes/no)
     encoding: "UTF-8"   # override global {{ postgresql_encoding }} variable per database
+    state: "present"    # optional; one of 'present', 'absent', 'dump', 'restore'
     lc_collate: "en_GB.UTF-8"   # override global {{ postgresql_locale }} variable per database
     lc_ctype: "en_GB.UTF-8"     # override global {{ postgresql_ctype }} variable per database
 
@@ -94,6 +95,7 @@ postgresql_users:
   - name: baz
     pass: pass
     encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
+    state: "present"    # optional; one of 'present', 'absent'
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:
