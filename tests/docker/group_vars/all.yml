@@ -2,7 +2,6 @@
 
 image_name: "ubuntu-upstart:14.04"
 postgresql_versions:
-  - 9.4
   - 9.5
   - 9.6
   - 10

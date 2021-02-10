@@ -34,16 +34,16 @@ Including an example of how to use your role:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 | 12 |
-| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8.x | :no_entry: | :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:|
-| Fedora latest | :no_entry: | :x:| :x:| :x:| :x:| :x:| :x:|
+| Distribution / PostgreSQL | 9.5 | 9.6 | 10 | 11 | 12 | 13 |
+| ------------------------- |:---:|:---:|:--:|:--:|:--:|:--:|
+| Ubuntu 14.04 | :no_entry: | :no_entry: | :no_entry: | :no_entry: | :no_entry: |:no_entry: |
+| Ubuntu 16.04 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
+| Debian 8.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
+| Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
+| CentOS 6.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
+| CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
+| CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :no_entry: |
+| Fedora latest | :x: | :x: | :x: | :x: | :x: | :x: |
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
