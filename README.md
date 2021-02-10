@@ -36,8 +36,6 @@ Including an example of how to use your role:
 
 | Distribution / PostgreSQL | 9.5 | 9.6 | 10 | 11 | 12 | 13 |
 | ------------------------- |:---:|:---:|:--:|:--:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :no_entry: | :no_entry: | :no_entry: | :no_entry: |:no_entry: |
-| Ubuntu 16.04 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | Debian 8.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |

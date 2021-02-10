@@ -9,7 +9,7 @@ services:
 
 env:
   matrix:
-    - IMAGE_NAME="ubuntu:16.04-builded"
+## DISABLED ##    - IMAGE_NAME="ubuntu:16.04-builded"
     - IMAGE_NAME="debian:8-builded"
     - IMAGE_NAME="debian:9-builded"
     - IMAGE_NAME="centos:7-builded"
