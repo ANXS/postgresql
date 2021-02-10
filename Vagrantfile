@@ -55,26 +55,10 @@ Vagrant.configure('2') do |config|
 
   end
 
-  config.vm.define 'centos6.local' do |machine|
-
-    machine.vm.box = "centos/6"
-    machine.vm.network :private_network, ip: '192.168.88.30'
-    machine.vm.hostname = 'centos6.local'
-
-    machine.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'tests/playbook.yml'
-      ansible.verbose = "vvv"
-      ansible.become = true
-      ansible.inventory_path = 'vagrant-inventory'
-      ansible.host_key_checking = false
-    end
-
-  end
-
   config.vm.define 'centos7.local' do |machine|
 
     machine.vm.box = "centos/7"
-    machine.vm.network :private_network, ip: '192.168.88.31'
+    machine.vm.network :private_network, ip: '192.168.88.30'
     machine.vm.hostname = 'centos7.local'
 
     machine.vm.provision 'ansible' do |ansible|

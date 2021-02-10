@@ -40,7 +40,6 @@ Including an example of how to use your role:
 | Ubuntu 16.04 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | Debian 8.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
-| CentOS 6.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
 | CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :no_entry: |
 | Fedora latest | :x: | :x: | :x: | :x: | :x: | :x: |
