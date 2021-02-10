@@ -1,4 +1,4 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.svg?branch=master)](https://travis-ci.org/ANXS/postgresql)
+## ANXS - PostgreSQL [![Build Status](https://travis-ci.com/ANXS/postgresql.svg?branch=master)](https://travis-ci.com/ANXS/postgresql)
 
 ---
 Help Wanted! If you are able and willing to help maintain this Ansible role then please open a GitHub issue. A lot of people seem to use this role and we (quite obviously) need assistance!
