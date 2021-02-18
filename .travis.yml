@@ -9,11 +9,10 @@ services:
 
 env:
   matrix:
-    - IMAGE_NAME="ubuntu:16.04-builded"
+## DISABLED ##    - IMAGE_NAME="ubuntu:16.04-builded"
     - IMAGE_NAME="debian:8-builded"
     - IMAGE_NAME="debian:9-builded"
     - IMAGE_NAME="centos:7-builded"
-    - IMAGE_NAME="centos:6-builded"
 ## DISABLED ##    - IMAGE_NAME="fedora:27-builded"
 install:
   - pip install ansible=="2.4.4.0" docker-py

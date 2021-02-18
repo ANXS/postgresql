@@ -7,6 +7,10 @@ postgresql_databases:
   - name: foobar
     owner: baz
 
+  - name: qux
+    owner: baz
+    state: absent
+
 # NOTE: postgresql >= 10 does not accept unencrypted passwords
 postgresql_users:
   - name: baz
@@ -16,6 +20,9 @@ postgresql_users:
   - name: zab
     pass: md51a1dc91c907325c69271ddf0c944bc72
     encrypted: yes
+
+  - name: foo
+    state: absent
 
   - name: zabaz
 

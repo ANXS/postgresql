@@ -66,6 +66,9 @@ postgresql_database_schemas: []
 # List of user privileges to be applied (optional)
 postgresql_user_privileges: []
 
+# List of additional user privileges to be applied (optional)
+postgresql_user_additional_privileges: []
+
 # pg_hba.conf
 postgresql_pg_hba_default:
   - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
@@ -140,7 +143,7 @@ postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
 postgresql_ssl_min_protocol_version: "TLSv1"                        # (>= 12)
 postgresql_ssl_max_protocol_version: ""                             # (>= 12)
-postgresql_ssl_dh_params_file: ""                                   # (>= 10)  
+postgresql_ssl_dh_params_file: ""                                   # (>= 10)
 postgresql_ssl_passphrase_command: ""                               # (>= 11)
 postgresql_ssl_passphrase_command_supports_reload: off              # (>= 11)
 postgresql_ssl_renegotiation_limit: 512MB                           # amount of data between renegotiations
@@ -148,7 +151,7 @@ postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"    # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
 postgresql_ssl_ca_file: ""                                          # (>= 9.2)
 postgresql_ssl_crl_file: ""                                         # (>= 9.2)
-postgresql_password_encryption: on
+postgresql_password_encryption: md5
 postgresql_db_user_namespace: off
 postgresql_row_security: off                                        # (>= 9.5)
 
@@ -280,7 +283,6 @@ postgresql_commit_siblings:        5      # range 1-1000
 
 # - Checkpoints -
 
-postgresql_checkpoint_segments:          3     # (<= 9.4) in logfile segments, min 1, 16MB each
 postgresql_max_wal_size:                 1GB   # (>= 9.5)
 postgresql_min_wal_size:                 80MB  # (>= 9.5)
 postgresql_checkpoint_flush_after:       0     # (>= 9.6) 0 disables,
@@ -372,7 +374,7 @@ postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 
-# - Subscribers - (>= 10) 
+# - Subscribers - (>= 10)
 
 # These settings are ignored on a publisher.
 
