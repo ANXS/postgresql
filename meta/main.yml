@@ -12,10 +12,7 @@ galaxy_info:
     versions:
     - jessie
     - stretch
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
+
   - name: EL
     versions:
     - 6
@@ -23,6 +20,10 @@ galaxy_info:
 #
 # DISABLED
 #
+#  - name: Ubuntu
+#    versions:
+#    - xenial
+#    - bionic
 #  - name: Fedora
 #    versions:
 #    - 27
@@ -35,9 +36,9 @@ galaxy_info:
   - sql
   - postgis
   - debian
-  - ubuntu
   - centos
   - redhat
   - fedora
+  - ubuntu
 
 dependencies: []

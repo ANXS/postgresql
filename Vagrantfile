@@ -7,21 +7,24 @@ Vagrant.configure('2') do |config|
   config.ssh.insert_key = false
   config.ssh.private_key_path = '~/.vagrant.d/insecure_private_key'
 
-  config.vm.define 'ubuntu16.local' do |machine|
-
-    machine.vm.box = "bento/ubuntu-16.04"
-    machine.vm.network :private_network, ip: '192.168.88.10'
-    machine.vm.hostname = 'ubuntu16.local'
-
-    machine.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'tests/playbook.yml'
-      ansible.verbose = "vvv"
-      ansible.become = true
-      ansible.inventory_path = 'vagrant-inventory'
-      ansible.host_key_checking = false
-    end
-
-  end
+  #
+  # DISABLED
+  #
+  # config.vm.define 'ubuntu16.local' do |machine|
+  #
+  #   machine.vm.box = "bento/ubuntu-16.04"
+  #   machine.vm.network :private_network, ip: '192.168.88.10'
+  #   machine.vm.hostname = 'ubuntu16.local'
+  #
+  #   machine.vm.provision 'ansible' do |ansible|
+  #     ansible.playbook = 'tests/playbook.yml'
+  #     ansible.verbose = "vvv"
+  #     ansible.become = true
+  #     ansible.inventory_path = 'vagrant-inventory'
+  #     ansible.host_key_checking = false
+  #   end
+  #
+  # end
 
   config.vm.define 'jessie64.local' do |machine|
 
@@ -55,26 +58,10 @@ Vagrant.configure('2') do |config|
 
   end
 
-  config.vm.define 'centos6.local' do |machine|
-
-    machine.vm.box = "centos/6"
-    machine.vm.network :private_network, ip: '192.168.88.30'
-    machine.vm.hostname = 'centos6.local'
-
-    machine.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'tests/playbook.yml'
-      ansible.verbose = "vvv"
-      ansible.become = true
-      ansible.inventory_path = 'vagrant-inventory'
-      ansible.host_key_checking = false
-    end
-
-  end
-
   config.vm.define 'centos7.local' do |machine|
 
     machine.vm.box = "centos/7"
-    machine.vm.network :private_network, ip: '192.168.88.31'
+    machine.vm.network :private_network, ip: '192.168.88.30'
     machine.vm.hostname = 'centos7.local'
 
     machine.vm.provision 'ansible' do |ansible|
