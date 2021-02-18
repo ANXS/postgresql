@@ -14,3 +14,21 @@
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0
+
+- name: PostgreSQL | Update the advanced user privileges
+  postgresql_privs:
+    login_host: "{{item.host | default(omit)}}"
+    login_user: "{{postgresql_admin_user}}"
+    port: "{{postgresql_port}}"
+    roles: "{{item.roles}}"
+    db: "{{item.db | default(omit)}}"
+    schema: "{{item.schema | default(omit)}}"
+    type: "{{item.type | default(omit)}}"
+    priv: "{{item.priv | default(omit)}}"
+    objs: "{{item.objs | default(omit)}}"
+    state: "{{item.state | default(omit)}}"
+    grant_option: "{{item.grant_option | default(omit)}}"
+  become: yes
+  become_user: "{{postgresql_admin_user}}"
+  with_items: "{{postgresql_user_privileges_custom}}"
+  when: postgresql_user_privileges_custom|length > 0
