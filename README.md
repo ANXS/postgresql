@@ -15,7 +15,7 @@ This has been tested on Ansible 2.4.0 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install anxs.postgresql
 ```
 
 #### Example Playbook
