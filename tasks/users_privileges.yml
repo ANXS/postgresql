@@ -30,5 +30,5 @@
     grant_option: "{{item.grant_option | default(omit)}}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
-  with_items: "{{postgresql_user_privileges_custom}}"
-  when: postgresql_user_privileges_custom|length > 0
+  with_items: "{{postgresql_user_additional_privileges}}"
+  when: postgresql_user_additional_privileges|length > 0
