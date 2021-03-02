@@ -15,17 +15,37 @@ This has been tested on Ansible 2.4.0 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install anxs.postgresql
 ```
 
 #### Example Playbook
 
-Including an example of how to use your role:
+An example how to include this role:
 
-    - hosts: postgresql-server
+```yml
+---
+- hosts: postgresql-server
+  roles:
+    - role: ANXS.postgresql
       become: yes
-      roles:
-         - { role: anxs.postgresql }
+```
+
+An example how to include this role as a task:
+
+```yml
+---
+- hosts: postgresql-server
+  tasks:
+    - block: # workaround, see https://stackoverflow.com/a/56558842
+        - name: PSQL installation and configuration
+          include_role:
+            name: ANXS.postgresql
+          vars:
+            postgresql_users:
+              - name: abc
+                password: abc
+      become: true
+```
 
 #### Dependencies
 
