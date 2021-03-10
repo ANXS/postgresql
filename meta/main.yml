@@ -18,10 +18,10 @@ galaxy_info:
     - 7
 ##    - 8
 
- - name: Ubuntu
-   versions:
-   - bionic
-##   - focal
+  - name: Ubuntu
+    versions:
+    - bionic
+##    - focal
 
 #
 # DISABLED
