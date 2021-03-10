@@ -13,7 +13,7 @@ env:
 ## NOT WORKING YET ##    - IMAGE_NAME="centos:8-builded"
     - IMAGE_NAME="debian:9-builded"
 ## NOT WORKING YET ##    - IMAGE_NAME="debian:10-builded"
-    - IMAGE_NAME="ubuntu:18.04-builded"
+## NOT WORKING YET ##    - IMAGE_NAME="ubuntu:18.04-builded"
 ## NOT WORKING YET ##    - IMAGE_NAME="ubuntu:20.04-builded"
 ## DISABLED ##    - IMAGE_NAME="fedora:27-builded"
 install:

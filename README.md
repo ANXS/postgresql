@@ -40,7 +40,7 @@ Including an example of how to use your role:
 | CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 | Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Debian 10.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
-| Ubuntu 18.04.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 18.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 | Ubuntu 20.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 | Fedora latest | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 
