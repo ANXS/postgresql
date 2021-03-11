@@ -6,6 +6,13 @@
     - "../vars/empty.yml"
   tags: [always]
 
+# Include OS-specific variables where needed, which override the OS-family settings
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.yml"
+    - "../vars/empty.yml"
+  tags: [always]
+
 #
 # Override defaults/main.yml with PostgreSQL version specific values
 #
@@ -20,11 +27,11 @@
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_yum.yml
-  when: ansible_pkg_mgr == "yum" and ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+  when: (ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf") and ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
   tags: [postgresql, postgresql-install]
 
 - import_tasks: install_dnf.yml
-  when: ansible_pkg_mgr == "dnf" and (ansible_distribution == "Fedora" or ansible_distribution == "CentOS")
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml

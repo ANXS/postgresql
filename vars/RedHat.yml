@@ -17,3 +17,11 @@ postgresql_unix_socket_directories:
 
 postgresql_fdw_mysql_packages: "mysql_fdw_{{ postgresql_version_terse }}"
 postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
+
+postgresql_packages:
+  - ca-certificates
+  - python-psycopg2
+  - python-pycurl
+  - glibc-common
+  - epel-release
+  - libselinux-python

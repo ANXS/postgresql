@@ -1,0 +1,7 @@
+postgresql_packages:
+  - ca-certificates
+  - epel-release
+  - python-pycurl
+  - python2-psycopg2
+  - glibc-common
+  - python3-libselinux
