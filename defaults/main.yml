@@ -255,7 +255,7 @@ postgresql_backend_flush_after:              0   # (>= 9.6) 0 disables, default 
 
 # - Settings -
 
-postgresql_wal_level: "replica "  # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
+postgresql_wal_level: "replica"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
 postgresql_fsync:     on          # flush data to disk for crash safety
                                           # (turning this off can cause
                                           # unrecoverable data corruption)
