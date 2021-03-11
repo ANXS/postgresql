@@ -8,7 +8,7 @@
         yum:
           name: "{{ postgresql_packages }}"
           state: present
-         update_cache: yes
+          update_cache: yes
 
       - name: PostgreSQL | Add PostgreSQL repository | yum
         yum_repository:
