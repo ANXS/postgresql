@@ -16,7 +16,13 @@
            description: postgresql yum repo
            baseurl: "{{ postgresql_yum_repository_baseurl }}"
            gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
+           enabled: yes
         when: postgresql_install_repository
+
+      - name: PostgreSQL | Disable postgresql module (necessary for RHEL8+)
+        command:
+          cmd: dnf module disable postgresql -y
+        when: "ansible_distribution_major_version == '8'"
 
       - name: PostgreSQL | Install PostgreSQL | yum
         yum:
@@ -25,6 +31,7 @@
             - "postgresql{{ postgresql_version_terse }}"
             - "postgresql{{ postgresql_version_terse }}-contrib"
           state: present
+          update_cache: yes
         environment: "{{ postgresql_env }}"
 
       - name: PostgreSQL | Setup service users profile | yum
