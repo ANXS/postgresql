@@ -1,8 +1,8 @@
 FROM centos:8
 
-RUN yum install iproute epel-release sudo python3 -y
+RUN yum install iproute epel-release sudo python2 -y
 
-RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN ln -s /usr/bin/python2 /usr/bin/python
 
 RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 		ls | grep -v systemd-tmpfiles-setup.service | xargs rm -f && \
