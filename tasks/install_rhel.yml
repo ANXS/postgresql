@@ -9,14 +9,6 @@
           name: "{{ postgresql_packages }}"
           state: present
           update_cache: yes
-        when: "ansible_distribution_major_version != '8'"
-
-      - name: PostgreSQL | Install all the required dependencies (dnf) | RHEL
-        dnf:
-          name: "{{ postgresql_packages }}"
-          state: present
-          update_cache: yes
-        when: "ansible_distribution_major_version == '8'"
 
       - name: PostgreSQL | Add PostgreSQL repository | RHEL
         yum_repository:
