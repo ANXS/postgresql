@@ -1,6 +1,11 @@
 FROM centos:8
 
-RUN yum install iproute epel-release sudo python3 -y
+RUN yum install -y \
+          iproute \
+          epel-release \
+          sudo \
+          python3 \
+          glibc-langpack-en
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
