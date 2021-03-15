@@ -1,11 +1,11 @@
 ---
 sudo: required
 language: python
-env:
-  - ANSIBLE_ROLES_PATH: ..
-  - PY_COLORS: '1'
-  - ANSIBLE_FORCE_COLOR: '1'
-  - DOCKER_TLS_CERTDIR: "/certs"
+#env:
+#  - ANSIBLE_ROLES_PATH: ..
+#  - PY_COLORS: '1'
+#  - ANSIBLE_FORCE_COLOR: '1'
+#  - DOCKER_TLS_CERTDIR: "/certs"
 
 services:
   - docker
