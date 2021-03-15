@@ -12,7 +12,7 @@ env:
 #  - MOLECULE_DISTRO=centos8    ANSIBLE_ROLES_PATH=.. PY_COLORS='1' ANSIBLE_FORCE_COLOR:=1 DOCKER_TLS_CERTDIR="/certs"
 before_install:
 #/etc/default/docker
-  - echo 'DOCKER_OPTS="$DOCKER_OPTS --debug --registry-mirror=https://mirror.gcr.io"' > /etc/default/docker
+  - echo 'DOCKER_OPTS="$DOCKER_OPTS --debug --registry-mirror=https://mirror.gcr.io"' | sudo tee -a /etc/default/docker
   - sudo service docker restart
   - docker system info
 services:
