@@ -5,6 +5,6 @@
   become: yes
   vars_files:
     - ./vars.yml
-    - ./vars.{{ ansible_distribution }}.yml
+    - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
   roles:
     - postgresql

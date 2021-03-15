@@ -5,7 +5,7 @@
   become: yes
   vars_files:
     - ./vars.yml
-    - ./vars.{{ ansible_distribution }}.yml
+    - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
   tasks:
 
     - name: Pick the right sudoers group (wheel or sudo) depending on the distro
@@ -24,17 +24,28 @@
         line: '%{{ sudoers_group }} ALL=(ALL) NOPASSWD: ALL'
         validate: visudo -cf %s
 
+    #---------------------
+    # apt based distros
+    # * gpg-agent is needed for apt_key
+    # * acl is needed when the ansible_user is not root (for become: postgresql)
+    #---------------------
     - name: Install prerequisite packages for molecule testing for Debian/Ubuntu
       apt:
         cache_valid_time: 3600
         name:
           - gpg-agent
+          - acl
       when: (ansible_distribution == 'Ubuntu') or ansible_distribution == 'Debian'
 
-#    - name: Install prerequisite packages for molecule testing for DNF based systems
-#      apt:
-#        cache_valid_time: 3600
-#        name:
-#          - gpg-agent
-
-#  when: ansible_pkg_mgr == "dnf" and ( ansible_distribution == "Fedora" or ansible_distribution == "CentOS" )
+    #---------------------
+    # Fedora based distros
+    #---------------------
+    - name: Wait for systemd to complete initialization. # noqa 303
+      command: systemctl is-system-running
+      register: systemctl_status
+      until: "'running' in systemctl_status.stdout"
+      retries: 30
+      delay: 5
+      when: (ansible_distribution == 'Fedora')
+#      when: ansible_service_mgr == 'systemd'
+      changed_when: false
