@@ -7,7 +7,7 @@ env:
 services:
   - docker
 install:
-  - python3 -m pip install molecule molecule-docker
+  - python3 -m pip install molecule molecule-docker ansible
   # - python3 -m pip install required driver (e.g. docker, shade, boto, apache-libcloud)
 script:
   - molecule converge
