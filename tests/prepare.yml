@@ -5,9 +5,32 @@
   become: yes
   vars_files:
     - ./vars.yml
+    - ./vars.{{ ansible_distribution }}.yml
   tasks:
-    - name: Install prerequisite packages for molecule testing
+    - name: Set up non root ansible user
+      user:
+        name: ansible
+        group: wheel
+    
+    - name: set up non password sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+
+    - name: Install prerequisite packages for molecule testing for Debian/Ubuntu
       apt:
         cache_valid_time: 3600
         name:
           - gpg-agent
+      when: (ansible_distribution == 'Ubuntu') or ansible_distribution == 'Debian'
+
+#    - name: Install prerequisite packages for molecule testing for DNF based systems
+#      apt:
+#        cache_valid_time: 3600
+#        name:
+#          - gpg-agent
+
+#  when: ansible_pkg_mgr == "dnf" and ( ansible_distribution == "Fedora" or ansible_distribution == "CentOS" )
