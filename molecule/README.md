@@ -41,6 +41,29 @@ MOLECULE_DISTRO=ubuntu1804 molecule converge
 
 The main file ./molecule/default/molecule.yml sets up versions to test from 9.6 to 13.
 
+# Tests
+
+The playbooks read variables from two files. One common vars file, and one with unique variables per OS and distribution major version.
+
+* ../tests/vars.yml <== read by all OS:es
+* ../tests/vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
+
+```
+$ ls -1 tests/ | grep vars
+vars.yml
+vars.CentOS.7.yml
+vars.CentOS.8.yml
+vars.Debian.10.yml
+vars.Debian.9.yml
+vars.Debian.yml
+vars.Fedora.33.yml
+vars.Ubuntu.16.yml
+vars.Ubuntu.18.yml
+vars.Ubuntu.20.yml
+```
+
+The main difference, currently, is which python version to use.
+
 # References
 
 * https://github.com/search?q=user%3Ageerlingguy+docker-.*-ansible
