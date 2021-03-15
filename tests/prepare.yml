@@ -1,4 +1,9 @@
 ---
+#========================================================
+# This prepare.yml playbook is needed to add some necessary packages that
+# normally comes with a distro, but not in the minimal docker containers from
+# geerlingguy
+#========================================================
 
 - hosts: all
   remote_user: root
@@ -26,16 +31,26 @@
 
     #---------------------
     # apt based distros
-    # * gpg-agent is needed for apt_key
+    # * gpg-agent is needed for apt_key on Ubuntu 18 and Ubuntu 20
     # * acl is needed when the ansible_user is not root (for become: postgresql)
     #---------------------
-    - name: Install prerequisite packages for molecule testing for Debian/Ubuntu
+
+    - name: Install prerequisite packages for molecule testing for Debian and Ubuntu < 18
+      apt:
+        cache_valid_time: 3600
+        name:
+          - acl
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int < 18 ) 
+
+    - name: Install prerequisite packages for molecule testing for Debian/Ubuntu >= 18
       apt:
         cache_valid_time: 3600
         name:
           - gpg-agent
           - acl
-      when: (ansible_distribution == 'Ubuntu') or ansible_distribution == 'Debian'
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 18) or ansible_distribution == 'Debian'
+
+
 
     #---------------------
     # Fedora based distros

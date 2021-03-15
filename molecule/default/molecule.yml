@@ -5,9 +5,16 @@ driver:
   name: docker
 lint: |
   set -e
-#  yamllint .
+  yamllint .
 #  ansible-lint
 platforms:
+  - name: postgresql-9_5
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
   - name: postgresql-9_6
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
     command: ""
