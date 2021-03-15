@@ -1,9 +1,6 @@
-FROM ubuntu:16.04
+FROM centos:8
 
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
-    apt-get install --yes python-minimal systemd gnupg iproute2 sudo
+RUN yum install iproute epel-release sudo -y
 
 RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 		ls | grep -v systemd-tmpfiles-setup.service | xargs rm -f && \

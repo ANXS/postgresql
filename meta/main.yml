@@ -10,20 +10,25 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
-    - jessie
     - stretch
+##    - buster
 
   - name: EL
     versions:
-    - 6
     - 7
+##    - 8
+
 #
 # DISABLED
 #
-#  - name: Ubuntu
-#    versions:
-#    - xenial
-#    - bionic
+#   - name: Ubuntu
+#     versions:
+#     - bionic
+# ##    - focal
+
+#
+# DISABLED
+#
 #  - name: Fedora
 #    versions:
 #    - 27

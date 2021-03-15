@@ -56,11 +56,13 @@ An example how to include this role as a task:
 
 | Distribution / PostgreSQL | 9.5 | 9.6 | 10 | 11 | 12 | 13 |
 | ------------------------- |:---:|:---:|:--:|:--:|:--:|:--:|
-| Debian 8.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
-| Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
-| CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:no_entry: |
-| CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :no_entry: |
-| Fedora latest | :x: | :x: | :x: | :x: | :x: | :x: |
+| CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Ubuntu 18.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Ubuntu 20.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Fedora latest | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
@@ -74,7 +76,7 @@ An example how to include this role as a task:
 
 ```yaml
 # Basic settings
-postgresql_version: 12
+postgresql_version: 13
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
