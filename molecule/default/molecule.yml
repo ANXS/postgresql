@@ -5,7 +5,7 @@ driver:
   name: docker
 lint: |
   set -e
-  yamllint .
+#  yamllint .
 #  ansible-lint
 platforms:
 #--- postgresql 9.5 no longer supported, https://www.postgresql.org/support/versioning/

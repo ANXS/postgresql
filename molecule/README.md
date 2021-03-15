@@ -7,7 +7,14 @@ This directory is the home of the test playbooks:
 
 # Molecule
 
-The default tested version is postgresql 9.6, 10, 11, 12, and 13 on Ubuntu 20.04.
+The default tested version is postgresql 9.6, 10, 11, 12, and 13 on Ubuntu 20.04. We are currently _not_ linting anything.
+
+```
+lint: |
+  set -e
+#  yamllint .
+#  ansible-lint
+```
 
 You can override this with setting the environment variable MOLECULE_DISTRO to one of:
 
