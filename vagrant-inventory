@@ -1,9 +1,6 @@
 [anxs]
-ubuntu16.local ansible_ssh_host=192.168.88.22 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-jessie64.local ansible_ssh_host=192.168.88.23 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-wheezy64.local ansible_ssh_host=192.168.88.24 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-centos6.local ansible_ssh_host=192.168.88.25 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-centos7.local ansible_ssh_host=192.168.88.26 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-fedora27.local ansible_ssh_host=192.168.88.27 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-trusty64.local ansible_ssh_host=192.168.88.28 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
-precise64.local ansible_ssh_host=192.168.88.29 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+## DISABLED ## ubuntu16.local ansible_ssh_host=192.168.88.10 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+jessie64.local ansible_ssh_host=192.168.88.20 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+wheezy64.local ansible_ssh_host=192.168.88.21 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+centos7.local ansible_ssh_host=192.168.88.31 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+## DISABLED ## fedora27.local ansible_ssh_host=192.168.88.40 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key

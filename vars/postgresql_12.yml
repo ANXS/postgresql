@@ -1,0 +1,4 @@
+---
+# PostgreSQL vars for v12
+
+ssl_min_protocol_version: "TLSv1"

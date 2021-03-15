@@ -1,4 +1,4 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.svg?branch=master)](https://travis-ci.org/ANXS/postgresql)
+## ANXS - PostgreSQL [![Build Status](https://travis-ci.com/ANXS/postgresql.svg?branch=master)](https://travis-ci.com/ANXS/postgresql)
 
 ---
 Help Wanted! If you are able and willing to help maintain this Ansible role then please open a GitHub issue. A lot of people seem to use this role and we (quite obviously) need assistance!
@@ -15,9 +15,37 @@ This has been tested on Ansible 2.4.0 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install anxs.postgresql
 ```
 
+#### Example Playbook
+
+An example how to include this role:
+
+```yml
+---
+- hosts: postgresql-server
+  roles:
+    - role: ANXS.postgresql
+      become: yes
+```
+
+An example how to include this role as a task:
+
+```yml
+---
+- hosts: postgresql-server
+  tasks:
+    - block: # workaround, see https://stackoverflow.com/a/56558842
+        - name: PSQL installation and configuration
+          include_role:
+            name: ANXS.postgresql
+          vars:
+            postgresql_users:
+              - name: abc
+                password: abc
+      become: true
+```
 
 #### Dependencies
 
@@ -26,34 +54,35 @@ ansible-galaxy install ANXS.postgresql
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 |
-| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Fedora latest | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
+| Distribution / PostgreSQL | 9.5 | 9.6 | 10 | 11 | 12 | 13 |
+| ------------------------- |:---:|:---:|:--:|:--:|:--:|:--:|
+| CentOS 7.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| CentOS 8.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Debian 9.x |  :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Ubuntu 18.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Ubuntu 20.04.x |  :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
+| Fedora latest | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: | :grey_question: |
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
 - :grey_question: - will work in the future (help out if you can)
 - :interrobang: - maybe works, not tested
-- :no_entry: - PostgreSQL has reached EOL
+- :no_entry: - Has reached End of Life (EOL)
+
 
 
 #### Variables
 
 ```yaml
 # Basic settings
-postgresql_version: 11
+postgresql_version: 13
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
 
 postgresql_admin_user: "postgres"
-postgresql_default_auth_method: "trust"
+postgresql_default_auth_method: "peer"
 
 postgresql_service_enabled: false # should the service be enabled, default is true
 
@@ -69,6 +98,7 @@ postgresql_databases:
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
     citext: yes         # flag to install the citext extension on this database (yes/no)
     encoding: "UTF-8"   # override global {{ postgresql_encoding }} variable per database
+    state: "present"    # optional; one of 'present', 'absent', 'dump', 'restore'
     lc_collate: "en_GB.UTF-8"   # override global {{ postgresql_locale }} variable per database
     lc_ctype: "en_GB.UTF-8"     # override global {{ postgresql_ctype }} variable per database
 
@@ -84,6 +114,7 @@ postgresql_users:
   - name: baz
     pass: pass
     encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
+    state: "present"    # optional; one of 'present', 'absent'
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:

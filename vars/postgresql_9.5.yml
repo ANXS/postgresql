@@ -1,0 +1,6 @@
+---
+# PostgreSQL vars for v9.5
+
+postgresql_autovacuum_vacuum_cost_delay: 20ms
+postgresql_max_wal_senders: 0
+postgresql_wal_level: "minimal"
