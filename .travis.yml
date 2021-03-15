@@ -1,19 +1,16 @@
 ---
 sudo: required
 language: python
-#env:
-#  - ANSIBLE_ROLES_PATH: ..
-#  - PY_COLORS: '1'
-#  - ANSIBLE_FORCE_COLOR: '1'
-#  - DOCKER_TLS_CERTDIR: "/certs"
+env:
+  - MOLECULE_DISTRO=ubuntu2004 ANSIBLE_ROLES_PATH=.. PY_COLORS='1' ANSIBLE_FORCE_COLOR:=1 DOCKER_TLS_CERTDIR="/certs"
 
 services:
   - docker
 install:
-  - python3 -m pip install molecule
+  - python3 -m pip install molecule molecule-docker
   # - python3 -m pip install required driver (e.g. docker, shade, boto, apache-libcloud)
 script:
-  - MOLECULE_DISTRO=ubuntu2004 molecule converge
+  - molecule converge
 
 #notifications:
 #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
