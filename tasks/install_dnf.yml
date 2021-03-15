@@ -6,7 +6,8 @@
   - block:
       - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
-          name: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
+          name: "ca-certificates, python-pycurl, glibc-common, python*-libselinux, python*-psycopg2, glibc-locale-source"
+#, glibc-langpack-en
           state: present
 
       - name: PostgreSQL | Add yum Repository | dnf
