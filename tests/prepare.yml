@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  remote_user: root
+  become: yes
+  vars_files:
+    - ./vars.yml
+  tasks:
+    - name: Install prerequisite packages for molecule testing
+      apt:
+        cache_valid_time: 3600
+        name:
+          - gpg-agent

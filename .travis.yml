@@ -1,35 +1,19 @@
 ---
-
-language: python
-python: "2.7"
 sudo: required
-dist: trusty
+language: python
+env:
+  - ANSIBLE_ROLES_PATH: ..
+  - PY_COLORS: '1'
+  - ANSIBLE_FORCE_COLOR: '1'
+  - DOCKER_TLS_CERTDIR: "/certs"
+
 services:
   - docker
-
-env:
-  matrix:
-    - IMAGE_NAME="ubuntu-upstart:14.04"
-    - IMAGE_NAME="ubuntu:16.04-builded"
-    - IMAGE_NAME="debian:8-builded"
-    - IMAGE_NAME="debian:9-builded"
-    - IMAGE_NAME="centos:7-builded"
-    - IMAGE_NAME="centos:6-builded"
-    - IMAGE_NAME="fedora:27-builded"
 install:
-  - pip install ansible=="2.4.4.0" docker-py
-  - ln -s ${PWD} tests/docker/ANXS.postgresql
-
+  - python3 -m pip install molecule
+  # - python3 -m pip install required driver (e.g. docker, shade, boto, apache-libcloud)
 script:
-  # Syntax check
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml --syntax-check
+  - MOLECULE_DISTRO=ubuntu2004 molecule converge
 
-  # Play test
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml
-
-  # Idempotence test
-  - ansible-playbook -i tests/docker/hosts -e image_name=${IMAGE_NAME} tests/docker/site.yml > idempotence_out
-  - ./tests/idempotence_check.sh idempotence_out
-
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+#notifications:
+#  webhooks: https://galaxy.ansible.com/api/v1/notifications/
