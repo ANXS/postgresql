@@ -16,7 +16,8 @@ services:
 install:
   - python3 -m pip install molecule molecule-docker ansible
 script:
-  - molecule converge
+#  - molecule converge
+  - molecule test
 
 #notifications:
 #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
