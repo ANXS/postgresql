@@ -7,17 +7,21 @@
     - ./vars.yml
     - ./vars.{{ ansible_distribution }}.yml
   tasks:
+
+    - name: Pick the right sudoers group (wheel or sudo) depending on the distro
+      set_fact:
+        sudoers_group: "{{ 'sudo' if (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian') else 'wheel' }}"
     - name: Set up non root ansible user
       user:
         name: ansible
-        group: wheel
+        group: "{{ sudoers_group }}"
     
     - name: set up non password sudoers
       lineinfile:
         dest: /etc/sudoers
         state: present
-        regexp: '^%wheel'
-        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        regexp: '^%{{ sudoers_group }}'
+        line: '%{{ sudoers_group }} ALL=(ALL) NOPASSWD: ALL'
         validate: visudo -cf %s
 
     - name: Install prerequisite packages for molecule testing for Debian/Ubuntu
