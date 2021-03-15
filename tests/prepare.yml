@@ -51,10 +51,10 @@
       when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 18) or ansible_distribution == 'Debian'
 
 
-
     #---------------------
     # Fedora based distros
     #---------------------
+    #--- https://www.jeffgeerling.com/blog/2020/resolving-fedora-dnf-error-no-such-file-or-directory-varlibdnfrpmdblockpid
     - name: Wait for systemd to complete initialization. # noqa 303
       command: systemctl is-system-running
       register: systemctl_status
@@ -62,5 +62,4 @@
       retries: 30
       delay: 5
       when: (ansible_distribution == 'Fedora')
-#      when: ansible_service_mgr == 'systemd'
       changed_when: false

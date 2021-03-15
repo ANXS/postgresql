@@ -7,7 +7,7 @@ This directory is the home of the test playbooks:
 
 # Molecule
 
-The default tested version is postgresql 9.X, 10, 11, 12, and 13 on Ubuntu 20.04.
+The default tested version is postgresql 9.6, 10, 11, 12, and 13 on Ubuntu 20.04.
 
 You can override this with setting the environment variable MOLECULE_DISTRO to one of:
 
@@ -32,7 +32,8 @@ Manual execution of the molecule tests with the distro of your liking:
 MOLECULE_DISTRO=ubuntu1804 molecule converge
 ```
 
-The main file ./molecule/default/molecule.yml 
+The main file ./molecule/default/molecule.yml sets up versions to test from 9.6 to 13.
+
 # References
 
 * https://github.com/search?q=user%3Ageerlingguy+docker-.*-ansible
