@@ -33,10 +33,12 @@ The images we use are extended with systemd by Jeff Geerling. Before we start th
 * Install a couple of packages that Jeff Geerling did not install in his container images, that we need in order to test the role properly
 
 
-Manual execution of the molecule tests with the distro of your liking:
+Manual execution of the molecule tests with the distro of your liking. Examples:
 
 ```
-MOLECULE_DISTRO=ubuntu1804 molecule converge
+MOLECULE_DISTRO=centos8 molecule converge
+MOLECULE_DISTRO=debian10 molecule converge
+MOLECULE_DISTRO=ubuntu2004 molecule converge
 ```
 
 The main file ./molecule/default/molecule.yml sets up versions to test from 9.6 to 13.
@@ -63,6 +65,12 @@ vars.Ubuntu.20.yml
 ```
 
 The main difference, currently, is which python version to use.
+
+# Local installation of molecule
+
+```
+pip install molecule molecule-docker
+```
 
 # References
 

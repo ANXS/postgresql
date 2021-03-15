@@ -138,7 +138,19 @@ postgresql_user_privileges:
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
 
 
-#### Testing
+#### Testing - Molecule
+
+This project comes with a molecule configuration. Please see ./molecule/README.md
+
+Examples:
+
+```
+molecule create
+molecule converge
+molecule test
+```
+
+#### Testing - Vagrant
 
 This project comes with a Vagrantfile, this is a fast and easy way to test changes to the role, fire it up with `vagrant up`
 
