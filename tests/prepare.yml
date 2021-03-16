@@ -12,7 +12,6 @@
     - ./vars.yml
     - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
   tasks:
-
     - name: Pick the right sudoers group (wheel or sudo) depending on the distro
       set_fact:
         sudoers_group: "{{ 'sudo' if (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian') else 'wheel' }}"
