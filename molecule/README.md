@@ -72,6 +72,22 @@ The main difference, currently, is which python version to use.
 pip install molecule molecule-docker
 ```
 
+# Examples
+
+Examples:
+
+```
+molecule create
+molecule converge
+molecule test
+molecule destroy
+
+#--- with specific distro release
+MOLECULE_DISTRO=ubuntu2004 molecule create
+MOLECULE_DISTRO=ubuntu2004 molecule converge
+MOLECULE_DISTRO=ubuntu2004 molecule test
+MOLECULE_DISTRO=ubuntu2004 molecule destroy
+```
 # References
 
 * https://github.com/search?q=user%3Ageerlingguy+docker-.*-ansible

@@ -74,3 +74,6 @@ provisioner:
         postgresql_version: 13
 verifier:
   name: ansible
+# defaults passed to ansible-playbook
+ansible:
+  timeout: 30

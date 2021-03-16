@@ -148,6 +148,7 @@ Examples:
 molecule create
 molecule converge
 molecule test
+molecule destroy
 ```
 
 #### Testing - Vagrant
