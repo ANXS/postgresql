@@ -6,6 +6,5 @@
     - ./vars.yml
     - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
   roles:
-    - role: postgresql
-      #--- Skipping postgresql 9.6 on Ubuntu 16, as the Travis memory limits is hampering us a bit.
-      #when:  (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == '16' and postgres_version_terse == '96')
+    - postgresql
+ 
