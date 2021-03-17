@@ -47,7 +47,7 @@ jobs:
 #          - distro: centos7
 #            playbook: converge.yml
           - distro: ubuntu2004
-            playbook: converge.yml
+#            playbook: ../../tests/playbook.yml
 #          - distro: ubuntu1804
 #            playbook: converge.yml
 #          - distro: ubuntu1604
@@ -60,8 +60,8 @@ jobs:
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v2
-        with:
-          path: 'postgresql'
+#        with:
+#          path: 'postgresql'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v2
@@ -70,6 +70,12 @@ jobs:
 
       - name: Install test dependencies.
         run: pip3 install ansible molecule[docker] docker
+
+      - name: Debugging
+        run: |
+          env
+          pwd
+          ls -la
 
       - name: Run Molecule tests.
         run: molecule test
