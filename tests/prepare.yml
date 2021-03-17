@@ -19,7 +19,7 @@
       user:
         name: ansible
         group: "{{ sudoers_group }}"
-    
+
     - name: set up non password sudoers
       lineinfile:
         dest: /etc/sudoers
@@ -39,7 +39,7 @@
         update_cache: true
         name:
           - acl
-      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int < 18 ) 
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int < 18 )
 
     - name: Install prerequisite packages for molecule testing for Debian/Ubuntu >= 18
       apt:
@@ -69,7 +69,7 @@
     #---------------------
 
     - name: Stop getty service on Ubuntu 16
-      become: true  
+      become: true
       shell: systemctl | grep getty@tty.*service | awk '{print $1}' | xargs -L1 -IX systemctl stop X
-      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int == 16 ) 
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int == 16 )
       failed_when: false

@@ -47,7 +47,7 @@ provisioner:
   name: ansible
   playbooks:
     prepare:  ${MOLECULE_PLAYBOOK:-../../tests/prepare.yml}
-    converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}  
+    converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
   inventory:
     host_vars:
       postgresql-9_6:
