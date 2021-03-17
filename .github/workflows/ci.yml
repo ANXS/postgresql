@@ -5,6 +5,7 @@ name: CI
   push:
     branches:
       - master
+      - github-actions
 #  schedule:
 #    - cron: "0 4 * * 4"
 
