@@ -1,5 +1,6 @@
 ---
 sudo: required
+dist: focal
 language: python
 env:
   - MOLECULE_DISTRO=fedora33   ANSIBLE_ROLES_PATH=.. PY_COLORS='1' ANSIBLE_FORCE_COLOR:=1 DOCKER_TLS_CERTDIR="/certs"
