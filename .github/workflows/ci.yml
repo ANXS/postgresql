@@ -2,9 +2,11 @@
 name: CI
 'on':
   pull_request:
+    branches:
+      - master
   push:
     branches:
-#      - master
+      - master
 #      - github-actions
 #  schedule:
 #    - cron: "0 4 * * 4"
