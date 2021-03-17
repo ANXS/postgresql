@@ -72,3 +72,4 @@
       become: true  
       shell: systemctl | grep getty@tty.*service | awk '{print $1}' | xargs -L1 -IX systemctl stop X
       when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int == 16 ) 
+      failed_when: false
