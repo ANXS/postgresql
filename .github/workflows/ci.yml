@@ -4,8 +4,8 @@ name: CI
   pull_request:
   push:
     branches:
-      - master
-      - github-actions
+#      - master
+#      - github-actions
 #  schedule:
 #    - cron: "0 4 * * 4"
 
