@@ -62,14 +62,3 @@
       delay: 5
       when: (ansible_distribution == 'Fedora')
       changed_when: false
-
-    #---------------------
-    # Ubuntu 16 => 100% CPU for getty
-    # Workaround, pending a pull request at https://github.com/geerlingguy/docker-ubuntu1604-ansible
-    #---------------------
-
-    - name: Stop getty service on Ubuntu 16
-      become: true
-      shell: systemctl | grep getty@tty.*service | awk '{print $1}' | xargs -L1 -IX systemctl stop X
-      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int == 16 )
-      failed_when: false
