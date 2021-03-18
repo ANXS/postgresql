@@ -1,6 +1,6 @@
 # Introduction
 
-For more docu about molecule testing, see ../molecule/README.md
+For more documentation about molecule testing, see ../molecule/README.md
 
 This directory is the home of the test playbooks:
 
