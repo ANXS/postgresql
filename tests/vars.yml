@@ -1,6 +1,8 @@
 ---
 
-postgresql_version: 13
+#--- will be set by molecule
+#postgresql_version: "{{ postgresql_version | default('13') }}"
+
 postgresql_port: 5433
 
 postgresql_databases:
