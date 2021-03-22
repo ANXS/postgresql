@@ -1,4 +1,4 @@
-## ANXS - PostgreSQL [![Build Status](https://github.com/ANXS/postgresql/actions/workflows/ci.yml/badge.svg)](https://github.com/maglub/postgresql/actions/workflows/ci.yml)
+## ANXS - PostgreSQL [![Build Status](https://github.com/ANXS/postgresql/actions/workflows/ci.yml/badge.svg)](https://github.com/ANXS/postgresql/actions/workflows/ci.yml)
 
 ---
 Help Wanted! If you are able and willing to help maintain this Ansible role then please open a GitHub issue. A lot of people seem to use this role and we (quite obviously) need assistance!
