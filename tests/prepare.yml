@@ -1,0 +1,64 @@
+---
+#========================================================
+# This prepare.yml playbook is needed to add some necessary packages that
+# normally comes with a distro, but not in the minimal docker containers from
+# geerlingguy
+#========================================================
+
+- hosts: all
+  remote_user: root
+  become: yes
+  vars_files:
+    - ./vars.yml
+    - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
+  tasks:
+    - name: Pick the right sudoers group (wheel or sudo) depending on the distro
+      set_fact:
+        sudoers_group: "{{ 'sudo' if (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian') else 'wheel' }}"
+    - name: Set up non root ansible user
+      user:
+        name: ansible
+        group: "{{ sudoers_group }}"
+
+    - name: set up non password sudoers
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%{{ sudoers_group }}'
+        line: '%{{ sudoers_group }} ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+
+    #---------------------
+    # apt based distros
+    # * gpg-agent is needed for apt_key on Ubuntu 18 and Ubuntu 20
+    # * acl is needed when the ansible_user is not root (for become: postgresql)
+    #---------------------
+
+    - name: Install prerequisite packages for molecule testing for Debian and Ubuntu < 18
+      apt:
+        update_cache: true
+        name:
+          - acl
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int < 18 )
+
+    - name: Install prerequisite packages for molecule testing for Debian/Ubuntu >= 18
+      apt:
+        update_cache: true
+        name:
+          - gpg-agent
+          - acl
+      when: (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 18) or ansible_distribution == 'Debian'
+
+
+    #---------------------
+    # Fedora based distros
+    #---------------------
+    #--- https://www.jeffgeerling.com/blog/2020/resolving-fedora-dnf-error-no-such-file-or-directory-varlibdnfrpmdblockpid
+    - name: Wait for systemd to complete initialization. # noqa 303
+      command: systemctl is-system-running
+      register: systemctl_status
+      until: "'running' in systemctl_status.stdout"
+      retries: 30
+      delay: 5
+      when: (ansible_distribution == 'Fedora')
+      changed_when: false

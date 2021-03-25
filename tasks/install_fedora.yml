@@ -6,8 +6,16 @@
   - block:
       - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
-          name: "ca-certificates, python-pycurl, glibc-common, libselinux-python, python*-psycopg2"
+          name: "ca-certificates, python*-pycurl, glibc-common, python*-libselinux, python*-psycopg2, glibc-locale-source"
           state: present
+
+      #--- The package manager installed psycopg2 release 2.8.8 on Fedora 33 is not compatible with postgres < 10
+      #--- This issue will probably spread to other distributions when the package based installation of
+      #--- psycopg2 catches up with more recent releases
+      - name: PIP install psycopg2-binary on Fedora 33 only if postgresql version < 10
+        pip:
+          name: psycopg2-binary
+        when: postgresql_version_terse | int <= 96 and postgresql_version_terse | int >= 90 and ansible_distribution == 'Fedora' and ansible_distribution_major_version
 
       - name: PostgreSQL | Add yum Repository | dnf
         yum_repository:
