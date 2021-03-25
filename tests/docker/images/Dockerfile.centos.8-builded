@@ -5,7 +5,8 @@ RUN yum install -y \
           epel-release \
           sudo \
           python3 \
-          glibc-langpack-en
+          langpacks-en \
+          glibc-all-langpacks
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
