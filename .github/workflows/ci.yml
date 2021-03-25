@@ -44,7 +44,7 @@ jobs:
       matrix:
         include:
           - distro: centos7
-#          - distro: centos8
+          - distro: centos8
           - distro: ubuntu1604
           - distro: ubuntu1804
           - distro: ubuntu2004
