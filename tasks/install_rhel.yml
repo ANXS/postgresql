@@ -23,6 +23,10 @@
         command:
           cmd: dnf module disable postgresql -y
         when: "ansible_distribution_major_version == '8'"
+        register: disable_postgresql_module
+        changed_when:
+          - "disable_postgresql_module.rc == 0"
+          - "'Disabling modules:\\n postgresql' in disable_postgresql_module.stdout"
 
       - name: PostgreSQL | Install PostgreSQL | RHEL
         yum:
