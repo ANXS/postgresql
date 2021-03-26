@@ -57,7 +57,7 @@ An example how to include this role as a task:
 | Distribution / PostgreSQL | 9.6 | 10 | 11 | 12 | 13 |
 | ------------------------- |:---:|:--:|:--:|:--:|:--:|
 | CentOS 7.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| CentOS 8.x     | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
+| CentOS 8.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Debian 9.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Debian 10.x    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
 | Ubuntu 16.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
