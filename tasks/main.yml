@@ -2,6 +2,7 @@
 
 - include_vars: "{{ item }}"
   with_first_found:
+    - "../vars/{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
     - "../vars/{{ ansible_os_family }}.yml"
     - "../vars/empty.yml"
   tags: [always]
@@ -19,12 +20,12 @@
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]
 
-- import_tasks: install_yum.yml
-  when: ansible_pkg_mgr == "yum" and ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+- import_tasks: install_rhel.yml
+  when: (ansible_pkg_mgr == "yum" or ansible_pkg_mgr == "dnf") and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
   tags: [postgresql, postgresql-install]
 
-- import_tasks: install_dnf.yml
-  when: ansible_pkg_mgr == "dnf" and ( ansible_distribution == "Fedora" or ansible_distribution == "CentOS" )
+- import_tasks: install_fedora.yml
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
   tags: [postgresql, postgresql-install]
 
 - import_tasks: extensions.yml

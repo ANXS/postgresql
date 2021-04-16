@@ -1,6 +1,14 @@
 FROM centos:8
 
-RUN yum install iproute epel-release sudo -y
+RUN yum install -y \
+          iproute \
+          epel-release \
+          sudo \
+          python3 \
+          langpacks-en \
+          glibc-all-langpacks
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN cd /lib/systemd/system/sysinit.target.wants/ && \
 		ls | grep -v systemd-tmpfiles-setup.service | xargs rm -f && \

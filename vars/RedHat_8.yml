@@ -1,5 +1,5 @@
 ---
-# PostgreSQL vars for RedHat based distributions
+# PostgreSQL vars for RedHat 8+ based distributions
 #
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service
@@ -20,8 +20,8 @@ postgresql_fdw_ogr_packages: "ogr_fdw{{ postgresql_version_terse }}"
 
 postgresql_packages:
   - ca-certificates
-  - python-psycopg2
-  - python-pycurl
+  - python3-psycopg2
+  - python3-pycurl
   - glibc-common
   - epel-release
-  - libselinux-python
+  - python3-libselinux
