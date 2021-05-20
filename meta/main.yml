@@ -10,16 +10,22 @@ galaxy_info:
   platforms:
   - name: Debian
     versions:
-    - jessie
     - stretch
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
+##    - buster
+
   - name: EL
     versions:
-    - 6
     - 7
+##    - 8
+
+#
+# DISABLED
+#
+#   - name: Ubuntu
+#     versions:
+#     - bionic
+# ##    - focal
+
 #
 # DISABLED
 #
@@ -35,9 +41,9 @@ galaxy_info:
   - sql
   - postgis
   - debian
-  - ubuntu
   - centos
   - redhat
   - fedora
+  - ubuntu
 
 dependencies: []
