@@ -1,0 +1,9 @@
+# file: postgresql/tasks/users_settings.yml
+
+- name: Set search_path setting for given user
+  postgresql_query:
+    query: "ALTER ROLE {{ item.name }} SET search_path TO {{ item.search_path }}"
+  become: yes
+  become_user: "{{postgresql_admin_user}}"
+  with_items: "{{postgresql_user_search_path}}"
+  when: postgresql_user_search_path is defined

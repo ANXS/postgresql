@@ -52,6 +52,9 @@
 - import_tasks: users_privileges.yml
   tags: [postgresql, postgresql-users]
 
+- import_tasks: users_settings.yml
+  tags: [postgresql, postgresql-users]
+
 - import_tasks: monit.yml
   when: monit_protection is defined and monit_protection == true
   tags: [postgresql, postgresql-monit]

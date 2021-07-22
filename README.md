@@ -149,6 +149,11 @@ postgresql_extra_privileges:
     grant_option: no           # use GRANT OPTION (see https://postgrespro.ru/docs/postgresql/12/sql-grant)
 ```
 
+# Set user search_path setting (optional)
+postgresql_user_search_path:
+  - name: username
+    search_path: "foo,bar,public"
+
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
 
 
