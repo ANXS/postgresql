@@ -178,7 +178,7 @@ effective_io_concurrency = {{ postgresql_effective_io_concurrency }}		# 1-1000; 
 max_worker_processes = {{ postgresql_max_worker_processes }}		# (change requires restart)
 max_parallel_maintenance_workers = {{ postgresql_max_parallel_maintenance_workers }}	# taken from max_parallel_workers
 max_parallel_workers_per_gather = {{ postgresql_max_parallel_workers_per_gather }}	# taken from max_parallel_workers
-parallel_leader_participation = {{ 'on' if postgresql_parallel_leader_participation else 'off' }} 
+parallel_leader_participation = {{ 'on' if postgresql_parallel_leader_participation else 'off' }}
 max_parallel_workers = {{ postgresql_max_parallel_workers }}		# maximum number of max_worker_processes that
 					# can be used in parallel operations
 old_snapshot_threshold = {{ postgresql_old_snapshot_threshold }}		# 1min-60d; -1 disables; 0 is immediate
@@ -256,16 +256,36 @@ recovery_end_command = '{{ postgresql_recovery_end_command }}'      # command to
 
 # Set these only when performing a targeted recovery.
 
-recovery_target = '{{ postgresql_recovery_target }}'           # 'immediate' to end recovery as soon as a
+{% if not postgresql_recovery_target %}
+#recovery_target = '{{ postgresql_recovery_target }}'           # 'immediate' to end recovery as soon as a
+{% else %}
+recovery_target = '{{ postgresql_recovery_target }}'
+{% endif %}
                                 # consistent state is reached
                                 # (change requires restart)
+{% if not postgresql_recovery_target_name %}
+#recovery_target_name = '{{ postgresql_recovery_target_name }}'      # the named restore point to which recovery will proceed
+{% else %}
 recovery_target_name = '{{ postgresql_recovery_target_name }}'      # the named restore point to which recovery will proceed
+{% endif %}
                                 # (change requires restart)
+{% if not postgresql_recovery_target_time %}
+#recovery_target_time = '{{ postgresql_recovery_target_time }}'      # the time stamp up to which recovery will proceed
+{% else %}
 recovery_target_time = '{{ postgresql_recovery_target_time }}'      # the time stamp up to which recovery will proceed
+{% endif %}
                                 # (change requires restart)
+{% if not postgresql_recovery_target_xid %}
+#recovery_target_xid = '{{ postgresql_recovery_target_xid }}'       # the transaction ID up to which recovery will proceed
+{% else %}
 recovery_target_xid = '{{ postgresql_recovery_target_xid }}'       # the transaction ID up to which recovery will proceed
+{% endif %}
                                 # (change requires restart)
+{% if not postgresql_recovery_target_lsn %}
+#recovery_target_lsn = '{{ postgresql_recovery_target_lsn }}'       # the WAL LSN up to which recovery will proceed
+{% else %}
 recovery_target_lsn = '{{ postgresql_recovery_target_lsn }}'       # the WAL LSN up to which recovery will proceed
+{% endif %}
                                 # (change requires restart)
 recovery_target_inclusive = {{ 'on' if postgresql_recovery_target_inclusive else 'off' }} # Specifies whether to stop:
                                 # just after the specified recovery target (on)
@@ -403,7 +423,7 @@ geqo_seed = {{ postgresql_geqo_seed }}			# range 0.0-1.0
 default_statistics_target = {{ postgresql_default_statistics_target }}	# range 1-10000
 constraint_exclusion = {{ postgresql_constraint_exclusion }}	# on, off, or partition
 cursor_tuple_fraction = {{ postgresql_cursor_tuple_fraction }}		# range 0.0-1.0
-from_collapse_limit = {{ postgresql_from_collapse_limit }} 
+from_collapse_limit = {{ postgresql_from_collapse_limit }}
 join_collapse_limit = {{ postgresql_join_collapse_limit }}		# 1 disables collapsing of explicit
 					# JOIN clauses
 force_parallel_mode = {{ 'on' if ( postgresql_force_parallel_mode | bool == true or postgresql_force_parallel_mode == 'on' ) else ( 'regress' if postgresql_force_parallel_mode == 'regress' else 'off' ) }}
