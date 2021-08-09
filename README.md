@@ -1,4 +1,4 @@
-## ANXS - PostgreSQL [![Build Status](https://travis-ci.org/ANXS/postgresql.svg?branch=master)](https://travis-ci.org/ANXS/postgresql)
+## ANXS - PostgreSQL [![Build Status](https://github.com/ANXS/postgresql/actions/workflows/ci.yml/badge.svg)](https://github.com/ANXS/postgresql/actions/workflows/ci.yml)
 
 ---
 Help Wanted! If you are able and willing to help maintain this Ansible role then please open a GitHub issue. A lot of people seem to use this role and we (quite obviously) need assistance!
@@ -15,17 +15,37 @@ This has been tested on Ansible 2.4.0 and higher.
 To install:
 
 ```
-ansible-galaxy install ANXS.postgresql
+ansible-galaxy install anxs.postgresql
 ```
 
 #### Example Playbook
 
-Including an example of how to use your role:
+An example how to include this role:
 
-    - hosts: postgresql-server
+```yml
+---
+- hosts: postgresql-server
+  roles:
+    - role: ANXS.postgresql
       become: yes
-      roles:
-         - { role: anxs.postgresql }
+```
+
+An example how to include this role as a task:
+
+```yml
+---
+- hosts: postgresql-server
+  tasks:
+    - block: # workaround, see https://stackoverflow.com/a/56558842
+        - name: PSQL installation and configuration
+          include_role:
+            name: ANXS.postgresql
+          vars:
+            postgresql_users:
+              - name: abc
+                password: abc
+      become: true
+```
 
 #### Dependencies
 
@@ -34,16 +54,16 @@ Including an example of how to use your role:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | <= 9.3 | 9.4 | 9.5 | 9.6 | 10 | 11 | 12 |
-| ------------------------- |:---:|:---:|:---:|:---:|:--:|:--:|:--:|
-| Ubuntu 14.04 | :no_entry: | :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:| :no_entry:|
-| Ubuntu 16.04 | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 8.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| Debian 9.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 6.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 7.x | :no_entry: | :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:| :white_check_mark:|
-| CentOS 8.x | :no_entry: | :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:| :grey_question:|
-| Fedora latest | :no_entry: | :x:| :x:| :x:| :x:| :x:| :x:|
+| Distribution / PostgreSQL | 9.6 | 10 | 11 | 12 | 13 |
+| ------------------------- |:---:|:--:|:--:|:--:|:--:|
+| CentOS 7.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| CentOS 8.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 9.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Debian 10.x    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
+| Ubuntu 16.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 18.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 20.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Fedora 33      | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
@@ -57,7 +77,7 @@ Including an example of how to use your role:
 
 ```yaml
 # Basic settings
-postgresql_version: 12
+postgresql_version: 13
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
@@ -79,6 +99,7 @@ postgresql_databases:
     uuid_ossp: yes      # flag to install the uuid-ossp extension on this database (yes/no)
     citext: yes         # flag to install the citext extension on this database (yes/no)
     encoding: "UTF-8"   # override global {{ postgresql_encoding }} variable per database
+    state: "present"    # optional; one of 'present', 'absent', 'dump', 'restore'
     lc_collate: "en_GB.UTF-8"   # override global {{ postgresql_locale }} variable per database
     lc_ctype: "en_GB.UTF-8"     # override global {{ postgresql_ctype }} variable per database
 
@@ -94,6 +115,7 @@ postgresql_users:
   - name: baz
     pass: pass
     encrypted: yes  # if password should be encrypted, postgresql >= 10 does only accepts encrypted passwords
+    state: "present"    # optional; one of 'present', 'absent'
 
 # List of schemas to be created (optional)
 postgresql_database_schemas:
@@ -117,7 +139,17 @@ postgresql_user_privileges:
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
 
 
-#### Testing
+#### Testing - Molecule
+
+This project comes with a molecule configuration. Please see [./molecule/README.md](./molecule/README.md)
+
+Examples:
+
+```
+molecule test
+```
+
+#### Testing - Vagrant
 
 This project comes with a Vagrantfile, this is a fast and easy way to test changes to the role, fire it up with `vagrant up`
 
@@ -129,11 +161,9 @@ If you want to toy with the test play, see [tests/playbook.yml](./tests/playbook
 
 If you are contributing, please first test your changes within the vagrant environment, (using the targeted distribution), and if possible, ensure your change is covered in the tests found in [.travis.yml](./.travis.yml)
 
-
 #### License
 
 Licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
 
 #### Thanks
 
@@ -145,6 +175,7 @@ Maintainers:
 - [Jonathan Freedman](https://github.com/otakup0pe)
 - [Sergei Antipov](https://github.com/UnderGreen)
 - [Greg Clough](https://github.com/gclough)
+- [Magnus Lübeck](https://github.com/maglub)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)

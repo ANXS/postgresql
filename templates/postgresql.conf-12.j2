@@ -89,7 +89,7 @@ tcp_user_timeout = {{ postgresql_tcp_user_timeout }}                   # TCP_USE
 # - Authentication -
 
 authentication_timeout = {{ postgresql_authentication_timeout }}		# 1s-600s
-password_encryption = {{ 'on' if postgresql_password_encryption else 'off' }}		# md5 or scram-sha-256
+password_encryption = {{ postgresql_password_encryption }}     # md5 or scram-sha-256
 db_user_namespace = {{ 'on' if postgresql_db_user_namespace else 'off' }}
 
 # GSSAPI using Kerberos
@@ -178,7 +178,7 @@ effective_io_concurrency = {{ postgresql_effective_io_concurrency }}		# 1-1000; 
 max_worker_processes = {{ postgresql_max_worker_processes }}		# (change requires restart)
 max_parallel_maintenance_workers = {{ postgresql_max_parallel_maintenance_workers }}	# taken from max_parallel_workers
 max_parallel_workers_per_gather = {{ postgresql_max_parallel_workers_per_gather }}	# taken from max_parallel_workers
-parallel_leader_participation = {{ 'on' if postgresql_parallel_leader_participation else 'off' }} 
+parallel_leader_participation = {{ 'on' if postgresql_parallel_leader_participation else 'off' }}
 max_parallel_workers = {{ postgresql_max_parallel_workers }}		# maximum number of max_worker_processes that
 					# can be used in parallel operations
 old_snapshot_threshold = {{ postgresql_old_snapshot_threshold }}		# 1min-60d; -1 disables; 0 is immediate
@@ -299,7 +299,7 @@ track_commit_timestamp = {{ 'on' if postgresql_track_commit_timestamp else 'off'
 
 # These settings are ignored on a standby server.
 
-synchronous_standby_names = '{{ postgresql_synchronous_standby_num_sync }}{% if postgresql_synchronous_standby_names != [] %} ({{ postgresql_synchronous_standby_names | join(',') }}){% endif %}'	# standby servers that provide sync rep
+synchronous_standby_names = '{% if postgresql_synchronous_standby_names != [] %}{% if postgresql_synchronous_standby_choose_sync != "" and postgresql_synchronous_standby_num_sync != "" %}{{ postgresql_synchronous_standby_choose_sync }} {% endif %}{% if postgresql_synchronous_standby_num_sync != "" %}{{ postgresql_synchronous_standby_num_sync }} ({% endif %}"{{ postgresql_synchronous_standby_names | join('\",\"') }}"{% if postgresql_synchronous_standby_num_sync != "" %}){% endif %}{% endif %}'	# standby servers that provide sync rep
 				# method to choose sync standbys, number of sync standbys,
 				# and comma-separated list of application_name
 				# from standby(s); '*' = all
@@ -403,7 +403,7 @@ geqo_seed = {{ postgresql_geqo_seed }}			# range 0.0-1.0
 default_statistics_target = {{ postgresql_default_statistics_target }}	# range 1-10000
 constraint_exclusion = {{ postgresql_constraint_exclusion }}	# on, off, or partition
 cursor_tuple_fraction = {{ postgresql_cursor_tuple_fraction }}		# range 0.0-1.0
-from_collapse_limit = {{ postgresql_from_collapse_limit }} 
+from_collapse_limit = {{ postgresql_from_collapse_limit }}
 join_collapse_limit = {{ postgresql_join_collapse_limit }}		# 1 disables collapsing of explicit
 					# JOIN clauses
 force_parallel_mode = {{ 'on' if ( postgresql_force_parallel_mode | bool == true or postgresql_force_parallel_mode == 'on' ) else ( 'regress' if postgresql_force_parallel_mode == 'regress' else 'off' ) }}
