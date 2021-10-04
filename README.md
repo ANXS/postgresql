@@ -106,6 +106,7 @@ postgresql_databases:
 # List of database extensions to be created (optional)
 postgresql_database_extensions:
   - db: foobar
+    schema: foobar # optional (default public)
     extensions:
       - hstore
       - citext
