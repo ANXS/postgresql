@@ -16,6 +16,15 @@
     mode: 0700
   register: pgdata_dir_exist
 
+- name: PostgreSQL | Make sure postgres tablespaces directories exist
+  file:
+    path: "{{ item }}"
+    owner: "{{ postgresql_service_user }}"
+    group: "{{ postgresql_service_group }}"
+    state: directory
+    mode: 0700
+  with_items: "{{ postgresql_tablespaces_dirs }}"
+
 - name: PostgreSQL | Make sure the postgres WAL directory exists
   file:
     path: "{{ postgresql_wal_directory }}"
@@ -217,8 +226,17 @@
     mode: u=rwX,g=rwXs,o=rx
   notify: restart postgresql
 
-- name: PostgreSQL | Reload all conf files
-  service:
-    name: "{{ postgresql_service_name }}"
-    state: reloaded
+- block:
+  - name: PostgreSQL | Check if cluster is running
+    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} status"
+    ignore_errors: true
+    register: postgresql_cluster_running
+  
+  - name: PostgreSQL | Reload cluster
+    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} reload"
+    when: postgresql_cluster_running.rc == 0
+  
+  - name: PostgreSQL | Start cluster
+    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} start"
+    when: postgresql_cluster_running.rc != 0
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
