@@ -227,16 +227,16 @@
   notify: restart postgresql
 
 - block:
-  - name: PostgreSQL | Check if cluster is running
-    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} status"
-    ignore_errors: true
-    register: postgresql_cluster_running
-  
-  - name: PostgreSQL | Reload cluster
-    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} reload"
-    when: postgresql_cluster_running.rc == 0
-  
-  - name: PostgreSQL | Start cluster
-    command: "pg_ctlcluster {{ postgresql_version }} {{ postgresql_cluster_name }} start"
-    when: postgresql_cluster_running.rc != 0
+  - name: PostgreSQL | Ensure PostgreSQL is running
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: started
+    register: postgresql_cold_started
+
+  - name: PostgreSQL | Reload PostgreSQL configuration
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: reloaded
+    register: postgresql_reloaded
+    when: not postgresql_cold_started.changed
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed

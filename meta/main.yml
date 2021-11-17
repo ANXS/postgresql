@@ -3,6 +3,7 @@
 galaxy_info:
   author: pjan vandaele
   company: ANXS
+  namespace: anxs
   role_name: postgresql
   description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
   min_ansible_version: 2.4.0
@@ -12,27 +13,22 @@ galaxy_info:
   - name: Debian
     versions:
     - stretch
-##    - buster
+    - buster
 
   - name: EL
     versions:
     - 7
-##    - 8
+    - 8
 
-#
-# DISABLED
-#
-#   - name: Ubuntu
-#     versions:
-#     - bionic
-# ##    - focal
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
+    - xenial
 
-#
-# DISABLED
-#
-#  - name: Fedora
-#    versions:
-#    - 27
+  - name: Fedora
+    versions:
+    - 33
 
   galaxy_tags:
   - postgresql
