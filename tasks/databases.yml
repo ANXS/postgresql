@@ -26,7 +26,7 @@
   become_user: "{{ postgresql_admin_user }}"
   postgresql_ext:
     db: "{{ item.0.db }}"
-    login_unix_socket: "/srv/{{ postgresql_service_name }}"
+    login_unix_socket: "/srv/{{ postgresql_service_user }}"
     login_user: "{{ postgresql_service_user }}"
     port: "{{ postgresql_port }}"
     name: "{{ item.1 }}"
