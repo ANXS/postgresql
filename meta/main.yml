@@ -3,7 +3,7 @@
 galaxy_info:
   author: pjan vandaele
   company: ANXS
-  namespace: ANXS
+  namespace: anxs
   role_name: postgresql
   description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
   min_ansible_version: 2.4.0
