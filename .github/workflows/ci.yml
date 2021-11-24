@@ -40,7 +40,8 @@ jobs:
   molecule:
     name: Molecule
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    defaults:
+      timeout-minutes: 60
     strategy:
       matrix:
         include:
@@ -55,23 +56,19 @@ jobs:
 
     steps:
       - name: Check out the codebase.
-        timeout-minutes: 60
         uses: actions/checkout@v2
         with:
           path: 'postgresql'
 
       - name: Set up Python 3.
-        timeout-minutes: 60
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        timeout-minutes: 60
         run: pip3 install ansible molecule[docker] docker
 
       - name: Run Molecule tests.
-        timeout-minutes: 60
         run: molecule test
         env:
           PY_COLORS: '1'
