@@ -49,8 +49,8 @@ jobs:
           # - distro: ubuntu1604
           # - distro: ubuntu1804
           # - distro: ubuntu2004
-          # - distro: debian9
-          # - distro: debian10
+          - distro: debian9
+          - distro: debian10
           - distro: fedora33
 
     steps:
