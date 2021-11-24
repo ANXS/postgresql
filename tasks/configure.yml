@@ -227,13 +227,13 @@
   notify: restart postgresql
 
 - block:
-  - name: PostgreSQL | Ensure cluster is running
+  - name: PostgreSQL | Ensure PostgreSQL is running
     service:
       name: "{{ postgresql_service_name }}"
       state: started
     register: postgresql_cold_started
 
-  - name: PostgreSQL | Reload cluster
+  - name: PostgreSQL | Reload PostgreSQL configuration
     service:
       name: "{{ postgresql_service_name }}"
       state: reloaded
