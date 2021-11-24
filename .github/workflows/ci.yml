@@ -47,7 +47,7 @@ jobs:
           - distro: centos7
           - distro: centos8
           - distro: ubuntu1604
-          # - distro: ubuntu1804
+          - distro: ubuntu1804
           # - distro: ubuntu2004
           - distro: debian9
           - distro: debian10
