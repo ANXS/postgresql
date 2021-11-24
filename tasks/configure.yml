@@ -237,5 +237,5 @@
     service:
       name: "{{ postgresql_service_name }}"
       state: reloaded
-    notify: reload postgresql
+    register: postgresql_reloaded
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
