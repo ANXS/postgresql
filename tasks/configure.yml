@@ -233,9 +233,15 @@
       state: started
     register: postgresql_cold_started
 
+  - debug:
+      msg: "postgresql_cold_started: {{ postgresql_cold_started }}"
+
+  - meta: end_play
+
   - name: PostgreSQL | Reload PostgreSQL configuration
     service:
       name: "{{ postgresql_service_name }}"
       state: reloaded
     register: postgresql_reloaded
-  when: postgresql_cold_started is skipped or postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+    when: postgresql_cold_started.rc == 0
+  when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
