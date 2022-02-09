@@ -34,7 +34,7 @@
     - "{{ postgresql_database_extensions }}"
     - extensions
   register: result
-  when: tp_db_service_state == 'PRIMARY'
+  when: postgresql_state_relation == 'PRIMARY'
 
 - name: PostgreSQL | Add hstore to the databases with the requirement
   become: yes
