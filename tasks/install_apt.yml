@@ -7,6 +7,12 @@
     pkg: ca-certificates
     state: present
 
+- name: PostgreSQL | Install acl for fix set permissions on the temporary files | apt
+  apt:
+    pkg: acl
+    state: present
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "20.04"
+
 - name: PostgreSQL | Add PostgreSQL repository apt-key | apt
   apt_key:
     id: "{{ postgresql_apt_key_id }}"
