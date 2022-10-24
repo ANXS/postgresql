@@ -26,12 +26,21 @@
     dest: /etc/apt/preferences.d/apt_postgresql_org_pub_repos_apt.pref
   when: postgresql_apt_pin_priority and postgresql_install_repository
 
-- name: PostgreSQL | Make sure the dependencies are installed | apt
+- name: PostgreSQL | Make sure the dependencies are installed for Python 2 | apt
   apt:
-    pkg: "{{ postgresql_apt_dependencies }}"
+    pkg: "{{ postgresql_apt_py2_dependencies }}"
     state: present
     update_cache: yes
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+  when: ansible_python.version.major == 2
+
+- name: PostgreSQL | Make sure the dependencies are installed for Python 3 | apt
+  apt:
+    pkg: "{{ postgresql_apt_py3_dependencies }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+  when: ansible_python.version.major == 3
 
 - name: PostgreSQL | Install PostgreSQL | apt
   apt:
