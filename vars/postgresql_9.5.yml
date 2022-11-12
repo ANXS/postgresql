@@ -4,3 +4,4 @@
 postgresql_autovacuum_vacuum_cost_delay: 20ms
 postgresql_max_wal_senders: 0
 postgresql_wal_level: "minimal"
+postgresql_password_encryption: on

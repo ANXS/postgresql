@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 13
+postgresql_version: 15
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
@@ -138,13 +138,12 @@ postgresql_bonjour_name: ""  # defaults to the computer name
 # - Security and Authentication -
 
 postgresql_authentication_timeout: 60s
-postgresql_ssl: off
+postgresql_ssl: on
 postgresql_ssl_ciphers:
-  - "DEFAULT"
-  - "!LOW"
-  - "!EXP"
-  - "!MD5"
-  - "@STRENGTH"
+  - "HIGH"
+  - "MEDIUM"
+  - "+3DES"
+  - "!aNULL"
 postgresql_ssl_prefer_server_ciphers: on
 postgresql_ssl_ecdh_curve: "prime256v1"
 postgresql_ssl_min_protocol_version: "TLSv1.2"                      # (>= 12)
@@ -157,9 +156,10 @@ postgresql_ssl_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"    # (>= 9.2)
 postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
 postgresql_ssl_ca_file: ""                                          # (>= 9.2)
 postgresql_ssl_crl_file: ""                                         # (>= 9.2)
-postgresql_password_encryption: "{{ 'md5' if postgresql_version is version_compare('10', '>=') else 'on' }}" # (>=10.0 set to scram-sha-256 for best security)
+postgresql_ssl_crl_dir: ""                                          # (>= 14)
+postgresql_password_encryption: scram-sha-256 # (>=10.0 set to scram-sha-256 for best security)
 postgresql_db_user_namespace: off
-postgresql_row_security: off                                        # (>= 9.5)
+postgresql_row_security: on                                         # (>= 9.5)
 
 # Kerberos and GSSAPI
 postgresql_krb_server_keyfile: ""
@@ -171,7 +171,7 @@ postgresql_tcp_keepalives_idle: 0
 postgresql_tcp_keepalives_interval: 0
 postgresql_tcp_keepalives_count: 0
 postgresql_tcp_user_timeout: 0                                      # (>= 12)
-
+postgresql_client_connection_check_interval: 0                      # (>= 14)
 
 #------------------------------------------------------------------------------
 # RESOURCE USAGE (except WAL)
@@ -181,6 +181,7 @@ postgresql_tcp_user_timeout: 0                                      # (>= 12)
 
 postgresql_shared_buffers:       128MB # min 128kB
 postgresql_huge_pages:           "try"   # on, off, or try
+postgresql_huge_page_size:       0       # (>= 14)
 postgresql_temp_buffers:         8MB   # min 800kB
 
 # Caution: it is not advisable to set max_prepared_transactions nonzero unless
@@ -203,7 +204,7 @@ postgresql_dynamic_shared_memory_type: "posix"  # the default is the first optio
                                                 #   windows
                                                 #   mmap
                                                 # use none to disable dynamic shared memory
-
+postgresql_min_dynamic_shared_memory: 0MB       # (>= 14) (change requires restart)
 
 # - Disk -
 
@@ -270,7 +271,7 @@ postgresql_synchronous_commit: "on"
 
 # The default is the first option supported by the operating system:
 # - open_datasync
-# - fdatasync (default on Linux)
+# - fdatasync (default on Linux and FreeBSD)
 # - fsync
 # - fsync_writethrough
 # - open_sync
@@ -301,11 +302,17 @@ postgresql_checkpoint_timeout:           5min  # range 30s-1d
 postgresql_checkpoint_completion_target: 0.5   # checkpoint target duration, 0.0 - 1.0
 postgresql_checkpoint_warning:           30s   # 0 disables
 
+# - Prefetching during recovery -
+
+postgresql_recovery_prefetch: try              # (>= 15)
+postgresql_wal_decode_buffer_size: 512kB       # (>= 15)
 
 # - Archiving -
 
 # allows archiving to be done
 postgresql_archive_mode: "off"
+
+postgresql_archive_library: ""                 # (>= 15)
 
 # Command to use to archive a logfile segment.
 # Placeholders: %p = path of file to archive
@@ -404,12 +411,15 @@ postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical
 
 # - Planner Method Configuration -
 
+postgresql_enable_async_append:            on    # (>= 14)
 postgresql_enable_bitmapscan:              on
+postgresql_enable_gathermerge:             on    # (>= 14)
 postgresql_enable_hashagg:                 on
 postgresql_enable_hashjoin:                on
 postgresql_enable_indexscan:               on
 postgresql_enable_indexonlyscan:           on
 postgresql_enable_material:                on
+postgresql_enable_memoize:                 on    # (>= 14)
 postgresql_enable_mergejoin:               on
 postgresql_enable_nestloop:                on
 postgresql_enable_parallel_append:         on    # (>= 11)
@@ -460,10 +470,10 @@ postgresql_constraint_exclusion:       "partition"  # on, off, or partition
 postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
-postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6)
+postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6 <= 13)
 postgresql_jit:                        on           # (>= 11: off, 12: on)
 postgresql_plan_cache_mode:            "auto"       # (>= 12)
-
+postgresql_recursive_worktable_factor: 10.0         # (>= 15) range 0.001-1000000
 
 #------------------------------------------------------------------------------
 # ERROR REPORTING AND LOGGING
@@ -555,6 +565,7 @@ postgresql_log_min_duration_statement: -1
 postgresql_log_min_duration_sample:    -1       # (>= 13)
 postgresql_log_statement_sample_rate:   1.0     # (>= 13)
 postgresql_log_transaction_sample_rate: 0.0     # (>= 12)
+postgresql_log_startup_progress_interval: 10s   # (>= 15)
 
 
 # - What to Log -
@@ -576,24 +587,29 @@ postgresql_log_hostname:          off
 #   %d = database name
 #   %r = remote host and port
 #   %h = remote host
+#   %b = backend type (>= 13)
 #   %p = process ID
+#   %P = process ID of parallel group leader (>= 14)
 #   %t = timestamp without milliseconds
 #   %m = timestamp with milliseconds
 #   %n = timestamp with milliseconds (as a Unix epoch)
+#   %Q = query ID (0 if none or not computed) (>= 14)
 #   %i = command tag
 #   %e = SQL state
 #   %c = session ID
 #   %l = session line number
-#   %s = sessioan start timestamp
+#   %s = session start timestamp
 #   %v = virtual transaction ID
 #   %x = transaction ID (0 if none)
 #   %q = stop here in non-session
 #        processes
 #   %% = '%'
+# e.g. '<%u%%%d> '
 postgresql_log_line_prefix: "%t "
 
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
+postgresql_log_recovery_conflict_waits: off      # (>= 14)
 postgresql_log_parameter_max_length: -1          # (>= 13)
 postgresql_log_parameter_max_length_on_error: 0  # (>= 13)
 postgresql_log_statement:  "none"  # none, ddl, mod, all
@@ -613,14 +629,17 @@ postgresql_log_timezone:   "UTC"
 postgresql_track_activities:          on
 postgresql_track_counts:              on
 postgresql_track_io_timing:           off   # (>= 9.2)
+postgresql_track_wal_io_timing:       off   # (>= 14)
 postgresql_track_functions:           "none" # none, pl, all
+postgresql_stats_fetch_consistency:   cache  # (>= 15)
 postgresql_track_activity_query_size: 1024
 postgresql_update_process_title:      on
-postgresql_stats_temp_directory:      "pg_stat_tmp"
+postgresql_stats_temp_directory:      "pg_stat_tmp" # (<= 14)
 
 
 # - Statistics Monitoring -
 
+postgresql_compute_query_id:    auto   # (>= 14) auto, on, off
 postgresql_log_parser_stats:    off
 postgresql_log_planner_stats:   off
 postgresql_log_executor_stats:  off
@@ -670,6 +689,7 @@ postgresql_search_path: # schema names
   - '"$user"'
   - "public"
 postgresql_default_tablespace: "" # a tablespace name, "" uses the default
+postgresql_default_toast_compression: "pglz" # (>= 14) 'pglz' or 'lz4'
 postgresql_temp_tablespaces: [] # a list of tablespace names
 postgresql_default_table_access_method: "heap"
 postgresql_tablespaces_dirs: [] # a list of directories for tablespaces to be created
@@ -683,10 +703,13 @@ postgresql_session_replication_role:       "origin"
 postgresql_statement_timeout:                     0           # in milliseconds, 0 is disabled
 postgresql_lock_timeout:                          0           # in milliseconds, 0 is disabled (>= 9.3)
 postgresql_idle_in_transaction_session_timeout:   0           # in milliseconds, 0 is disabled (>= 9.6)
+postgresql_idle_session_timeout:                  0           # in milliseconds, 0 is disabled (>= 14)
 postgresql_vacuum_freeze_min_age:                 50000000
 postgresql_vacuum_freeze_table_age:               150000000
-postgresql_vacuum_cleanup_index_scale_factor:     0.1         # (>= 11)
+postgresql_vacuum_cleanup_index_scale_factor:     0.1         # (>= 11 <= 13)
 postgresql_vacuum_multixact_freeze_min_age:       5000000     # (>= 9.3)
+postgresql_vacuum_multixact_failsafe_age:         1600000000  # (>= 14)
+postgresql_vacuum_failsafe_age:                   1600000000  # (>= 14)
 postgresql_vacuum_multixact_freeze_table_age:     150000000   # (>= 9.3)
 
 postgresql_bytea_output: "hex"  # hex, escape
@@ -763,7 +786,7 @@ postgresql_backslash_quote:             "safe_encoding" # on, off, or safe_encod
 postgresql_default_with_oids:           off
 postgresql_escape_string_warning:       on
 postgresql_lo_compat_privileges:        off
-postgresql_operator_precedence_warning: off
+postgresql_operator_precedence_warning: off # (<= 13)
 postgresql_quote_all_identifiers:       off
 postgresql_sql_inheritance:             on
 postgresql_standard_conforming_strings: on
@@ -785,6 +808,7 @@ postgresql_exit_on_error: off
 postgresql_restart_after_crash: on
 # Retry or panic on failure to fsync data?
 postgresql_data_sync_retry: off
+postgresql_recovery_init_sync_method: fsync #(>= 14) fsync, syncfs (Linux 5.8+)
 
 
 #------------------------------------------------------------------------------

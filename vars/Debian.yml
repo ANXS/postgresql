@@ -7,3 +7,4 @@ postgresql_bin_directory: /usr/bin
 
 postgresql_fdw_mysql_packages: "postgresql-{{ postgresql_version }}-mysql-fdw"
 postgresql_fdw_ogr_packages: "postgresql-{{ postgresql_version }}-ogr-fdw"
+postgresql_extension_destdir: ""   # (>= 14)

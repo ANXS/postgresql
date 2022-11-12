@@ -35,7 +35,7 @@ Prior to the testing, molecule runs the prepare.yml playbook to:
 * Create a user called `ansible`, with the default group membership of either `wheel` (CentOS, Fedora), or `sudo` (Debian, ubuntu)
 * Install a couple of packages that Jeff Geerling did not install in his container images, that are needed in order to test the role properly
 
-The main file ./molecule/default/molecule.yml sets up versions to test from 9.6 to 13.
+The main file ./molecule/default/molecule.yml sets up versions to test from 11 to 15.
 
 # Tests
 
