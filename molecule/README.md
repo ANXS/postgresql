@@ -9,7 +9,7 @@ This directory is the home of the test playbooks:
 
 The default tested version is postgresql 9.6, 10, 11, 12, and 13 on Ubuntu 20.04. Linting is disabled for the tests.
 
-The default distribution is ubuntu2004. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
+The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 
 * centos7
 * centos8
@@ -19,13 +19,14 @@ The default distribution is ubuntu2004. You can override th with setting the env
 * ubuntu1604
 * ubuntu1804
 * ubuntu2004
+* ubuntu2204
 
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
 ```
 MOLECULE_DISTRO=centos8 molecule converge
 MOLECULE_DISTRO=debian10 molecule converge
-MOLECULE_DISTRO=ubuntu2004 molecule converge
+MOLECULE_DISTRO=ubuntu2204 molecule converge
 ```
 
 The images we use are extended with systemd by Jeff Geerling. See https://hub.docker.com/u/geerlingguy/
@@ -56,6 +57,7 @@ vars.Fedora.33.yml
 vars.Ubuntu.16.yml
 vars.Ubuntu.18.yml
 vars.Ubuntu.20.yml
+vars.Ubuntu.22.yml
 ```
 
 The main difference, currently, is which python version to use.
@@ -71,7 +73,7 @@ pip install molecule molecule-docker
 To run molecule tests locally, you can run the following commands:
 
 ```
-#--- to just create the default containers (ubuntu2004), and run prepare.yml
+#--- to just create the default containers (ubuntu2204), and run prepare.yml
 molecule create
 
 #--- to run the tests and keep the containers
@@ -84,10 +86,10 @@ molecule test
 molecule destroy
 
 #--- with specific distro release
-MOLECULE_DISTRO=ubuntu2004 molecule create
-MOLECULE_DISTRO=ubuntu2004 molecule converge
-MOLECULE_DISTRO=ubuntu2004 molecule test
-MOLECULE_DISTRO=ubuntu2004 molecule destroy
+MOLECULE_DISTRO=ubuntu2204 molecule create
+MOLECULE_DISTRO=ubuntu2204 molecule converge
+MOLECULE_DISTRO=ubuntu2204 molecule test
+MOLECULE_DISTRO=ubuntu2204 molecule destroy
 ```
 
 # References
