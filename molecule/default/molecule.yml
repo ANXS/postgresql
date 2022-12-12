@@ -50,8 +50,6 @@ provisioner:
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
   inventory:
     host_vars:
-      postgresql-9_6:
-        postgresql_version: 9.6
       postgresql-10:
         postgresql_version: 10
       postgresql-11:

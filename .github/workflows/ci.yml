@@ -47,7 +47,7 @@ jobs:
           - distro: centos8
           - distro: debian9
           - distro: debian10
-          - distro: fedora33
+          - distro: fedora37
           - distro: ubuntu1604
           - distro: ubuntu1804
           - distro: ubuntu2004

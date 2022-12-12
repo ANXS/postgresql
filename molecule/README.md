@@ -7,13 +7,13 @@ This directory is the home of the test playbooks:
 
 # Molecule
 
-The default tested version is postgresql 9.6, 10, 11, 12, and 13 on Ubuntu 20.04. Linting is disabled for the tests.
+The default tested version is postgresql 10, 11, 12, and 13 on Ubuntu 20.04. Linting is disabled for the tests.
 
 The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 
 * centos7
 * centos8
-* fedora33
+* fedora37
 * debian9
 * debian10
 * ubuntu1604
@@ -36,7 +36,7 @@ Prior to the testing, molecule runs the prepare.yml playbook to:
 * Create a user called `ansible`, with the default group membership of either `wheel` (CentOS, Fedora), or `sudo` (Debian, ubuntu)
 * Install a couple of packages that Jeff Geerling did not install in his container images, that are needed in order to test the role properly
 
-The main file ./molecule/default/molecule.yml sets up versions to test from 9.6 to 13.
+The main file ./molecule/default/molecule.yml sets up versions to test from 10 to 13.
 
 # Tests
 
@@ -53,7 +53,7 @@ vars.CentOS.8.yml
 vars.Debian.10.yml
 vars.Debian.9.yml
 vars.Debian.yml
-vars.Fedora.33.yml
+vars.Fedora.37.yml
 vars.Ubuntu.16.yml
 vars.Ubuntu.18.yml
 vars.Ubuntu.20.yml
