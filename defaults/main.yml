@@ -823,7 +823,7 @@ postgresql_install_repository: true
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
-postgresql_apt_repository: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
+postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_priority: 500
 
