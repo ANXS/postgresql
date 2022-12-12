@@ -1,3 +1,4 @@
 ---
 #--- picking the correct python interpreter
 ansible_python_interpreter: "/usr/bin/python3"
+remote_tmp: /tmp/ansible
