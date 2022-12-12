@@ -67,17 +67,13 @@ jobs:
       - name: Install test dependencies.
         run: pip3 install ansible molecule[docker] docker
 
-      - name: Create ansible temp directory
-        run: |
-            mkdir -p /tmp/ansible && chmod ugo+rwx /tmp/ansible
-
       - name: Run Molecule tests.
         run: molecule test
         env:
-          ANSIBLE_REMOTE_TEMP: /tmp/ansible
           ANSIBLE_VERBOSITY: '2'
           MOLECULE_DEBUG: '1'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
           MOLECULE_PLAYBOOK: ${{ matrix.playbook }}
+        working-directory: molecule
