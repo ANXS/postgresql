@@ -75,6 +75,8 @@ jobs:
         run: molecule test
         env:
           ANSIBLE_REMOTE_TEMP: /tmp/ansible
+          ANSIBLE_VERBOSITY: '2'
+          MOLECULE_DEBUG: '1'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
