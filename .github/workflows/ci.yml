@@ -70,7 +70,6 @@ jobs:
       - name: Run Molecule tests.
         run: molecule test
         env:
-          ANSIBLE_VERBOSITY: '2'
           MOLECULE_DEBUG: '1'
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'

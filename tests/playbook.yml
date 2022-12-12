@@ -1,6 +1,5 @@
 ---
 - hosts: all
-  connection: local
   remote_user: ansible
   become: yes
   vars_files:
