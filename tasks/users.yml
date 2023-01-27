@@ -13,6 +13,8 @@
     port: "{{postgresql_port}}"
     state: present
     login_user: "{{postgresql_admin_user}}"
+    login_unix_socket: "{{postgresql_unix_socket_directories[0]}}"
+    db: postgres
   no_log: true
   become: yes
   become_user: "{{postgresql_admin_user}}"
