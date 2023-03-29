@@ -259,8 +259,9 @@ postgresql_old_snapshot_threshold:           -1  # (>= 9.6) 1min-60d; -1 disable
 
 postgresql_wal_level: "replica"   # minimal, archive (<= 9.5), hot_standby (<= 9.5), replica (>= 9.6), or logical
 postgresql_fsync:     on          # flush data to disk for crash safety
-					# (turning this off can cause
-					# unrecoverable data corruption)
+                                          # (turning this off can cause
+                                          # unrecoverable data corruption)
+
 postgresql_synchronous_commit: "on"
 postgresql_wal_sync_method: "fsync"
 postgresql_full_page_writes: on
