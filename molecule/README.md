@@ -13,12 +13,12 @@ The default distribution is ubuntu2004. You can override th with setting the env
 
 * centos7
 * centos8
-* fedora33
 * debian9
 * debian10
-* ubuntu1604
+* debian11
 * ubuntu1804
 * ubuntu2004
+* ubuntu2204
 
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
@@ -50,12 +50,13 @@ vars.yml
 vars.CentOS.7.yml
 vars.CentOS.8.yml
 vars.Debian.10.yml
+vars.Debian.11.yml
 vars.Debian.9.yml
 vars.Debian.yml
-vars.Fedora.33.yml
 vars.Ubuntu.16.yml
 vars.Ubuntu.18.yml
 vars.Ubuntu.20.yml
+vars.Ubuntu.22.yml
 ```
 
 The main difference, currently, is which python version to use.
