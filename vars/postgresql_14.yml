@@ -1,4 +1,4 @@
 ---
 # PostgreSQL vars for v14
-
-# None yet. Add them here if needed.
+postgresql_client_connection_check_interval: 60
+postgresql_password_encryption: md5
