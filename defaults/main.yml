@@ -78,7 +78,8 @@ postgresql_database_schemas: []
 postgresql_user_privileges: []
 
 # pg_hba.conf
-postgresql_pg_hba_default:
+postgresql_custom_pg_hba_default: []
+_postgresql_pg_hba_default:
   - {
       type: local,
       database: all,
@@ -111,6 +112,8 @@ postgresql_pg_hba_default:
       method: "peer map=root_as_{{ postgresql_admin_user }}",
       comment: "Local root Unix user, passwordless access",
     }
+
+postgresql_pg_hba_default: "{{ _postgresql_pg_hba_default + postgresql_custom_pg_hba_default }}"
 
 postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_passwd_hosts: []
