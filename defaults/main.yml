@@ -151,6 +151,7 @@ postgresql_ssl_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"   # (>= 9.2)
 postgresql_ssl_ca_file: ""                                          # (>= 9.2)
 postgresql_ssl_crl_file: ""                                         # (>= 9.2)
 postgresql_password_encryption: on
+postgresql_password_encryption_method: md5
 postgresql_db_user_namespace: off
 postgresql_row_security: off                                        # (>= 9.5)
 
