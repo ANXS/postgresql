@@ -48,13 +48,20 @@ postgresql_postgis_release_compatibility:
   12: "3.1"
   13: "3.1"
   14: "3.4"
-  15: "3.4"
+  15: "3*"
 
 postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
 postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
 
+_libgeos_package_name:
+  default:
+    default: "libgeos-c1"
+  Debian:
+    default: "libgeos-c1"
+    12: "libgeos-c1v5"
+
 postgresql_ext_postgis_deps:
-  - libgeos-c1
+  - "{{ _libgeos_package_name[ansible_os_family][ansible_distribution_major_version | int] }}"
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
