@@ -1,43 +1,24 @@
-# file: postgresql/meta/main.yml
-
+---
 galaxy_info:
-  author: pjan vandaele
-  company: ANXS
-  description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
-  min_ansible_version: 2.4.0
+  author: miarec
+  description: Deploy Specific PostgreSQL version
+  role_name: postgresql
   license: MIT
-
+  company: MiaRec, Inc.
+  min_ansible_version: 2.7
   platforms:
-  - name: Debian
-    versions:
-    - jessie
-    - stretch
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
-  - name: EL
-    versions:
-    - 6
-    - 7
-#
-# DISABLED
-#
-#  - name: Fedora
-#    versions:
-#    - 27
-
+    - name: Ubuntu
+      versions:
+        - bionic
+        - xenial
+    - name: EL
+      versions:
+        - 7
   galaxy_tags:
-  - postgresql
-  - postgres
-  - database
-  - database:sql
-  - sql
-  - postgis
-  - debian
-  - ubuntu
-  - centos
-  - redhat
-  - fedora
+    - postgresql
+    - postgres
+    - database
+    - database:sql
+    - sql
 
 dependencies: []
