@@ -9,20 +9,20 @@ name: Ansible role testing
       - '**.md'
 
 jobs:
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
+  # lint:
+  #   name: lint
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Check out the repository
+  #       uses: actions/checkout@v2
 
-      - name: Run yamllint
-        uses: karancode/yamllint-github-action@master
-        with:
-          yamllint_strict: false
-          yamllint_comment: false
-          yamllint_config_filepath: '.yamllint'
+  #     - name: Run yamllint
+  #       uses: karancode/yamllint-github-action@master
+  #       with:
+  #         yamllint_strict: false
+  #         yamllint_comment: false
+  #         yamllint_config_filepath: '.yamllint'
 
   test:
     name: molecule

@@ -1,7 +1,8 @@
-# file: postgresql/tasks/install_yum.yml
+---
+  # file: postgresql/tasks/install_yum.yml
 
-# The standard ca-certs are needed because  without them yum will fail to
-# validate www.postgresql.org (or probably any other source).
+  # The standard ca-certs are needed because  without them yum will fail to
+  # validate www.postgresql.org (or probably any other source).
 
   - block:
       - name: PostgreSQL | Install all the required dependencies | yum
@@ -16,12 +17,12 @@
            baseurl: "{{ postgresql_yum_repository_baseurl }}"
            gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
         when: postgresql_install_repository
-        
+
       - name: PostgreSQL | Make sure the dependencies are installed | yum
         yum:
          name: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
          state: present
-         update_cache: yes
+         update_cache: true
 
       - name: PostgreSQL | Install PostgreSQL | yum
         yum:
@@ -56,7 +57,7 @@
           owner: "{{ postgresql_service_user }}"
           group: "{{ postgresql_service_group }}"
           mode: 0644
-          create: yes
+          create: true
           insertbefore: BOF
           regexp: "^#  pgclustername :.*$"
           line: "#  pgclustername : pgtabversion : pgrelease : pgport : pgdatabase : pgroot : pgbindir : [pgdata] : [pgwalarch] : [pgbackups]"
