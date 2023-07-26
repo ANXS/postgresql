@@ -31,7 +31,7 @@
   apt:
     pkg: "{{ postgresql_apt_py2_dependencies }}"
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_python.version.major == 2
 
@@ -39,7 +39,7 @@
   apt:
     pkg: "{{ postgresql_apt_py3_dependencies }}"
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_python.version.major == 3
 
@@ -50,7 +50,7 @@
       - "postgresql-client-{{postgresql_version}}"
       - "postgresql-contrib-{{postgresql_version}}"
     state: present
-    update_cache: yes
+    update_cache: true
     default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
@@ -59,7 +59,7 @@
   apt:
     name: pgtune
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   environment: "{{postgresql_env}}"
   when: postgresql_pgtune

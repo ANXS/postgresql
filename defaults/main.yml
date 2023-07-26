@@ -37,9 +37,9 @@ postgresql_cluster_reset: false
 postgresql_database_owner: "{{ postgresql_admin_user }}"
 
 # Extensions
-postgresql_ext_install_contrib: no
-postgresql_ext_install_dev_headers: no
-postgresql_ext_install_postgis: no
+postgresql_ext_install_contrib: false
+postgresql_ext_install_dev_headers: false
+postgresql_ext_install_postgis: false
 
 postgresql_ext_postgis_version: "2.5"     # be careful: check whether the postgresql/postgis versions work together
 
@@ -49,8 +49,8 @@ postgresql_ext_postgis_deps:
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
 # Foreign Data Wrapper(s)
-postgresql_fdw_mysql: no
-postgresql_fdw_ogr: no
+postgresql_fdw_mysql: false
+postgresql_fdw_ogr: false
 
 # List of databases to be created (optional)
 postgresql_databases: []
@@ -781,13 +781,13 @@ postgresql_include: false
 # PGTUNE
 # ------------------------------------------------------------------------------
 # Should we run pgtune and accept the changes it proposes?
-postgresql_pgtune: no
+postgresql_pgtune: false
 # Total system memory in bytes, will attempt to detect if set to "no"
-postgresql_pgtune_memory: no
+postgresql_pgtune_memory: false
 # Database type, valid options are DW, OLTP, Web, Mixed, Desktop
 postgresql_pgtune_type: "Mixed"
 # Maximum number of expected connections, if "no", default based on db type
-postgresql_pgtune_connections: no
+postgresql_pgtune_connections: false
 
 # ------------------------------------------------------------------------------
 # INSTALL/REPO

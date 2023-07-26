@@ -5,5 +5,5 @@
   service:
     name: "{{ postgresql_service_name }}"
     state: restarted
-    enabled: yes
-  become: yes
+    enabled: true
+  become: true

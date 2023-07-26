@@ -5,7 +5,9 @@ rules:
   line-length:
     max: 300
     level: warning
-  truthy: disable
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+
 
   # comments: disable
   # comments-indentation: disable

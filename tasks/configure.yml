@@ -51,18 +51,18 @@
     - {parts: "{{ postgresql_locale_parts }}", locale_name: "{{ postgresql_locale }}"}
     - {parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}"}
   when: ansible_os_family == "RedHat"
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: PostgreSQL | Stop PostgreSQL | Debian
   service:
     name: "{{ postgresql_service_name }}"
     state: stopped
-  become: yes
+  become: true
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Reset the cluster - drop the existing one | Debian
   shell: pg_dropcluster {{ postgresql_version }} {{ postgresql_cluster_name }}
-  become: yes
+  become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
@@ -76,20 +76,20 @@
     {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
-  become: yes
+  become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Update systemd | Debian
   command: systemctl daemon-reload
-  become: yes
+  become: true
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Start PostgreSQL | Debian
   service:
     name: "{{ postgresql_service_name }}"
     state: started
-  become: yes
+  become: true
   when: ansible_os_family == "Debian" and postgresql_cluster_reset and pgdata_dir_exist.changed
 
 - name: PostgreSQL | Check whether the postgres data directory is initialized | RedHat
@@ -106,7 +106,7 @@
     {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
-  become: yes
+  become: true
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
         (postgresql_cluster_reset or

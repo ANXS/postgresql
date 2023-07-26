@@ -10,7 +10,7 @@
   apt:
     name: "{{ postgresql_ext_postgis_deps }}"
     state: present
-    update_cache: yes
+    update_cache: true
     cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
   when: ansible_os_family == "Debian"
   notify:
@@ -20,7 +20,7 @@
   yum:
     name: "{{ postgresql_ext_postgis_deps }}"
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:
     - restart postgresql
