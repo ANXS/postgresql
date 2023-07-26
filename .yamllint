@@ -6,11 +6,13 @@ rules:
     max: 300
     level: warning
   truthy: disable
-  colons: disable
+  # colons: disable
   comments: disable
   comments-indentation: disable
-  braces: disable
-  commas: disable
+  # braces: disable
+  # commas: disable
+
+
   # indentation: disable
   # trailing-spaces: disable
   # document-start: disable

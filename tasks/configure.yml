@@ -48,8 +48,8 @@
   command: localedef -c -i {{ item.parts[0] }} -f {{ item.parts[1] }} {{ item.locale_name }}
   changed_when: false
   with_items:
-    - { parts: "{{ postgresql_locale_parts }}", locale_name: "{{ postgresql_locale }}" }
-    - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
+    - {parts: "{{ postgresql_locale_parts }}", locale_name: "{{ postgresql_locale }}"}
+    - {parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}"}
   when: ansible_os_family == "RedHat"
   ignore_errors: yes
 
