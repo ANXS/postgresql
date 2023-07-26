@@ -11,8 +11,8 @@ rules:
   comments-indentation: disable
   braces: disable
   commas: disable
-  indentation: disable
-  trailing-spaces: disable
+  # indentation: disable
+  # trailing-spaces: disable
   # document-start: disable
   # empty-lines: disable
   # new-line-at-end-of-file: disable
