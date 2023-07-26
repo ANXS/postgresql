@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/databases.yml
 
 - name: PostgreSQL | Ensure PostgreSQL is running

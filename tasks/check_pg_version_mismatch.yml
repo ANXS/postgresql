@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/check_pg_version_mismatch.yml
 
 # Check binary version

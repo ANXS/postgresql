@@ -1,3 +1,4 @@
+---
 # file: postgresql/defaults/main.yml
 
 # Basic settings
@@ -582,7 +583,6 @@ postgresql_log_replication_commands: off
 # log temporary files equal or larger
 postgresql_log_temp_files: -1
 postgresql_log_timezone:   "UTC"
-
 
 
 #------------------------------------------------------------------------------

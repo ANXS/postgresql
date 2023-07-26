@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/users_privileges.yml
 
 - name: PostgreSQL | Update the user privileges

@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/main.yml
 
 - include_vars: "{{ item }}"

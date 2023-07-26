@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/monit.yml
 
 - name: PostgreSQL | (Monit) Copy the postgresql monit service file

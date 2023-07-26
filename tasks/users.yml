@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/users.yml
 
 - name: PostgreSQL | Ensure PostgreSQL is running
@@ -14,8 +15,8 @@
     state: present
   with_items:
     - acl
-  when: ansible_os_family == "Debian"    
-    
+  when: ansible_os_family == "Debian"
+
 - name: PostgreSQL | Make sure the PostgreSQL users are present
   postgresql_user:
     name: "{{item.name}}"

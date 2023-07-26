@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/extensions/contrib.yml
 
 - name: PostgreSQL | Extensions | Make sure the postgres contrib extensions are installed | Debian

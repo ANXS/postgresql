@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/schemas.yml
 
 - name: PostgreSQL | Add Schema to databases

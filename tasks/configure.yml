@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/configure.yml
 
 - name: PostgreSQL | Drop the data directory | RedHat

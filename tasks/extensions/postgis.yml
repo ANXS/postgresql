@@ -1,3 +1,4 @@
+---
 # file: postgresql/tasks/extensions/postgis.yml
 
 - include_vars: "{{ item }}"
