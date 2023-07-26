@@ -1,8 +1,8 @@
 ---
-  # file: postgresql/tasks/install_yum.yml
+# file: postgresql/tasks/install_yum.yml
 
-  # The standard ca-certs are needed because  without them yum will fail to
-  # validate www.postgresql.org (or probably any other source).
+# The standard ca-certs are needed because  without them yum will fail to
+# validate www.postgresql.org (or probably any other source).
 
 - block:
     - name: PostgreSQL | Install all the required dependencies | yum
