@@ -8,13 +8,6 @@ lint: |
 #  yamllint .
 #  ansible-lint
 platforms:
-  - name: postgresql-9_6
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
-    command: ""
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    pre_build_image: true
   - name: postgresql-10
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
     command: ""
@@ -50,8 +43,6 @@ provisioner:
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
   inventory:
     host_vars:
-      postgresql-9_6:
-        postgresql_version: 9.6
       postgresql-10:
         postgresql_version: 10
       postgresql-11:

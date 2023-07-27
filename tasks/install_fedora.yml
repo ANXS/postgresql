@@ -6,7 +6,7 @@
   - block:
       - name: PostgrSQL | Install all the required dependencies | dnf
         dnf:
-          name: "ca-certificates, python*-pycurl, glibc-common, python*-libselinux, python*-psycopg2, glibc-locale-source"
+          name: "acl, ca-certificates, python*-pycurl, glibc-common, python*-libselinux, python*-psycopg2, glibc-locale-source"
           state: present
 
       #--- The package manager installed psycopg2 release 2.8.8 on Fedora 33 is not compatible with postgres < 10
