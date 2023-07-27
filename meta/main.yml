@@ -25,10 +25,11 @@ galaxy_info:
     - bionic
     - focal
     - xenial
+    - jammy
 
   - name: Fedora
     versions:
-    - 33
+    - 37
 
   galaxy_tags:
   - postgresql

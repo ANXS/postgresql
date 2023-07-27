@@ -12,6 +12,7 @@
     id: "{{ postgresql_apt_key_id }}"
     url: "{{ postgresql_apt_key_url }}"
     state: present
+    keyring: /etc/apt/trusted.gpg.d/postgresql.gpg
   when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
 
 - name: PostgreSQL | Add PostgreSQL repository | apt
