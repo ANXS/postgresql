@@ -54,17 +54,18 @@ An example how to include this role as a task:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | 10 | 11 | 12 | 13 |
-| ------------------------- |:--:|:--:|:--:|:--:|
-| CentOS 7.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| CentOS 8.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 9.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Debian 10.x    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
-| Ubuntu 16.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 18.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 20.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Ubuntu 22.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Fedora 37      | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |
+| Distribution / PostgreSQL | 10 | 11 | 12 | 13 | 14 | 15 |
+| ------------------------- |:--:|:--:|:--:|:--:|:--:|:--:|
+| CentOS 7.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| CentOS 8.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| Debian 9.x     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| Debian 10.x    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    |
+| Debian 11.x    | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |:grey_question:    | :white_check_mark: |
+| Ubuntu 16.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| Ubuntu 18.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| Ubuntu 20.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
+| Ubuntu 22.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :white_check_mark: |
+| Fedora 37      | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    |
 
 - :white_check_mark: - tested, works fine
 - :warning: - Not for production use
@@ -78,7 +79,7 @@ An example how to include this role as a task:
 
 ```yaml
 # Basic settings
-postgresql_version: 13
+postgresql_version: 15
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
@@ -177,6 +178,7 @@ Maintainers:
 - [Sergei Antipov](https://github.com/UnderGreen)
 - [Greg Clough](https://github.com/gclough)
 - [Magnus Lübeck](https://github.com/maglub)
+- [Leo C.](https://github.com/MrMegaNova)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)
@@ -184,6 +186,7 @@ Top Contributors:
 - [Michael Conrad](https://github.com/MichaelConrad)
 - [Sébastien Alix](https://github.com/sebalix)
 - [Copperfield](https://github.com/Copperfield)
+- [T. Soulabail](https://github.com/tsoulabail)
 
 - [Ralph von der Heyden](https://github.com/ralph)
 

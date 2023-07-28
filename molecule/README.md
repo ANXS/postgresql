@@ -16,6 +16,7 @@ The default distribution is ubuntu2204. You can override th with setting the env
 * fedora37
 * debian9
 * debian10
+* debian11
 * ubuntu1604
 * ubuntu1804
 * ubuntu2004
@@ -25,7 +26,7 @@ Manual execution of the molecule tests with the distro of your liking. Examples:
 
 ```
 MOLECULE_DISTRO=centos8 molecule converge
-MOLECULE_DISTRO=debian10 molecule converge
+MOLECULE_DISTRO=debian11 molecule converge
 MOLECULE_DISTRO=ubuntu2204 molecule converge
 ```
 
@@ -47,10 +48,10 @@ The playbooks read variables from two files. One common vars file, and one with 
 
 ```
 $ ls -1 tests/ | grep vars
-vars.yml
 vars.CentOS.7.yml
 vars.CentOS.8.yml
 vars.Debian.10.yml
+vars.Debian.11.yml
 vars.Debian.9.yml
 vars.Debian.yml
 vars.Fedora.37.yml
@@ -58,6 +59,7 @@ vars.Ubuntu.16.yml
 vars.Ubuntu.18.yml
 vars.Ubuntu.20.yml
 vars.Ubuntu.22.yml
+vars.yml
 ```
 
 The main difference, currently, is which python version to use.
