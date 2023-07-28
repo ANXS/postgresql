@@ -7,6 +7,7 @@ name: CI
   push:
     branches:
       - master
+      - development
 #  schedule:
 #    - cron: "0 4 * * 4"
 
@@ -43,10 +44,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: centos7
           - distro: centos8
           - distro: debian9
           - distro: debian10
+          - distro: debian11
           - distro: fedora37
           - distro: ubuntu1604
           - distro: ubuntu1804
@@ -65,7 +66,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible molecule[docker] docker
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
         run: molecule test
