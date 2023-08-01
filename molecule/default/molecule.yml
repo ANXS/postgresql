@@ -52,6 +52,9 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      remote_tmp: /tmp/.ansible-${USER}/tmp/
   playbooks:
     prepare:  ${MOLECULE_PLAYBOOK:-../../tests/prepare.yml}
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
