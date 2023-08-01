@@ -5,7 +5,7 @@ This directory is the home of the test playbooks:
 * ../tests/prepare.yml => setting up a VM or container with the minimum requirements (that usually is there, but not always in a container)
 * ../tests/playbook.yml => running a test against a VM or container (default postgres version: 13)
 
-# Molecule
+## Molecule
 
 The default tested version is postgresql 10, 11, 12, and 13 on Ubuntu 20.04. Linting is disabled for the tests.
 
@@ -24,7 +24,7 @@ The default distribution is ubuntu2204. You can override th with setting the env
 
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
-```
+```bash
 MOLECULE_DISTRO=centos8 molecule converge
 MOLECULE_DISTRO=debian11 molecule converge
 MOLECULE_DISTRO=ubuntu2204 molecule converge
@@ -39,14 +39,14 @@ Prior to the testing, molecule runs the prepare.yml playbook to:
 
 The main file ./molecule/default/molecule.yml sets up versions to test from 10 to 13.
 
-# Tests
+## Tests
 
 The playbooks read variables from two files. One common vars file, and one with unique variables per OS and distribution major version.
 
 * ../tests/vars.yml <== read by all OS:es
 * ../tests/vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
 
-```
+```bash
 $ ls -1 tests/ | grep vars
 vars.CentOS.7.yml
 vars.CentOS.8.yml
@@ -64,17 +64,17 @@ vars.yml
 
 The main difference, currently, is which python version to use.
 
-# Local installation of molecule
+## Local installation of molecule
 
-```
+```bash
 pip install molecule molecule-docker
 ```
 
-# Examples
+## Examples
 
 To run molecule tests locally, you can run the following commands:
 
-```
+```bash
 #--- to just create the default containers (ubuntu2204), and run prepare.yml
 molecule create
 
@@ -94,6 +94,6 @@ MOLECULE_DISTRO=ubuntu2204 molecule test
 MOLECULE_DISTRO=ubuntu2204 molecule destroy
 ```
 
-# References
+## References
 
 * https://github.com/search?q=user%3Ageerlingguy+docker-.*-ansible
