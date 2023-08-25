@@ -9,35 +9,52 @@ lint: |
 #  ansible-lint
 platforms:
   - name: postgresql-10
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
     command: ""
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
   - name: postgresql-11
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
     command: ""
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
   - name: postgresql-12
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
     command: ""
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
   - name: postgresql-13
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
     command: ""
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+  - name: postgresql-14
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+  - name: postgresql-15
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      remote_tmp: /tmp/.ansible-${USER}/tmp/
   playbooks:
     prepare:  ${MOLECULE_PLAYBOOK:-../../tests/prepare.yml}
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
@@ -51,5 +68,9 @@ provisioner:
         postgresql_version: 12
       postgresql-13:
         postgresql_version: 13
+      postgresql-14:
+        postgresql_version: 14
+      postgresql-15:
+        postgresql_version: 15
 verifier:
   name: ansible
