@@ -3,5 +3,5 @@
   - name: restart postgresql
     service:
       name: "{{ postgresql_service_name }}"
-      state: restarted
+      state: "{{ postgresql_service_restarted_state }}"
       enabled: yes

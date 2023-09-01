@@ -84,6 +84,7 @@ postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"
 
 postgresql_cluster_name: main
+postgresql_service_restarted_state: "reloaded" # state of the service after configuration changes (e.g. restarted, reloaded).
 postgresql_cluster_reset: false
 
 postgresql_log_directory_group: "{{ postgresql_service_group }}" # group of the `postgresql_log_directory`.

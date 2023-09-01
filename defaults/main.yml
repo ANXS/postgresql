@@ -28,6 +28,7 @@ postgresql_default_auth_method_hosts: "{{ 'scram-sha-256' if postgresql_version 
 postgresql_service_user: "{{ postgresql_admin_user }}"
 postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
+postgresql_service_restarted_state: "reloaded"
 
 postgresql_cluster_name: "main" # postgres default is ''
 postgresql_cluster_reset: false
