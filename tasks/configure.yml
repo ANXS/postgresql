@@ -52,6 +52,7 @@
     - "{{ postgresql_locale }}"
     - "{{ postgresql_ctype }}"
   when: ansible_os_family == "Debian" and item != "C.UTF-8"
+  notify: restart postgresql
 
 - name: PostgreSQL | Ensure the locale is generated | RedHat
   become: yes
@@ -62,6 +63,9 @@
     - { parts: "{{ postgresql_ctype_parts }}", locale_name: "{{ postgresql_ctype }}" }
   when: ansible_os_family == "RedHat"
   ignore_errors: yes
+  notify: restart postgresql
+
+- meta: flush_handlers
 
 - name: PostgreSQL | Stop PostgreSQL | Debian
   service:
