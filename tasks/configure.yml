@@ -39,9 +39,9 @@
   file:
     path: "{{ postgresql_log_directory }}"
     owner: "{{ postgresql_service_user }}"
-    group: "{{ postgresql_service_group }}"
+    group: "{{ postgresql_log_directory_group }}"
     state: directory
-    mode: 0700
+    mode: "{{ postgresql_log_directory_mode }}"
   register: pglog_dir_exist
   when: postgresql_log_directory != "pg_log" or postgresql_log_directory != "log"
 

@@ -86,6 +86,9 @@ postgresql_default_auth_method: "peer"
 postgresql_cluster_name: main
 postgresql_cluster_reset: false
 
+postgresql_log_directory_group: "{{ postgresql_service_group }}" # group of the `postgresql_log_directory`.
+postgresql_log_directory_mode: "700" # permissions of the `postgresql_log_directory`.
+
 # List of databases to be created (optional)
 # Note: for more flexibility with extensions use the postgresql_database_extensions setting.
 postgresql_databases:

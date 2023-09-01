@@ -458,6 +458,10 @@ postgresql_logging_collector:          off
 # These are only used if logging_collector is on:
 # Directory where log files are written, can be absolute or relative to PGDATA
 postgresql_log_directory:              "log"
+# Group of the `postgresql_log_directory.
+postgresql_log_directory_group: "{{ postgresql_service_group }}"
+# permissions of the `postgresql_log_directory`.
+postgresql_log_directory_mode: "700"
 # Log file name pattern, can include strftime() escapes
 postgresql_log_filename:               "postgresql-%Y-%m-%d_%H%M%S.log"
 postgresql_log_file_mode:              "0600" # begin with 0 to use octal notation
