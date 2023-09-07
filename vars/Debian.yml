@@ -1,7 +1,7 @@
 ---
 # PostgreSQL vars for Debian based distributions
 
-postgresql_service_name: "postgresql"
+postgresql_service_name: "postgresql@{{ postgresql_version }}-{{ postgresql_cluster_name }}"
 
 postgresql_bin_directory: /usr/bin
 
