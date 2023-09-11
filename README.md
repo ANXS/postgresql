@@ -126,10 +126,12 @@ postgresql_database_schemas:
 
 # List of user privileges to be applied (optional)
 postgresql_user_privileges:
-  - name: baz                   # user name
-    db: foobar                  # database
-    priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
-    role_attr_flags: "CREATEDB" # role attribute flags
+  - roles: baz                  # comma separated list of role (user/group) names to set permissions for.
+    database: foobar            # name of database to connect to.
+    schema: acme_baz            # schema that contains the database objects specified via objs (see documentation for details).
+    type: table                 # type of database object to set privileges on. e.g.: table (default), sequence, function,... (see documentation for details)
+    objs: employee              # comma separated list of database objects to set privileges on (see documentation for details).
+    privs: "ALL"                # comma separated list of privileges to grant. e.g.: INSERT,UPDATE/ALL/USAGE
 ```
 
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)

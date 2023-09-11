@@ -32,8 +32,8 @@ postgresql_users:
   - name: zabaz
 
 postgresql_user_privileges:
-  - name: baz
-    db: foobar
+  - roles: baz
+    database: foobar
 
 postgresql_database_schemas:
   - database: foobar
