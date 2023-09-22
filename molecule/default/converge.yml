@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    postgresql_version: "{{ lookup('env', 'POSTGRESQL_VERSION') }}"
+
+  pre_tasks:
+    - name: Install prerequisites
+      block:
+        - name: Update apt cache
+          apt:
+            update_cache: true
+            cache_valid_time: 600
+          changed_when: false
+          when: ansible_os_family == "Debian"
+
+        - name: Install gpg-agent
+          apt:
+            name: gpg-agent
+            state: present
+          when: ansible_os_family == "Debian"
+
+  roles:
+    - role: ansible-postgresql
+      tags:
+        - postgresql
