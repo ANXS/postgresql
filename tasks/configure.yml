@@ -215,15 +215,30 @@
     mode: u=rwX,g=rwXs,o=rx
   notify: restart postgresql
 
-- name: PostgreSQL | Add to PATH (/etc/profile.d/postgres.sh)
-  template:
-    src: "etc_profile_d_postgres.sh.j2"
-    dest: "/etc/profile.d/postgres.sh"
-    mode: 0644
-  when: postgresql_add_to_path and ansible_os_family == "RedHat"
+- block:
+  - name: PostgreSQL | Ensure PostgreSQL is running
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: started
+    register: postgresql_cold_started
 
-- name: PostgreSQL | Reload all conf files
-  service:
-    name: "{{ postgresql_service_name }}"
-    state: reloaded
+  - name: PostgreSQL | Reload PostgreSQL configuration
+    service:
+      name: "{{ postgresql_service_name }}"
+      state: reloaded
+    register: postgresql_reloaded
+    when: not postgresql_cold_started.changed
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
+
+# - name: PostgreSQL | Add to PATH (/etc/profile.d/postgres.sh)
+#   template:
+#     src: "etc_profile_d_postgres.sh.j2"
+#     dest: "/etc/profile.d/postgres.sh"
+#     mode: 0644
+#   when: postgresql_add_to_path and ansible_os_family == "RedHat"
+
+# - name: PostgreSQL | Reload all conf files
+#   service:
+#     name: "{{ postgresql_service_name }}"
+#     state: reloaded
+#   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed

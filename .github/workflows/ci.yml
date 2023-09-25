@@ -34,7 +34,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
           - centos7
-        version: [11, 12]
+        version: [11, 12, 13, 14, 15]
 
     steps:
       - name: Check out the Repository
