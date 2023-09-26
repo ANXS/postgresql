@@ -1,8 +1,0 @@
-# {{ ansible_managed }}
-export PATH=$PATH:{{ postgresql_bin_directory }}
-
-if [ ! -z $PKG_CONFIG_PATH ]; then
-  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:{{ postgresql_lib_directory }}/pkgconfig
-else
-  export PKG_CONFIG_PATH={{ postgresql_lib_directory }}/pkgconfig
-fi
