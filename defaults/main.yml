@@ -233,7 +233,7 @@ postgresql_vacuum_cost_limit:      200     # 1-10000 credits
 postgresql_bgwriter_delay:          200ms  # 10-10000ms between rounds
 postgresql_bgwriter_lru_maxpages:   100    # 0-1000 max buffers written/round
 postgresql_bgwriter_lru_multiplier: 2.0    # 0-10.0 multiplier on buffers scanned/round
-postgresql_bgwriter_flush_after:    512kB		# measured in pages, 0 disables
+postgresql_bgwriter_flush_after:    512kB   # measured in pages, 0 disables
 
 # - Asynchronous Behavior -
 
@@ -745,7 +745,7 @@ postgresql_jit_provider: "llvmjit"
 # - Other Defaults -
 
 postgresql_dynamic_library_path: "$libdir"
-postgresql_extension_destdir: ""		# (>= 14)
+postgresql_extension_destdir: ""    # (>= 14)
 
 postgresql_gin_fuzzy_search_limit: 0    # (<= 9.2)
 
