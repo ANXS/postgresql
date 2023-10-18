@@ -39,9 +39,7 @@
     name:
       - "postgresql-{{postgresql_version}}"
       - "postgresql-client-{{postgresql_version}}"
-      - "postgresql-contrib{% if postgresql_version is version_compare('14', '<') %}-{{ postgresql_version }}{% endif %}"
-      - "postgresql-plperl-{{postgresql_version}}"
-      - "postgresql-{{postgresql_version}}-preprepare"
+      - "postgresql-contrib-{{postgresql_version}}"
     state: present
     update_cache: yes
     default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
