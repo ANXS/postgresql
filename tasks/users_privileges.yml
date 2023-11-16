@@ -24,6 +24,7 @@
     objs: "{{item.objs | default(omit)}}"
     schema: "{{item.schema | default(omit)}}"
     roles: "{{item.roles | default(omit)}}"
+    target_roles: "{{item.target_roles | default(omit)}}"
     grant_option: "{{item.option | default('no')}}"
   become: yes
   become_user: "{{postgresql_admin_user}}"
