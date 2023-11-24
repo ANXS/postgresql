@@ -148,7 +148,7 @@ postgresql_client_connection_check_interval: 0            # (>= 14)
 # - Authentication -
 
 postgresql_authentication_timeout: 60s
-postgresql_password_encryption: "{{ 'md5' if postgresql_version is version_compare('10', '>=') else 'on' }}" # (>=10.0 set to scram-sha-256 for best security)
+postgresql_password_encryption: "{{ 'scram-sha-256' if postgresql_version is version_compare('14', '>=') else 'md5' }}" # (>=14.0 set to scram-sha-256 for best security)
 postgresql_db_user_namespace: off
 
 # GSSAPI using Kerberos
