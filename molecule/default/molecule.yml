@@ -9,47 +9,53 @@ lint: |
 #  ansible-lint
 platforms:
   - name: postgresql-10
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
-    command: ""
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-11
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
-    command: ""
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-12
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
-    command: ""
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-13
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
-    command: ""
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-14
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
-    command: ""
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-15
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
-    command: ""
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
 provisioner:
   name: ansible
   config_options:
