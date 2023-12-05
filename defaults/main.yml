@@ -861,20 +861,3 @@ postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
 postgresql_apt_dependencies: "{{ postgresql_apt_py3_dependencies if 'python3' in ansible_python_interpreter|default('') else postgresql_apt_py2_dependencies }}"
 
 postgresql_hide_passwords: false
-
-# Extra repositories and packages (optional - given as an example and activated by postgresql_ext_install_extra_packages variable)
-postgresql_ext_extra_packages:
-  names:
-    - mongodb-org-server
-  apt_repositories:
-    depot-mongodb7-bullseye: "deb [ signed-by=/etc/apt/trusted.gpg.d/160D26BB1785BA38.gpg ] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/7.0 main"
-  apt_keys:
-    depot-mongodb7-bullseye:
-      id: "160D26BB1785BA38"
-      url: "https://pgp.mongodb.com/server-7.0.asc"
-  yum_repositories:
-    depot-mongodb7-rhel:
-      name: mongodb
-      description: a document database designed for ease of application development and scaling
-      url: "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/7.0/x86_64/"
-      gpgkey: "https://www.mongodb.org/static/pgp/server-7.0.asc"
