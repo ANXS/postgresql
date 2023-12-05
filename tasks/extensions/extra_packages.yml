@@ -1,5 +1,7 @@
 # file: postgresql/tasks/extensions/extra_packages.yml
 
+- include_vars: "../../vars/extra_packages.yml"
+
 # keys
 - name: PostgreSQL | Extensions | Add repo keys | apt
   apt_key:
