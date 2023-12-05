@@ -3,16 +3,10 @@
 
 # postgresql_ext_extra_packages:
 #   names:
-#     - asgard
-#     - plume-pg
 #     - pgadmin4-server
 #   apt_repositories:
-#     depot-cs-rie: "deb http://debian.depot.e2.rie.gouv.fr/depot-cs/ {{ ansible_distribution_release }} main"
 #     depot-pgadmin: "deb [signed-by=/etc/apt/trusted.gpg.d/8881B2A8210976F2.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/jammy pgadmin4 main"
 #   apt_keys:
-#     depot-cs-rie:
-#       id: "CC9CACA5"
-#       url: "http://debian.depot.e2.rie.gouv.fr/keys/debian-archive-keyring/236BB7D85E32FCD00ED50F847D82EE6CCC9CACA5.asc"
 #     depot-pgadmin:
 #       id: "8881B2A8210976F2"
 #       url: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
