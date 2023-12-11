@@ -20,7 +20,7 @@
     repo: "{{ item.value }}"
     state: present
   loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
-  when: 
+  when:
     - postgresql_ext_extra_packages is defined
     - ansible_os_family == "Debian"
 - name: PostgreSQL | Extensions | Add repos | RHEL
@@ -31,7 +31,7 @@
     gpgkey: "{{ item.value.gpgkey }}"
     enabled: yes
   loop: "{{ postgresql_ext_extra_packages.yum_repositories | default({}) | dict2items }}"
-  when: 
+  when:
     - postgresql_ext_extra_packages is defined
     - ansible_os_family == "RedHat"
 
@@ -42,7 +42,7 @@
     state: present
     update_cache: yes
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
-  when: 
+  when:
     - postgresql_ext_extra_packages is defined
     - ansible_os_family == "Debian"
 - name: PostgreSQL | Extensions | Add packages | RHEL
@@ -50,6 +50,6 @@
     name: "{{ postgresql_ext_extra_packages.names }}"
     state: present
     update_cache: yes
-  when: 
+  when:
     - postgresql_ext_extra_packages is defined
     - ansible_os_family == "RedHat"

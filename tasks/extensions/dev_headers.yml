@@ -11,11 +11,11 @@
     - restart postgresql
 
 - name: PostgreSQL | Extensions | Make sure the development headers are installed | RedHat
-  yum: 
+  yum:
     name:
       - "postgresql{{ postgresql_version_terse }}-libs"
       - "postgresql{{ postgresql_version_terse }}-devel"
-    state: present 
+    state: present
     update_cache: yes
   when: ansible_pkg_mgr == "yum" and ansible_os_family == "RedHat"
   notify:

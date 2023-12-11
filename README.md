@@ -180,6 +180,7 @@ Maintainers:
 - [Greg Clough](https://github.com/gclough)
 - [Magnus Lübeck](https://github.com/maglub)
 - [Leo C.](https://github.com/MrMegaNova)
+- [Laurent Lavaud](https://github.com/fidelio33b)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)
