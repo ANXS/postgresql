@@ -25,3 +25,5 @@ postgresql_packages:
   - glibc-common
   - epel-release
   - python3-libselinux
+  - glibc-locale-source
+  - glibc-langpack-en
