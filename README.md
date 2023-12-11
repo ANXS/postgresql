@@ -65,6 +65,7 @@ An example how to include this role as a task:
 | Ubuntu 18.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
 | Ubuntu 20.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    |
 | Ubuntu 22.04.x | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |:grey_question:    | :white_check_mark: |
+| Rockylinux 9.x | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |:white_check_mark: | :white_check_mark: |
 | Fedora 37      | :grey_question:    | :grey_question:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    |
 
 - :white_check_mark: - tested, works fine
@@ -179,6 +180,7 @@ Maintainers:
 - [Greg Clough](https://github.com/gclough)
 - [Magnus Lübeck](https://github.com/maglub)
 - [Leo C.](https://github.com/MrMegaNova)
+- [Laurent Lavaud](https://github.com/fidelio33b)
 
 Top Contributors:
 - [David Farrington](https://github.com/farridav)

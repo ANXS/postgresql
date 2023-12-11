@@ -1,0 +1,18 @@
+---
+# This file defines (optional) repos and packages - uncomment necessary lines
+
+# postgresql_ext_extra_packages:
+#   names:
+#     - pgadmin4-server
+#   apt_repositories:
+#     depot-pgadmin: "deb [signed-by=/etc/apt/trusted.gpg.d/8881B2A8210976F2.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/jammy pgadmin4 main"
+#   apt_keys:
+#     depot-pgadmin:
+#       id: "8881B2A8210976F2"
+#       url: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
+#   yum_repositories:
+#     depot-pgadmin:
+#       name: pgadmin
+#       description: the most popular and feature rich Open Source administration and development platform for PostgreSQL
+#       url: "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/redhat/rhel-9-x86_64"
+#       gpgkey: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
