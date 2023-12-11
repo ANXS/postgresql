@@ -8,14 +8,6 @@ lint: |
 #  yamllint .
 #  ansible-lint
 platforms:
-  - name: postgresql-10
-    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    pre_build_image: true
-    cgroupns_mode: host
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-11
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
@@ -66,8 +58,6 @@ provisioner:
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
   inventory:
     host_vars:
-      postgresql-10:
-        postgresql_version: 10
       postgresql-11:
         postgresql_version: 11
       postgresql-12:
