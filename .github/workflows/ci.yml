@@ -17,26 +17,26 @@ defaults:
 
 jobs:
 
-#  lint:
-#    name: Lint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check out the codebase.
-#        uses: actions/checkout@v2
-#        with:
-#          path: 'postgresql'
-#
-#      - name: Set up Python 3.
-#        uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.x'
-#
-#      - name: Install test dependencies.
-#        run: pip3 install yamllint
-#
-#      - name: Lint code.
-#        run: |
-#          yamllint .
+  lint:
+    name: Yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v4
+        with:
+          path: 'postgresql'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install test dependencies.
+        run: pip3 install yamllint
+
+      - name: Lint code.
+        run: |
+          yamllint .
 
   molecule:
     name: Molecule
@@ -44,14 +44,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: centos8
-          - distro: debian9
-          - distro: debian10
+          - distro: rockylinux8
           - distro: debian11
-          - distro: fedora37
-          - distro: ubuntu1604
-          - distro: ubuntu1804
-          - distro: ubuntu2004
           - distro: ubuntu2204
 
     steps:
