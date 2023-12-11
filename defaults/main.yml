@@ -39,6 +39,7 @@ postgresql_database_owner: "{{ postgresql_admin_user }}"
 postgresql_ext_install_contrib: no
 postgresql_ext_install_dev_headers: no
 postgresql_ext_install_postgis: no
+postgresql_ext_install_extra_packages: no
 
 # PostGIS
 postgresql_postgis_release_compatibility:
