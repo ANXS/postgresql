@@ -4,12 +4,12 @@ name: CI
   pull_request:
     branches:
       - master
+      - development
   push:
     branches:
-      - master
       - development
-#  schedule:
-#    - cron: "0 4 * * 4"
+  schedule:
+    - cron: "0 4 * * 4"
 
 defaults:
   run:
