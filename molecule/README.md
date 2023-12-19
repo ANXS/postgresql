@@ -25,7 +25,7 @@ The default distribution is ubuntu2204. You can override th with setting the env
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
 ```bash
-MOLECULE_DISTRO=centos8 molecule converge
+MOLECULE_DISTRO=rockylinux9 molecule converge
 MOLECULE_DISTRO=debian11 molecule converge
 MOLECULE_DISTRO=ubuntu2204 molecule converge
 ```

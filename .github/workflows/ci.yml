@@ -4,12 +4,12 @@ name: CI
   pull_request:
     branches:
       - master
+      - development
   push:
     branches:
-      - master
       - development
-#  schedule:
-#    - cron: "0 4 * * 4"
+  schedule:
+    - cron: "0 4 * * 4"
 
 defaults:
   run:
@@ -50,12 +50,12 @@ jobs:
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'postgresql'
 
       - name: Set up Python 3.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
