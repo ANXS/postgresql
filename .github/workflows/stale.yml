@@ -33,4 +33,3 @@ jobs:
           This pr has been marked 'stale' due to lack of recent activity. If there is no further activity, the issue will be closed in another 30 days. Thank you for your contribution!
         close-pr-message: |
           This pr has been closed due to inactivity. If you feel this is in error, please reopen the issue or file a new issue with the relevant details.
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
