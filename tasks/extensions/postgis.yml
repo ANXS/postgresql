@@ -2,6 +2,7 @@
 
 - include_vars: "{{ item }}"
   with_first_found:
+    - "../vars/{{ ansible_distribution_release }}-{{ postgresql_version }}.yml"
     - "../vars/{{ ansible_distribution_release }}.yml"
     - "../vars/empty.yml"
 
