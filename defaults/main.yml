@@ -62,7 +62,7 @@ _libgeos_package_name:
     12: "libgeos-c1v5"
 
 postgresql_ext_postgis_deps:
-  - "{{ _libgeos_package_name[ansible_os_family][ansible_distribution_major_version | int] | _libgeos_package_name[ansible_os_family]['default'] | default(_libgeos_package_name['default'])}}"
+  - "{{ _libgeos_package_name[ansible_os_family][ansible_distribution_major_version | int] | default(_libgeos_package_name[ansible_os_family]['default'])}}"
   - "postgresql-{{ postgresql_version }}-postgis-{{ postgresql_ext_postgis_version }}"
   - "postgresql-{{ postgresql_version }}-postgis-scripts"
 
