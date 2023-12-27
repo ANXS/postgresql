@@ -48,6 +48,7 @@ postgresql_postgis_release_compatibility:
   13: "3.1"
   14: "3.2"
   15: "3.2"
+  16: "3.4"
 
 postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
 postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
@@ -126,6 +127,7 @@ postgresql_listen_addresses:
 postgresql_port: 5432
 
 postgresql_max_connections: 100
+postgresql_reserved_connections: 0 # (>= 16)
 postgresql_superuser_reserved_connections: 3
 
 postgresql_unix_socket_directory: ""    # (<= 9.2)
@@ -150,12 +152,14 @@ postgresql_client_connection_check_interval: 0            # (>= 14)
 
 postgresql_authentication_timeout: 60s
 postgresql_password_encryption: "{{ 'scram-sha-256' if postgresql_version is version_compare('14', '>=') else 'md5' }}" # (>=14.0 set to scram-sha-256 for best security)
+posgresql_scram_iterations: 4096 # (>= 16)
 postgresql_db_user_namespace: off
 
 # GSSAPI using Kerberos
 postgresql_krb_server_keyfile: ""
 postgresql_krb_srvname: "postgres" # (<= 9.3)
 postgresql_krb_caseins_users: off
+postgresql_gss_accept_delegation: off # (>= 16)
 
 # - SSL -
 
@@ -208,7 +212,10 @@ postgresql_dynamic_shared_memory_type: "posix"  # the default is the first optio
                                                 #   windows
                                                 #   mmap
                                                 # use none to disable dynamic shared memory
-postgresql_min_dynamic_shared_memory: 0MB     # (>= 14) (change requires restart)
+postgresql_min_dynamic_shared_memory: 0MB       # (>= 14) (change requires restart)
+postgres_vacuum_buffer_usage_limit: 256kB       # (>= 16) size of vacuum and analyze buffer access strategy ring;
+                                                # 0 to disable vacuum buffer access strategy;
+                                                # range 128kB to 16GB
 
 # - Disk -
 
@@ -338,13 +345,13 @@ postgresql_synchronous_standby_names: [] # '*' means 'all'
 postgresql_synchronous_standby_num_sync: "" # >= 9.6 (NOTE: If you use the ANY/ALL syntax in v10, then note the new variable below)
 postgresql_synchronous_standby_choose_sync: "FIRST" # >= 10
 # number of xacts by which cleanup is delayed
-postgresql_vacuum_defer_cleanup_age: 0
+postgresql_vacuum_defer_cleanup_age: 0 # (<= 15)
 
 # - Standby Servers -
 # These settings are ignored on a primary server.
 postgresql_primary_conninfo: ""                    # (>= 12)
 postgresql_primary_slot_name: ""                   # (>= 12)
-postgresql_promote_trigger_file: ""                # (>= 12)
+postgresql_promote_trigger_file: ""                # (>= 12, <= 15)
 # "on" allows queries during recovery
 postgresql_hot_standby: off
 # max delay before canceling queries when reading WAL from archive
@@ -367,6 +374,7 @@ postgresql_recovery_min_apply_delay: 0             # (>= 12)
 postgresql_max_logical_replication_workers: 4   # (>= 10) taken from max_worker_processes
             # (change requires restart)
 postgresql_max_sync_workers_per_subscription: 2 # (>= 10) taken from max_logical_replication_workers
+postgresql_max_parallel_apply_workers_per_subscription: 2 # (>= 16) taken from max_logical_replication_workers
 
 #------------------------------------------------------------------------------
 # QUERY TUNING
@@ -389,6 +397,7 @@ postgresql_enable_parallel_hash:           on    # (>= 11)
 postgresql_enable_partition_pruning:       on    # (>= 11)
 postgresql_enable_partitionwise_join:      off   # (>= 11)
 postgresql_enable_partitionwise_aggregate: off   # (>= 11)
+postgres_enable_presorted_aggregate:       on    # (>= 16)
 postgresql_enable_seqscan:                 on
 postgresql_enable_sort:                    on
 postgresql_enable_tidscan:                 on
@@ -665,6 +674,7 @@ postgresql_bytea_output: "hex"  # hex, escape
 postgresql_xmlbinary:    "base64"
 postgresql_xmloption:    "content"
 postgresql_gin_pending_list_limit: 4MB  # (>= 9.5)
+postgresql_createrole_self_grant: '' # (>= 16) 'set', 'inherit' or 'set, inherit'
 
 # - Locale and Formatting -
 
@@ -694,6 +704,9 @@ postgresql_lc_monetary: "{{ postgresql_locale }}"
 postgresql_lc_numeric: "{{ postgresql_locale }}"
 # locale for time formatting
 postgresql_lc_time: "{{ postgresql_locale }}"
+
+postgresql_icu_validation_level: "warning" # (>= 16) report ICU locale validation
+                                           # errors at the given level
 
 # default configuration for text search
 postgresql_default_text_search_config: "pg_catalog.english"
