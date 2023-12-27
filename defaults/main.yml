@@ -30,7 +30,7 @@ postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
 postgresql_service_enabled: true
 
-postgresql_cluster_name: "main"
+postgresql_cluster_name: "main" # postgres default is ''
 postgresql_cluster_reset: false
 
 postgresql_database_owner: "{{ postgresql_admin_user }}"
@@ -150,7 +150,7 @@ postgresql_client_connection_check_interval: 0            # (>= 14)
 
 # - Authentication -
 
-postgresql_authentication_timeout: 60s
+postgresql_authentication_timeout: 60s # 1s-600s
 postgresql_password_encryption: "{{ 'scram-sha-256' if postgresql_version is version_compare('14', '>=') else 'md5' }}" # (>=14.0 set to scram-sha-256 for best security)
 posgresql_scram_iterations: 4096 # (>= 16)
 postgresql_db_user_namespace: off
@@ -224,7 +224,7 @@ postgresql_temp_file_limit: -1
 
 # - Kernel Resources -
 
-postgresql_max_files_per_process: 1000  # min 25
+postgresql_max_files_per_process: 1000  # min 25, (>= 13) min 64
 
 # - Cost-Based Vacuum Delay -
 
@@ -415,9 +415,14 @@ postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
 postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
 postgresql_effective_cache_size:       128MB
 
-postgresql_jit_above_cost:             100000  # perform JIT compilation if available
-postgresql_jit_inline_above_cost:      500000  # inline small functions if query is
-postgresql_jit_optimize_above_cost:    500000  # use expensive JIT optimizations if
+postgresql_jit_above_cost:             100000  # (>= 11) perform JIT compilation if available
+                                               # and query more expensive than this;
+                                               # -1 disables
+postgresql_jit_inline_above_cost:      500000  # (>= 11) inline small functions if query is
+                                               # more expensive than this; -1 disables
+postgresql_jit_optimize_above_cost:    500000  # (>= 11) use expensive JIT optimizations if
+                                               # query is more expensive than this;
+                                               # -1 disables
 
 # - Genetic Query Optimizer -
 postgresql_geqo:                       on
@@ -433,7 +438,7 @@ postgresql_default_statistics_target:  100          # range 1-10000
 postgresql_constraint_exclusion:       "partition"  # on, off, or partition
 postgresql_cursor_tuple_fraction:      0.1          # range 0.0-1.0
 postgresql_from_collapse_limit:        8
-postgresql_jit:                        on           # (>= 11: off, 12: on)
+postgresql_jit:                        on           # (>= 11: off, >= 12: on)
 postgresql_join_collapse_limit:        8            # 1 disables collapsing of explicit
 postgresql_force_parallel_mode:        off          # on, off, regress (>= 9.6 <= 13)
 postgresql_plan_cache_mode:            "auto"       # (>= 12)
@@ -584,7 +589,7 @@ postgresql_track_counts:              on
 postgresql_track_io_timing:           off   # (>= 9.2)
 postgresql_track_wal_io_timing:       off   # (>= 14)
 postgresql_track_functions:           "none" # none, pl, all
-postgresql_stats_fetch_consistency:   cache  # (>= 15)
+postgresql_stats_fetch_consistency:   cache  # (>= 15) cache, none, snapshot
 postgresql_stats_temp_directory:      "pg_stat_tmp" # (<= 14)
 
 # - Monitoring -
@@ -650,7 +655,7 @@ postgresql_row_security: on                                        # (>= 9.5)
 postgresql_default_tablespace: "" # a tablespace name, "" uses the default
 postgresql_default_toast_compression: "pglz" # (>= 14) 'pglz' or 'lz4'
 postgresql_temp_tablespaces: [] # a list of tablespace names
-postgresql_default_table_access_method: "heap"
+postgresql_default_table_access_method: "heap" # (>= 12)
 postgresql_tablespaces_dirs: [] # a list of directories for tablespaces to be created
 
 postgresql_check_function_bodies:          on
@@ -690,8 +695,8 @@ postgresql_timezone:           "UTC"
 #   India
 # You can create your own file in `share/timezonesets/`.
 postgresql_timezone_abbreviations: "Default"
-
-postgresql_extra_float_digits: 0          # min -15, max 3
+# min -15, max 3; (>= 12) any value >0 actually selects precise output mode
+postgresql_extra_float_digits: 0
 postgresql_client_encoding:    false  # actually defaults to database encoding
                                       # 'sql_ascii', 'UTF8', ...
 
@@ -709,21 +714,22 @@ postgresql_icu_validation_level: "warning" # (>= 16) report ICU locale validatio
                                            # errors at the given level
 
 # default configuration for text search
-postgresql_default_text_search_config: "pg_catalog.english"
+postgresql_default_text_search_config: "pg_catalog.english" # default is 'pg_catalog.simple'
 
 # - Shared Library Preloading -
 
 postgresql_local_preload_libraries: []
 postgresql_session_preload_libraries: []
 postgresql_shared_preload_libraries: []
-postgresql_jit_provider: "llvmjit"
+postgresql_jit_provider: "llvmjit" # (>= 11)
 
 # - Other Defaults -
 
 postgresql_dynamic_library_path: "$libdir"
-postgresql_extension_destdir: ""  # (>= 14)
+postgresql_extension_destdir: ""  # prepend path when loading extensions
+                                  # and shared objects (added by Debian)
 
-postgresql_gin_fuzzy_search_limit: 0    # (<= 9.2)
+postgresql_gin_fuzzy_search_limit: 0
 
 #------------------------------------------------------------------------------
 # LOCK MANAGEMENT
@@ -772,7 +778,7 @@ postgresql_exit_on_error: off
 # Reinitialize after backend crash?
 postgresql_restart_after_crash: on
 # Retry or panic on failure to fsync data?
-postgresql_data_sync_retry: off
+postgresql_data_sync_retry: off # (>= 11)
 postgresql_recovery_init_sync_method: fsync #(>= 14) fsync, syncfs (Linux 5.8+)
 
 #------------------------------------------------------------------------------
