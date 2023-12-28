@@ -391,7 +391,7 @@ enable_parallel_hash = {{ 'on' if postgresql_enable_parallel_hash else 'off' }}
 enable_partition_pruning = {{ 'on' if postgresql_enable_partition_pruning else 'off' }}
 enable_partitionwise_join = {{ 'on' if postgresql_enable_partitionwise_join else 'off' }}
 enable_partitionwise_aggregate = {{ 'on' if postgresql_enable_partitionwise_aggregate else 'off' }}
-enable_presorted_aggregate = {{ 'on' if postgres_enable_presorted_aggregate else 'off }}
+enable_presorted_aggregate = {{ 'on' if postgres_enable_presorted_aggregate else 'off' }}
 enable_seqscan = {{ 'on' if postgresql_enable_seqscan else 'off' }}
 enable_sort = {{ 'on' if postgresql_enable_sort else 'off' }}
 enable_tidscan = {{ 'on' if postgresql_enable_tidscan else 'off' }}
@@ -709,7 +709,7 @@ bytea_output = '{{ postgresql_bytea_output }}'			# hex, escape
 xmlbinary = '{{ postgresql_xmlbinary }}'
 xmloption = '{{ postgresql_xmloption }}'
 gin_pending_list_limit = {{ postgresql_gin_pending_list_limit }}
-createrole_self_grant = {{ postgresql_createrole_self_grant }}		# set and/or inherit
+createrole_self_grant = '{{ postgresql_createrole_self_grant }}'		# set and/or inherit
 
 # - Locale and Formatting -
 
