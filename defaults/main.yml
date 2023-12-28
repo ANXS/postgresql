@@ -1,7 +1,7 @@
 # file: postgresql/defaults/main.yml
 
 # Basic settings
-postgresql_version: 15
+postgresql_version: 16
 postgresql_version_terse: "{{ postgresql_version | replace('.', '') }}"  # Short version of the postgresql_version, used in some path and filenames
 postgresql_encoding: "UTF-8"
 postgresql_data_checksums: false
@@ -28,7 +28,6 @@ postgresql_default_auth_method_hosts: "{{ 'scram-sha-256' if postgresql_version 
 postgresql_service_user: "{{ postgresql_admin_user }}"
 postgresql_service_user_pgsql_profile: false
 postgresql_service_group: "{{ postgresql_admin_user }}"
-postgresql_service_enabled: true
 
 postgresql_cluster_name: "main" # postgres default is ''
 postgresql_cluster_reset: false
@@ -156,7 +155,7 @@ posgresql_scram_iterations: 4096 # (>= 16)
 postgresql_db_user_namespace: off
 
 # GSSAPI using Kerberos
-postgresql_krb_server_keyfile: ""
+postgresql_krb_server_keyfile: "{{ 'FILE:${sysconfdir}/krb5.keytab' if postgresql_version is version_compare('14', '>=') else '' }}"
 postgresql_krb_srvname: "postgres" # (<= 9.3)
 postgresql_krb_caseins_users: off
 postgresql_gss_accept_delegation: off # (>= 16)
@@ -196,9 +195,9 @@ postgresql_max_prepared_transactions: 0 # zero disables the feature
 
 # Caution: it is not advisable to set max_prepared_transactions nonzero unless
 # you actively intend to use prepared transactions.
-postgresql_work_mem:                   1MB      # min 64kB
-postgresql_hash_mem_multiplier:        1.0      # (>= 13)
-postgresql_maintenance_work_mem:       16MB     # min 1MB
+postgresql_work_mem:                   4MB      # min 64kB
+postgresql_hash_mem_multiplier:        "{{ 2.0 if postgresql_version is version_compare('15', '>=') else 1.0 }}" # (>= 13)
+postgresql_maintenance_work_mem:       64MB     # min 1MB
 postgresql_replacement_sort_tuples:    150000   # (>= 9.6) limits use of replacement selection sort
 postgresql_autovacuum_work_mem:        -1       # min 1MB, or -1 to use maintenance_work_mem
 postgresql_logical_decoding_work_mem:  64MB     # (>= 13)
@@ -230,7 +229,7 @@ postgresql_max_files_per_process: 1000  # min 25, (>= 13) min 64
 
 postgresql_vacuum_cost_delay:      0       # 0-100 milliseconds
 postgresql_vacuum_cost_page_hit:   1       # 0-10000 credits
-postgresql_vacuum_cost_page_miss:  10      # 0-10000 credits
+postgresql_vacuum_cost_page_miss:  "{{ 2 if postgresql_version is version_compare('14', '>=') else 10 }}" # 0-10000 credits
 postgresql_vacuum_cost_page_dirty: 20      # 0-10000 credits
 postgresql_vacuum_cost_limit:      200     # 1-10000 credits
 
@@ -286,7 +285,7 @@ postgresql_min_wal_size:                 80MB  # (>= 9.5)
 postgresql_checkpoint_flush_after:       0     # (>= 9.6) 0 disables,
                                                # default is 256kB on linux, 0 otherwise
 postgresql_checkpoint_timeout:           5min  # range 30s-1d
-postgresql_checkpoint_completion_target: 0.5   # checkpoint target duration, 0.0 - 1.0
+postgresql_checkpoint_completion_target: "{{ 0.9 if postgresql_version is version_compare('14', '>=') else 0.5 }}" # checkpoint target duration, 0.0 - 1.0
 postgresql_checkpoint_warning:           30s   # 0 disables
 
 # - Prefetching during recovery -
@@ -353,7 +352,7 @@ postgresql_primary_conninfo: ""                    # (>= 12)
 postgresql_primary_slot_name: ""                   # (>= 12)
 postgresql_promote_trigger_file: ""                # (>= 12, <= 15)
 # "on" allows queries during recovery
-postgresql_hot_standby: off
+postgresql_hot_standby: on
 # max delay before canceling queries when reading WAL from archive
 postgresql_max_standby_archive_delay: 30s # -1 allows indefinite delay
 # max delay before canceling queries when reading streaming WAL;
@@ -413,7 +412,7 @@ postgresql_parallel_setup_cost:        1000.0  # same scale as above (>= 9.6)
 postgresql_min_parallel_relation_size: 8MB     # (= 9.6) replaced by below two parameters in 10
 postgresql_min_parallel_table_scan_size: 8MB   # (>= 10)
 postgresql_min_parallel_index_scan_size: 512kB # (>= 10)
-postgresql_effective_cache_size:       128MB
+postgresql_effective_cache_size:         4GB
 
 postgresql_jit_above_cost:             100000  # (>= 11) perform JIT compilation if available
                                                # and query more expensive than this;
@@ -458,7 +457,7 @@ postgresql_logging_collector:          off
 
 # These are only used if logging_collector is on:
 # Directory where log files are written, can be absolute or relative to PGDATA
-postgresql_log_directory:              "pg_log"
+postgresql_log_directory:              "log"
 # Log file name pattern, can include strftime() escapes
 postgresql_log_filename:               "postgresql-%Y-%m-%d_%H%M%S.log"
 postgresql_log_file_mode:              "0600" # begin with 0 to use octal notation
@@ -527,8 +526,8 @@ postgresql_debug_print_parse:     off
 postgresql_debug_print_rewritten: off
 postgresql_debug_print_plan:      off
 postgresql_debug_pretty_print:    on
-postgresql_log_autovacuum_min_duration: -1
-postgresql_log_checkpoints:       off
+postgresql_log_autovacuum_min_duration: "{{ '10min' if postgresql_version is version_compare('15', '>=') else -1 }}"
+postgresql_log_checkpoints:       "{{ 'on' if postgresql_version is version_compare('15', '>=') else 'off' }}"
 postgresql_log_connections:       off
 postgresql_log_disconnections:    off
 postgresql_log_duration:          off
@@ -558,7 +557,7 @@ postgresql_log_hostname:          off
 #        processes
 #   %% = '%'
 # e.g. '<%u%%%d> '
-postgresql_log_line_prefix: "%t "
+postgresql_log_line_prefix: "%m [%p] "
 
 # log lock waits >= deadlock_timeout
 postgresql_log_lock_waits: off
@@ -687,7 +686,7 @@ postgresql_datestyle:
   - "iso"
   - "mdy"
 postgresql_intervalstyle:      "postgres"
-postgresql_timezone:           "UTC"
+postgresql_timezone:           "UTC" # postgres default is GMT
 
 # Select the set of available time zone abbreviations. Currently, there are:
 #   Default
@@ -696,7 +695,7 @@ postgresql_timezone:           "UTC"
 # You can create your own file in `share/timezonesets/`.
 postgresql_timezone_abbreviations: "Default"
 # min -15, max 3; (>= 12) any value >0 actually selects precise output mode
-postgresql_extra_float_digits: 0
+postgresql_extra_float_digits: "{{ 1 if postgresql_version is version_compare('12', '>=') else 0 }}"
 postgresql_client_encoding:    false  # actually defaults to database encoding
                                       # 'sql_ascii', 'UTF8', ...
 

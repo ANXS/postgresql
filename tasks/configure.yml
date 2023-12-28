@@ -43,7 +43,7 @@
     state: directory
     mode: 0700
   register: pglog_dir_exist
-  when: postgresql_log_directory != "pg_log"
+  when: postgresql_log_directory != "pg_log" or postgresql_log_directory != "log"
 
 - name: PostgreSQL | Ensure the locale for lc_collate and lc_ctype is generated | Debian
   become: yes
