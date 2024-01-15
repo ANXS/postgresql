@@ -65,7 +65,7 @@ An example how to include this role as a task:
 | Ubuntu 18.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
 | Ubuntu 20.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
 | Ubuntu 22.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:white_check_mark:    | :white_check_mark: | :grey_question: |
-| Rockylinux 9.x | :interrobang:    | :interrobang:    | :white_check_mark:    | :grey_question:    |:white_check_mark: | :white_check_mark: | :grey_question: |
+| Rockylinux 9.x | :interrobang:    | :interrobang:    | :white_check_mark:    | :white_check_mark:  |:white_check_mark: | :white_check_mark: | :grey_question: |
 | Fedora 37      | :interrobang:    | :interrobang:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    | :grey_question: |
 
 - :white_check_mark: - tested, works fine
