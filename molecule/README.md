@@ -7,7 +7,7 @@ This directory is the home of the test playbooks:
 
 ## Molecule
 
-The default tested version is postgresql 12, 13, 14, 15 and 16 on Debian 11. Linting is disabled for the tests.
+The default tested versions are postgresql 12, 13, 14, 15 and 16 on Debian 11. Linting is disabled for the tests.
 
 The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 

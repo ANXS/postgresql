@@ -54,33 +54,28 @@ An example how to include this role as a task:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
-| ------------------------- |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| CentOS 7.x     | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| CentOS 8.x     | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| Debian 9.x     | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| Debian 10.x    | :interrobang:   | :interrobang:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    | :grey_question: |
-| Debian 11.x    | :interrobang:    | :interrobang:    | :white_check_mark:    | :white_check_mark:    | :white_check_mark:    | :white_check_mark: | :grey_question: |
-| Ubuntu 16.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| Ubuntu 18.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| Ubuntu 20.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:grey_question:    | :grey_question:    | :grey_question: |
-| Ubuntu 22.04.x | :interrobang: | :interrobang: | :white_check_mark: | :white_check_mark: |:white_check_mark:    | :white_check_mark: | :grey_question: |
-| Rockylinux 9.x | :interrobang:    | :interrobang:    | :white_check_mark:    | :white_check_mark:  |:white_check_mark: | :white_check_mark: | :grey_question: |
-| Fedora 37      | :interrobang:    | :interrobang:    | :grey_question:    | :grey_question:    |:grey_question:    | :grey_question:    | :grey_question: |
+| Distribution / PostgreSQL |     11     |         12         |         13         |         14         |         15         |       16        |
+| ------------------------- | :--------: | :----------------: | :----------------: | :----------------: | :----------------: | :-------------: |
+| CentOS 8.x                | :no_entry: | :white_check_mark: | :white_check_mark: |  :grey_question:   |  :grey_question:   | :grey_question: |
+| Debian 11.x               | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :grey_question: |
+| Debian 12.x               | :no_entry: |   :interrobang:    |   :interrobang:    |   :interrobang:    |   :interrobang:    |  :interrobang:  |
+| Ubuntu 20.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: |  :grey_question:   |  :grey_question:   | :grey_question: |
+| Ubuntu 22.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :grey_question: |
+| Rockylinux 9.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :grey_question: |
+| Fedora 39                 | :no_entry: |   :interrobang:    |   :interrobang:    |   :interrobang:    |   :interrobang:    |  :interrobang:  |
 
 - :white_check_mark: - tested, works fine
-- :warning: - Not for production use
+- :warning: - not for production use
 - :grey_question: - will work in the future (help out if you can)
 - :interrobang: - maybe works, not tested
-- :no_entry: - Has reached End of Life (EOL)
-
+- :no_entry: - has reached End of Life (EOL)
 
 
 #### Variables
 
 ```yaml
 # Basic settings
-postgresql_version: 15
+postgresql_version: 16
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
@@ -88,9 +83,7 @@ postgresql_ctype: "en_US.UTF-8"
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"
 
-postgresql_service_enabled: false # should the service be enabled, default is true
-
-postgresql_cluster_name: "main"
+postgresql_cluster_name: main
 postgresql_cluster_reset: false
 
 # List of databases to be created (optional)
