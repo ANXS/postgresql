@@ -45,7 +45,10 @@ jobs:
       matrix:
         include:
           - distro: rockylinux8
+          - distro: rockylinux9
           - distro: debian11
+          - distro: debian12
+          - distro: ubuntu2004
           - distro: ubuntu2204
 
     steps:
