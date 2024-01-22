@@ -241,7 +241,8 @@
   - name: PostgreSQL | Reload PostgreSQL configuration
     service:
       name: "{{ postgresql_service_name }}"
-      state: reloaded
+      # TODO improve "need restart" detection
+      state: "{{ postgresql_service_restarted_state }}"
     register: postgresql_reloaded
     when: not postgresql_cold_started.changed
   when: postgresql_configuration_pt1.changed or postgresql_configuration_pt2.changed or postgresql_configuration_pt3.changed or postgresql_systemd_custom_conf.changed
