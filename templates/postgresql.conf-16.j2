@@ -1,0 +1,239 @@
+# {{ ansible_managed }}
+# -----------------------------
+# PostgreSQL configuration file
+# -----------------------------
+
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+
+data_directory = '{{ postgresql_data_directory }}'
+hba_file = '{{ postgresql_hba_file }}'
+ident_file = '{{ postgresql_ident_file }}'
+external_pid_file = '{{ postgresql_external_pid_file }}'
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+# - Connection Settings -
+
+listen_addresses = '{{ postgresql_listen_addresses | join(', ') }}'
+port = {{ postgresql_port }}
+max_connections = {{ postgresql_max_connections }}
+superuser_reserved_connections = {{ postgresql_superuser_reserved_connections }}
+unix_socket_directories = '{{ postgresql_unix_socket_directories | join(', ') }}'
+
+# - TCP settings -
+# see "man tcp" for details
+
+tcp_keepalives_idle = {{ postgresql_tcp_keepalives_idle }}
+tcp_keepalives_interval = {{ postgresql_tcp_keepalives_interval }}
+tcp_keepalives_count = {{ postgresql_tcp_keepalives_count }}
+
+# - Authentication -
+
+password_encryption = {{ postgresql_password_encryption_method }}
+db_user_namespace = {{ 'on' if postgresql_db_user_namespace else 'off' }}
+
+
+# - SSL -
+
+ssl = {{ 'on' if postgresql_ssl else 'off' }}
+ssl_cert_file = '{{ postgresql_ssl_cert_file }}'
+ssl_key_file = '{{ postgresql_ssl_key_file }}'
+ssl_ciphers = '{{ postgresql_ssl_ciphers | join(':') }}'
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+# - Memory -
+
+shared_buffers = {{ postgresql_shared_buffers }}
+temp_buffers = {{ postgresql_temp_buffers }}
+work_mem = {{ postgresql_work_mem }}
+maintenance_work_mem = {{ postgresql_maintenance_work_mem }}
+
+# - Background Writer -
+
+bgwriter_flush_after = {{ postgresql_bgwriter_flush_after }}
+
+# - Asynchronous Behavior -
+
+effective_io_concurrency = {{ postgresql_effective_io_concurrency }}
+max_worker_processes = {{ postgresql_max_worker_processes }}
+max_parallel_workers_per_gather = {{ postgresql_max_parallel_workers_per_gather }}
+max_parallel_maintenance_workers = {{ postgresql_max_parallel_maintenance_workers }}
+
+#------------------------------------------------------------------------------
+# WRITE-AHEAD LOG
+#------------------------------------------------------------------------------
+
+# - Settings -
+
+wal_level = {{ postgresql_wal_level }}
+synchronous_commit = {{ postgresql_synchronous_commit }}
+wal_sync_method = {{ postgresql_wal_sync_method }}
+wal_buffers = {{ postgresql_wal_buffers }}
+wal_writer_delay = {{ postgresql_wal_writer_delay }}
+
+# - Checkpoints -
+
+checkpoint_timeout = {{ postgresql_checkpoint_timeout }}
+checkpoint_completion_target = {{ postgresql_checkpoint_completion_target }}
+checkpoint_flush_after = {{ postgresql_checkpoint_flush_after }}
+max_wal_size = {{ postgresql_max_wal_size }}
+min_wal_size = {{ postgresql_min_wal_size }}
+
+# - Archiving -
+
+archive_mode = {{ 'on' if ( postgresql_archive_mode | bool == true or postgresql_archive_mode == 'on' ) else ( 'always' if postgresql_archive_mode == 'always' else 'off' ) }}
+archive_command = '{{ postgresql_archive_command }}'
+archive_timeout = {{ postgresql_archive_timeout }}
+
+# - Archive Recovery -
+
+# These are only used in recovery mode.
+
+restore_command = '{{ postgresql_restore_command }}'
+
+# - Recovery Target -
+
+# Set these only when performing a targeted recovery.
+
+{% if not postgresql_recovery_target %}
+#recovery_target = '{{ postgresql_recovery_target }}'
+{% else %}
+recovery_target = '{{ postgresql_recovery_target }}'
+{% endif %}
+
+recovery_target_timeline = '{{ postgresql_recovery_target_timeline }}'
+recovery_target_action = '{{ postgresql_recovery_target_action }}'
+
+#------------------------------------------------------------------------------
+# REPLICATION
+#------------------------------------------------------------------------------
+
+# - Sending Servers -
+
+# Set these on the primary and on any standby that will send replication data.
+
+max_wal_senders = {{ postgresql_max_wal_senders }}
+max_replication_slots = {{ postgresql_max_replication_slots }}
+
+# - Standby Servers -
+
+# These settings are ignored on a primary server.
+primary_conninfo = '{{ postgresql_primary_conninfo }}'
+hot_standby = {{ 'on' if postgresql_hot_standby else 'off' }}
+max_standby_archive_delay = {{ postgresql_max_standby_archive_delay }}
+max_standby_streaming_delay = {{ postgresql_max_standby_streaming_delay }}
+wal_receiver_status_interval = {{ postgresql_wal_receiver_status_interval }}
+hot_standby_feedback = {{ 'on' if postgresql_hot_standby_feedback else 'off' }}
+recovery_min_apply_delay = {{ postgresql_recovery_min_apply_delay }}
+
+#------------------------------------------------------------------------------
+# QUERY TUNING
+#------------------------------------------------------------------------------
+
+# - Planner Cost Constants -
+
+random_page_cost = {{ postgresql_random_page_cost }}
+effective_cache_size = {{ postgresql_effective_cache_size }}
+
+# - Genetic Query Optimizer -
+
+geqo_threshold = {{ postgresql_geqo_threshold }}
+
+# - Other Planner Options -
+jit = {{ 'on' if postgresql_jit else 'off' }}
+
+#------------------------------------------------------------------------------
+# REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+# - Where to Log -
+
+log_destination = '{{ postgresql_log_destination }}'
+
+# These are relevant when logging to syslog:
+syslog_facility = '{{ postgresql_syslog_facility }}'
+syslog_ident = '{{ postgresql_syslog_ident }}'
+
+# - When to Log -
+
+log_min_error_statement = {{ postgresql_log_min_error_statement }}
+log_min_duration_statement = {{ postgresql_log_min_duration_statement }}
+
+# - What to Log -
+
+log_autovacuum_min_duration = {{ postgresql_log_autovacuum_min_duration }}
+log_checkpoints = {{ 'on' if postgresql_log_checkpoints else 'off' }}
+log_connections = {{ 'on' if postgresql_log_connections else 'off' }}
+log_disconnections = {{ 'on' if postgresql_log_disconnections else 'off' }}
+log_duration = {{ 'on' if postgresql_log_duration else 'off' }}
+log_error_verbosity = {{ postgresql_log_error_verbosity }}
+log_hostname = {{ 'on' if postgresql_log_hostname else 'off' }}
+log_line_prefix = '{{ postgresql_log_line_prefix }}'
+log_lock_waits = {{ 'on' if postgresql_log_lock_waits else 'off' }}
+log_statement = '{{ postgresql_log_statement }}'
+
+# - Process Title -
+
+cluster_name = '{{ postgresql_cluster_name }}'
+
+#------------------------------------------------------------------------------
+# STATISTICS
+#------------------------------------------------------------------------------
+
+# - Cumulative Query and Index Statistics -
+
+track_activities = {{ 'on' if postgresql_track_activities else 'off' }}
+track_activity_query_size = {{ postgresql_track_activity_query_size }}
+track_counts = {{ 'on' if postgresql_track_counts else 'off' }}
+track_io_timing = {{ 'on' if postgresql_track_io_timing else 'off' }}
+track_functions = {{ postgresql_track_functions }}
+
+#------------------------------------------------------------------------------
+# AUTOVACUUM
+#------------------------------------------------------------------------------
+
+autovacuum_max_workers = {{ postgresql_autovacuum_max_workers }}
+autovacuum_vacuum_scale_factor = {{ postgresql_autovacuum_vacuum_scale_factor }}
+autovacuum_analyze_scale_factor = {{ postgresql_autovacuum_analyze_scale_factor }}
+autovacuum_vacuum_cost_limit = {{ postgresql_autovacuum_vacuum_cost_limit }}
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+# - Statement Behavior -
+
+row_security = {{ 'on' if postgresql_row_security else 'off' }}
+idle_in_transaction_session_timeout = {{ postgresql_idle_in_transaction_session_timeout }}
+
+# - Locale and Formatting -
+
+datestyle = '{{ postgresql_datestyle | join(', ') }}'
+timezone = '{{ postgresql_timezone }}'
+
+# These settings are initialized by initdb, but they can be changed.
+lc_messages = '{{ postgresql_lc_messages }}'
+lc_monetary = '{{ postgresql_lc_monetary }}'
+lc_numeric = '{{ postgresql_lc_numeric }}'
+lc_time = '{{ postgresql_lc_time }}'
+
+# default configuration for text search
+default_text_search_config = '{{ postgresql_default_text_search_config }}'
+
+# - Shared Library Preloading -
+
+session_preload_libraries = '{{ postgresql_session_preload_libraries | join(', ') }}'
+shared_preload_libraries = '{{ postgresql_shared_preload_libraries | join(', ') }}'
+
+#------------------------------------------------------------------------------
+# LOCK MANAGEMENT
+#------------------------------------------------------------------------------
+
+max_locks_per_transaction = {{ postgresql_max_locks_per_transaction }}
