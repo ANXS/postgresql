@@ -116,6 +116,7 @@
     {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
+    {% if postgresql_wal_segsize != "" and postgresql_version is version_compare('11', '>=') %}--wal-segsize={{ postgresql_wal_segsize }} {% endif %}
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
