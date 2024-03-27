@@ -111,6 +111,7 @@ postgresql_ident_file: "{{ postgresql_conf_directory }}/pg_ident.conf"
 postgresql_varlib_directory_name: "postgresql"
 postgresql_data_directory: "/var/lib/{{ postgresql_varlib_directory_name }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 postgresql_wal_directory: ""
+postgresql_wal_segsize: ""
 postgresql_pid_directory: "/var/run/postgresql"
 # If external_pid_file is not explicitly set, on extra PID file is written
 postgresql_external_pid_file: "{{ postgresql_pid_directory }}/{{ postgresql_version }}-{{ postgresql_cluster_name }}.pid"
