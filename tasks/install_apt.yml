@@ -32,25 +32,25 @@
     pkg: "{{ postgresql_apt_dependencies }}"
     state: present
     update_cache: yes
-    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
+    cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
 
 - name: PostgreSQL | Install PostgreSQL | apt
   apt:
     name:
-      - "postgresql-{{postgresql_version}}"
-      - "postgresql-client-{{postgresql_version}}"
-      - "postgresql-contrib-{{postgresql_version}}"
+      - "postgresql-{{ postgresql_version }}"
+      - "postgresql-client-{{ postgresql_version }}"
+      - "postgresql-contrib-{{ postgresql_version }}"
     state: present
     update_cache: yes
-    default_release: "{{postgresql_default_release | default(ansible_distribution_release + '-pgdg')}}"
-    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
-  environment: "{{postgresql_env}}"
+    default_release: "{{ postgresql_default_release | default(ansible_distribution_release + '-pgdg') }}"
+    cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
+  environment: "{{ postgresql_env }}"
 
 - name: PostgreSQL | PGTune | apt
   apt:
     name: pgtune
     state: present
     update_cache: yes
-    cache_valid_time: "{{apt_cache_valid_time | default (3600)}}"
-  environment: "{{postgresql_env}}"
+    cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
+  environment: "{{ postgresql_env }}"
   when: postgresql_pgtune

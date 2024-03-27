@@ -9,7 +9,7 @@
 
 - name: PostgreSQL | Make sure the postgres data directory exists
   file:
-    path: "{{postgresql_data_directory}}"
+    path: "{{ postgresql_data_directory }}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     state: directory
@@ -138,7 +138,7 @@
 - name: PostgreSQL | Update configuration - pt. 1 (pg_hba.conf)
   template:
     src: pg_hba.conf.j2
-    dest: "{{postgresql_conf_directory}}/pg_hba.conf"
+    dest: "{{ postgresql_conf_directory }}/pg_hba.conf"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
@@ -149,7 +149,7 @@
   template:
     src: "postgresql.conf-{{ postgresql_version }}.j2"
     # if using pgtune, save the template to ".untuned"
-    dest: "{{postgresql_conf_directory}}/postgresql.conf{% if postgresql_pgtune %}.untuned{% endif %}"
+    dest: "{{ postgresql_conf_directory }}/postgresql.conf{% if postgresql_pgtune %}.untuned{% endif %}"
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
@@ -163,9 +163,9 @@
     TMPDIR=$(mktemp -d)
     pgtune --input-config=postgresql.conf.untuned\
            --output-config=$TMPDIR/postgresql.conf\
-           {% if postgresql_pgtune_memory %}--memory {{postgresql_pgtune_memory|int}}{% endif %}\
-           --type {{postgresql_pgtune_type|quote}}\
-           {% if postgresql_pgtune_connections %}--connections {{postgresql_pgtune_connections|int}}{% endif %}\
+           {% if postgresql_pgtune_memory %}--memory {{ postgresql_pgtune_memory|int }}{% endif %}\
+           --type {{ postgresql_pgtune_type|quote }}\
+           {% if postgresql_pgtune_connections %}--connections {{ postgresql_pgtune_connections|int }}{% endif %}\
     # Compare the current config with the one procuded by pgtune (ignoring comments/blanks)
     if diff --ignore-blank-lines \
         <(sed -e 's/#.*//' postgresql.conf) \
@@ -179,7 +179,7 @@
     rm $TMPDIR/postgresql.conf
     rmdir $TMPDIR
   args:
-    chdir: "{{postgresql_conf_directory}}"
+    chdir: "{{ postgresql_conf_directory }}"
     executable: "/bin/bash"
   when: postgresql_pgtune
   register: postgresql_configuration_pt3
@@ -197,7 +197,7 @@
 
 - name: PostgreSQL | Create folder for additional configuration files
   file:
-    name: "{{postgresql_conf_directory}}/conf.d"
+    name: "{{ postgresql_conf_directory }}/conf.d"
     state: directory
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
