@@ -754,3 +754,6 @@ include_dir = '{{ postgresql_include_dir }}'                    # include files 
 #------------------------------------------------------------------------------
 
 # Add settings for extensions here
+{% for key, value in postgresql_extensions_options.items() %}
+    {{key}} = {{value}}
+{% endfor %}
