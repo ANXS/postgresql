@@ -836,3 +836,10 @@ postgresql_apt_py2_dependencies: ["python-psycopg2", "python-pycurl", "locales"]
 postgresql_apt_dependencies: "{{ postgresql_apt_py3_dependencies if 'python3' in ansible_python_interpreter|default('') else postgresql_apt_py2_dependencies }}"
 
 postgresql_hide_passwords: false
+
+#------------------------------------------------------------------------------
+# EXTENSIONS OPTIONS
+#------------------------------------------------------------------------------
+
+# Dictionary of options from loaded extensions (optional)
+postgresql_extensions_options: {}
