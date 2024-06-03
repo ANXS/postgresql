@@ -5,3 +5,4 @@
       name: "{{ postgresql_service_name }}"
       state: reloaded
       enabled: yes
+    become: true
