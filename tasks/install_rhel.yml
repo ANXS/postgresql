@@ -19,6 +19,12 @@
            enabled: yes
         when: postgresql_install_repository
 
+      - name: PostgreSQL | Make sure the dependencies are installed | yum
+        yum:
+         name: ["python-psycopg2", "python-pycurl", "glibc-common","libselinux-python"]
+         state: present
+         update_cache: yes
+
       - name: PostgreSQL | Disable postgresql module (necessary for RHEL8+)
         command:
           cmd: dnf module disable postgresql -y
