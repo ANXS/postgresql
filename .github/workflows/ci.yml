@@ -50,6 +50,7 @@ jobs:
           - distro: debian12
           - distro: ubuntu2004
           - distro: ubuntu2204
+          - distro: ubuntu2404
 
     steps:
       - name: Check out the codebase.
@@ -63,7 +64,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible molecule molecule-plugins[docker] docker
+        run: pip3 install "ansible>9,<10" molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
         run: molecule -v test

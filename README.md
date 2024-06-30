@@ -54,11 +54,11 @@ An example how to include this role as a task:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL |     11     |         12         |         13         |         14         |         15         |       16        |
-| ------------------------- | :--------: | :----------------: | :----------------: | :----------------: | :----------------: | :-------------: |
+| Distribution / PostgreSQL |     11     |         12         |         13         |         14         |         15         |         16         |
+| ------------------------- | :--------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
 | Debian 11.x               | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Debian 12.x               | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Rockylinux 8.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Rockylinux 8.x            | :no_entry: |     :warning:      |     :warning:      |     :warning:      |     :warning:      |     :warning:      |
 | Rockylinux 9.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ubuntu 20.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ubuntu 22.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
