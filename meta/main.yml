@@ -1,3 +1,4 @@
+---
 # file: postgresql/meta/main.yml
 
 galaxy_info:
@@ -10,38 +11,37 @@ galaxy_info:
   license: MIT
 
   platforms:
-  - name: Debian
-    versions:
-    - stretch
-    - buster
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
 
-  - name: EL
-    versions:
-    - 7
-    - 8
+    - name: EL
+      versions:
+        - "8"
+        - "9"
 
-  - name: Ubuntu
-    versions:
-    - bionic
-    - focal
-    - xenial
-    - jammy
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
 
-  - name: Fedora
-    versions:
-    - 37
+    - name: Fedora
+      versions:
+        - "40"
 
   galaxy_tags:
-  - postgresql
-  - postgres
-  - database
-  - database:sql
-  - sql
-  - postgis
-  - debian
-  - centos
-  - redhat
-  - fedora
-  - ubuntu
+    - postgresql
+    - postgres
+    - database
+    - database:sql
+    - sql
+    - postgis
+    - debian
+    - rockylinux
+    - redhat
+    - fedora
+    - ubuntu
 
 dependencies: []
