@@ -64,11 +64,9 @@ An example how to include this role as a task:
 | Ubuntu 22.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 
-- :white_check_mark: - tested, works fine
-- :warning: - not for production use
-- :grey_question: - will work in the future (help out if you can)
-- :interrobang: - maybe works, not tested
-- :no_entry: - has reached End of Life (EOL)
+- :white_check_mark: - works fine
+- :warning: - has known issues
+- :no_entry: - is unsupported and/or EOL
 
 
 #### Variables
