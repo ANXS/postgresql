@@ -1,3 +1,4 @@
 ---
 # PostgreSQL vars for v14
+
 postgresql_client_connection_check_interval: 60

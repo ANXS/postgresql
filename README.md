@@ -54,21 +54,19 @@ An example how to include this role as a task:
 
 #### Compatibility matrix
 
-| Distribution / PostgreSQL |     11     |         12         |         13         |         14         |         15         |       16        |
-| ------------------------- | :--------: | :----------------: | :----------------: | :----------------: | :----------------: | :-------------: |
+| Distribution / PostgreSQL |     11     |         12         |         13         |         14         |         15         |         16         |
+| ------------------------- | :--------: | :----------------: | :----------------: | :----------------: | :----------------: | :----------------: |
 | Debian 11.x               | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Debian 12.x               | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Rockylinux 8.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Rockylinux 8.x            | :no_entry: |     :warning:      |     :warning:      |     :warning:      |     :warning:      |     :warning:      |
 | Rockylinux 9.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ubuntu 20.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ubuntu 22.04.x            | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 
-- :white_check_mark: - tested, works fine
-- :warning: - not for production use
-- :grey_question: - will work in the future (help out if you can)
-- :interrobang: - maybe works, not tested
-- :no_entry: - has reached End of Life (EOL)
+- :white_check_mark: - works fine
+- :warning: - has known issues
+- :no_entry: - is unsupported and/or EOL
 
 
 #### Variables
