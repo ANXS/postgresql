@@ -11,16 +11,12 @@ The default tested versions are postgresql 12, 13, 14, 15 and 16 on Debian 11. L
 
 The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 
-* centos7
-* centos8
-* fedora37
-* debian9
-* debian10
+* fedora40
 * debian11
-* ubuntu1604
-* ubuntu1804
+* debian12
 * ubuntu2004
 * ubuntu2204
+* ubuntu2404
 
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
@@ -37,7 +33,7 @@ Prior to the testing, molecule runs the prepare.yml playbook to:
 * Create a user called `ansible`, with the default group membership of either `wheel` (CentOS, Fedora), or `sudo` (Debian, ubuntu)
 * Install a couple of packages that Jeff Geerling did not install in his container images, that are needed in order to test the role properly
 
-The main file ./molecule/default/molecule.yml sets up versions to test from 10 to 13.
+The main file ./molecule/default/molecule.yml sets up versions to test from 12 to 16.
 
 ## Tests
 
@@ -48,26 +44,19 @@ The playbooks read variables from two files. One common vars file, and one with 
 
 ```bash
 $ ls -1 tests/ | grep vars
-vars.CentOS.7.yml
-vars.CentOS.8.yml
-vars.Debian.10.yml
 vars.Debian.11.yml
-vars.Debian.9.yml
-vars.Debian.yml
-vars.Fedora.37.yml
-vars.Ubuntu.16.yml
-vars.Ubuntu.18.yml
+vars.Debian.12.yml
+vars.Fedora.40.yml
 vars.Ubuntu.20.yml
 vars.Ubuntu.22.yml
+vars.Ubuntu.24.yml
 vars.yml
 ```
-
-The main difference, currently, is which python version to use.
 
 ## Local installation of molecule
 
 ```bash
-pip install molecule molecule-docker
+pip install molecule molecule-plugins[docker]
 ```
 
 ## Examples
