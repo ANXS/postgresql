@@ -24,6 +24,9 @@ postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"
 postgresql_default_auth_method_hosts: "{{ 'scram-sha-256' if postgresql_version is version_compare('14', '>=') else 'md5' }}" # (>=14.0 scram-sha-256 is default value)
 
+# The description that will use to customize process or service description
+postgresql_service_description: "PostgreSQL RDBMS"
+
 # The user/group that will run postgresql process or service
 postgresql_service_user: "{{ postgresql_admin_user }}"
 postgresql_service_user_pgsql_profile: false
