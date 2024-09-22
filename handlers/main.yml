@@ -5,3 +5,7 @@
       name: "{{ postgresql_service_name }}"
       state: restarted
       enabled: yes
+
+  - name: reload service daemon
+    ansible.builtin.systemd_service:
+      daemon_reload: true
