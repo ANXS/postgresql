@@ -20,6 +20,7 @@ postgresql_env:
   LC_ALL: "{{ postgresql_locale }}"
   LC_LCTYPE: "{{ postgresql_locale }}"
 
+postgresql_linux_admin_user: "root"
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"
 postgresql_default_auth_method_hosts: "{{ 'scram-sha-256' if postgresql_version is version_compare('14', '>=') else 'md5' }}" # (>=14.0 scram-sha-256 is default value)
@@ -81,10 +82,10 @@ postgresql_user_privileges: []
 
 # pg_hba.conf
 postgresql_pg_hba_default:
-  - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
   - { type: host,  database: all, user: all, address: "127.0.0.1/32", method: "{{ postgresql_default_auth_method_hosts }}", comment: "IPv4 local connections:" }
   - { type: host,  database: all, user: all, address: "::1/128",      method: "{{ postgresql_default_auth_method_hosts }}", comment: "IPv6 local connections:" }
-  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map=root_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
+  - { type: local, database: all, user: "{{ postgresql_admin_user }}", address: "", method: "peer map={{ postgresql_linux_admin_user }}_as_{{ postgresql_admin_user }}", comment: "Local root Unix user, passwordless access" }
+  - { type: local, database: all, user: all, address: "",             method: "{{ postgresql_default_auth_method }}", comment: '"local" is for Unix domain socket connections only' }
 
 postgresql_pg_hba_md5_hosts: []
 postgresql_pg_hba_passwd_hosts: []
@@ -95,7 +96,7 @@ postgresql_pg_hba_custom: []
 postgresql_pg_ident:
   - comment: "root is allowed to login as {{ postgresql_admin_user }}"
     mapname: "root_as_{{ postgresql_admin_user }}"
-    system_username: "{{ postgresql_admin_user }}"
+    system_username: "{{ postgresql_linux_admin_user }}"
     pg_username: "{{ postgresql_admin_user }}"
 
 # postgresql.conf
