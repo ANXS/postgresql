@@ -39,15 +39,15 @@
 # The default values of these variables are driven from the -D command-line
 # option or PGDATA environment variable, represented here as ConfigDir.
 
-data_directory = '/var/lib/postgresql/15/main'		# use data in another directory
+#data_directory = 'ConfigDir'		# use data in another directory
 					# (change requires restart)
-hba_file = '/etc/postgresql/15/main/pg_hba.conf'	# host-based authentication file
+#hba_file = 'ConfigDir/pg_hba.conf'	# host-based authentication file
 					# (change requires restart)
-ident_file = '/etc/postgresql/15/main/pg_ident.conf'	# ident configuration file
+#ident_file = 'ConfigDir/pg_ident.conf'	# ident configuration file
 					# (change requires restart)
 
 # If external_pid_file is not explicitly set, no extra PID file is written.
-external_pid_file = '/var/run/postgresql/15-main.pid'			# write an extra PID file
+#external_pid_file = ''			# write an extra PID file
 					# (change requires restart)
 
 
@@ -61,10 +61,10 @@ external_pid_file = '/var/run/postgresql/15-main.pid'			# write an extra PID fil
 					# comma-separated list of addresses;
 					# defaults to 'localhost'; use '*' for all
 					# (change requires restart)
-port = 5439				# (change requires restart)
-max_connections = 100			# (change requires restart)
+#port = 5432				# (change requires restart)
+#max_connections = 100			# (change requires restart)
 #superuser_reserved_connections = 3	# (change requires restart)
-unix_socket_directories = '/var/run/postgresql'	# comma-separated list of directories
+#unix_socket_directories = '/tmp'	# comma-separated list of directories
 					# (change requires restart)
 #unix_socket_group = ''			# (change requires restart)
 #unix_socket_permissions = 0777		# begin with 0 to use octal notation
@@ -102,12 +102,12 @@ unix_socket_directories = '/var/run/postgresql'	# comma-separated list of direct
 
 # - SSL -
 
-ssl = on
+#ssl = off
 #ssl_ca_file = ''
-ssl_cert_file = '/etc/ssl/certs/ssl-cert-snakeoil.pem'
+#ssl_cert_file = 'server.crt'
 #ssl_crl_file = ''
 #ssl_crl_dir = ''
-ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key'
+#ssl_key_file = 'server.key'
 #ssl_ciphers = 'HIGH:MEDIUM:+3DES:!aNULL' # allowed SSL ciphers
 #ssl_prefer_server_ciphers = on
 #ssl_ecdh_curve = 'prime256v1'
@@ -124,7 +124,7 @@ ssl_key_file = '/etc/ssl/private/ssl-cert-snakeoil.key'
 
 # - Memory -
 
-shared_buffers = 128MB			# min 128kB
+#shared_buffers = 128MB			# min 128kB
 					# (change requires restart)
 #huge_pages = try			# on, off, or try
 					# (change requires restart)
@@ -147,7 +147,7 @@ shared_buffers = 128MB			# min 128kB
 					#   sysv
 					#   windows
 					# (change requires restart)
-dynamic_shared_memory_type = posix	# the default is usually the first option
+#dynamic_shared_memory_type = posix	# the default is usually the first option
 					# supported by the operating system:
 					#   posix
 					#   sysv
@@ -179,7 +179,7 @@ dynamic_shared_memory_type = posix	# the default is usually the first option
 #bgwriter_delay = 200ms			# 10-10000ms between rounds
 #bgwriter_lru_maxpages = 100		# max buffers written/round, 0 disables
 #bgwriter_lru_multiplier = 2.0		# 0-10.0 multiplier on buffers scanned/round
-#bgwriter_flush_after = 512kB		# measured in pages, 0 disables
+#bgwriter_flush_after = 0		# measured in pages, 0 disables
 
 # - Asynchronous Behavior -
 
@@ -236,10 +236,10 @@ dynamic_shared_memory_type = posix	# the default is usually the first option
 
 #checkpoint_timeout = 5min		# range 30s-1d
 #checkpoint_completion_target = 0.9	# checkpoint target duration, 0.0 - 1.0
-#checkpoint_flush_after = 256kB		# measured in pages, 0 disables
+#checkpoint_flush_after = 0		# measured in pages, 0 disables
 #checkpoint_warning = 30s		# 0 disables
-max_wal_size = 1GB
-min_wal_size = 80MB
+#max_wal_size = 1GB
+#min_wal_size = 80MB
 
 # - Prefetching during recovery -
 
@@ -556,7 +556,7 @@ min_wal_size = 80MB
 #log_duration = off
 #log_error_verbosity = default		# terse, default, or verbose messages
 #log_hostname = off
-log_line_prefix = '%m [%p] %q%u@%d '		# special values:
+#log_line_prefix = '%m [%p] '		# special values:
 					#   %a = application name
 					#   %u = user name
 					#   %d = database name
@@ -594,14 +594,14 @@ log_line_prefix = '%m [%p] %q%u@%d '		# special values:
 #log_temp_files = -1			# log temporary files equal or larger
 					# than the specified size in kilobytes;
 					# -1 disables, 0 logs all temp files
-log_timezone = 'Europe/Paris'
+#log_timezone = 'GMT'
 
 
 #------------------------------------------------------------------------------
 # PROCESS TITLE
 #------------------------------------------------------------------------------
 
-cluster_name = '15/main'			# added to process titles if nonempty
+#cluster_name = ''			# added to process titles if nonempty
 					# (change requires restart)
 #update_process_title = on
 
@@ -708,9 +708,9 @@ cluster_name = '15/main'			# added to process titles if nonempty
 
 # - Locale and Formatting -
 
-datestyle = 'iso, dmy'
+#datestyle = 'iso, mdy'
 #intervalstyle = 'postgres'
-timezone = 'Europe/Paris'
+#timezone = 'GMT'
 #timezone_abbreviations = 'Default'     # Select the set of available time zone
 					# abbreviations.  Currently, there are
 					#   Default
@@ -724,14 +724,14 @@ timezone = 'Europe/Paris'
 					# encoding
 
 # These settings are initialized by initdb, but they can be changed.
-lc_messages = 'fr_FR.UTF-8'			# locale for system error message
+#lc_messages = 'C'			# locale for system error message
 					# strings
-lc_monetary = 'fr_FR.UTF-8'			# locale for monetary formatting
-lc_numeric = 'fr_FR.UTF-8'			# locale for number formatting
-lc_time = 'fr_FR.UTF-8'				# locale for time formatting
+#lc_monetary = 'C'			# locale for monetary formatting
+#lc_numeric = 'C'			# locale for number formatting
+#lc_time = 'C'				# locale for time formatting
 
 # default configuration for text search
-default_text_search_config = 'pg_catalog.french'
+#default_text_search_config = 'pg_catalog.simple'
 
 # - Shared Library Preloading -
 
@@ -802,7 +802,7 @@ default_text_search_config = 'pg_catalog.french'
 # default postgresql.conf.  Note that these are directives, not variable
 # assignments, so they can usefully be given more than once.
 
-include_dir = 'conf.d'			# include files ending in '.conf' from
+#include_dir = '...'			# include files ending in '.conf' from
 					# a directory, e.g., 'conf.d'
 #include_if_exists = '...'		# include file only if it exists
 #include = '...'			# include file

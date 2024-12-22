@@ -24,7 +24,8 @@
 # "postgres -c log_connections=on".  Some parameters can be changed at run time
 # with the "SET" SQL command.
 #
-# Memory units:  kB = kilobytes        Time units:  ms  = milliseconds
+# Memory units:  B  = bytes            Time units:  us  = microseconds
+#                kB = kilobytes                     ms  = milliseconds
 #                MB = megabytes                     s   = seconds
 #                GB = gigabytes                     min = minutes
 #                TB = terabytes                     h   = hours
@@ -92,7 +93,7 @@
 #db_user_namespace = off
 
 # GSSAPI using Kerberos
-#krb_server_keyfile = ''
+#krb_server_keyfile = 'FILE:${sysconfdir}/krb5.keytab'
 #krb_caseins_users = off
 
 # - SSL -
@@ -200,7 +201,7 @@
 #wal_sync_method = fsync		# the default is the first option
 					# supported by the operating system:
 					#   open_datasync
-					#   fdatasync (default on Linux)
+					#   fdatasync (default on Linux and FreeBSD)
 					#   fsync
 					#   fsync_writethrough
 					#   open_sync
@@ -416,25 +417,25 @@
 
 # - Where to Log -
 
-log_destination = 'stderr'		# Valid values are combinations of
+#log_destination = 'stderr'		# Valid values are combinations of
 					# stderr, csvlog, syslog, and eventlog,
 					# depending on platform.  csvlog
 					# requires logging_collector to be on.
 
 # This is used when logging to stderr:
-logging_collector = on			# Enable capturing of stderr and csvlog
+#logging_collector = off		# Enable capturing of stderr and csvlog
 					# into log files. Required to be on for
 					# csvlogs.
 					# (change requires restart)
 
 # These are only used if logging_collector is on:
-log_directory = 'log'			# directory where log files are written,
+#log_directory = 'log'			# directory where log files are written,
 					# can be absolute or relative to PGDATA
-log_filename = 'postgresql-%a.log'	# log file name pattern,
+#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'	# log file name pattern,
 					# can include strftime() escapes
 #log_file_mode = 0600			# creation mode for log files,
 					# begin with 0 to use octal notation
-log_truncate_on_rotation = on		# If on, an existing log file with the
+#log_truncate_on_rotation = off		# If on, an existing log file with the
 					# same name as the new log file will be
 					# truncated rather than appended to.
 					# But such truncation only occurs on
@@ -442,9 +443,9 @@ log_truncate_on_rotation = on		# If on, an existing log file with the
 					# or size-driven rotation.  Default is
 					# off, meaning append to existing files
 					# in all cases.
-log_rotation_age = 1d			# Automatic rotation of logfiles will
+#log_rotation_age = 1d			# Automatic rotation of logfiles will
 					# happen after that time.  0 disables.
-log_rotation_size = 0			# Automatic rotation of logfiles will
+#log_rotation_size = 10MB		# Automatic rotation of logfiles will
 					# happen after that much log output.
 					# 0 disables.
 
@@ -509,7 +510,7 @@ log_rotation_size = 0			# Automatic rotation of logfiles will
 #log_duration = off
 #log_error_verbosity = default		# terse, default, or verbose messages
 #log_hostname = off
-log_line_prefix = '%m [%p] '		# special values:
+#log_line_prefix = '%m [%p] '		# special values:
 					#   %a = application name
 					#   %u = user name
 					#   %d = database name
@@ -681,6 +682,8 @@ log_line_prefix = '%m [%p] '		# special values:
 # - Other Defaults -
 
 #dynamic_library_path = '$libdir'
+#extension_destdir = ''			# prepend path when loading extensions
+					# and shared objects (added by Debian)
 
 
 #------------------------------------------------------------------------------

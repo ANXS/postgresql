@@ -731,8 +731,11 @@ jit_provider = '{{ postgresql_jit_provider }}'		# JIT library to use
 # - Other Defaults -
 
 dynamic_library_path = '{{ postgresql_dynamic_library_path }}'
+{% if postgresql_extension_destdir is defined and ansible_os_family == 'Debian' %}
 extension_destdir = '{{ postgresql_extension_destdir }}'			# prepend path when loading extensions
 					# and shared objects (added by Debian)
+{% endif %}
+
 gin_fuzzy_search_limit = {{ postgresql_gin_fuzzy_search_limit }}
 
 

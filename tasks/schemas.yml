@@ -12,5 +12,6 @@
     state: "{{ item.state | default('present') }}"
   become: yes
   become_user: "{{ postgresql_admin_user }}"
+  no_log: "{{ postgresql_hide_passwords }}"
   with_items: "{{ postgresql_database_schemas }}"
   when: postgresql_databases|length > 0

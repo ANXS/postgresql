@@ -1,4 +1,6 @@
 ---
 # PostgreSQL vars for Debian based distributions
 
+postgresql_service_name: "postgresql"
+
 postgresql_apt_repository: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"

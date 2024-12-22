@@ -43,7 +43,7 @@
     state: directory
     mode: 0700
   register: pglog_dir_exist
-  when: postgresql_log_directory != "pg_log"
+  when: postgresql_log_directory != "pg_log" or postgresql_log_directory != "log"
 
 - name: PostgreSQL | Ensure the locale for lc_collate and lc_ctype is generated | Debian
   become: yes
@@ -116,6 +116,7 @@
     {% if postgresql_pwfile != "" %}--pwfile={{ postgresql_pwfile }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '<') %}--xlogdir={{ postgresql_wal_directory }} {% endif %}
     {% if postgresql_wal_directory != "" and postgresql_version is version_compare('10', '>=') %}--waldir={{ postgresql_wal_directory }} {% endif %}
+    {% if postgresql_wal_segsize != "" and postgresql_version is version_compare('11', '>=') %}--wal-segsize={{ postgresql_wal_segsize }} {% endif %}
   become: yes
   become_user: "{{ postgresql_service_user }}"
   when: ansible_os_family == "RedHat" and
@@ -142,6 +143,7 @@
     owner: "{{ postgresql_service_user }}"
     group: "{{ postgresql_service_group }}"
     mode: 0640
+  no_log: "{{ postgresql_hide_passwords }}"
   register: postgresql_configuration_pt1
 
 - name: PostgreSQL | Update configuration - pt. 2 (postgresql.conf)

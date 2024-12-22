@@ -1,5 +1,5 @@
 ---
-# PostgreSQL vars for RedHat 8+ based distributions
+# PostgreSQL vars for RedHat 9+ based distributions
 #
 # Using a different cluster name could cause problems with SELinux.
 # See /usr/lib/systemd/system/postgresql-*.service
