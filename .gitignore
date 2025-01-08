@@ -8,3 +8,4 @@ Icon
 .vagrant
 test
 *.retry
+ANXS-postgresql.code-workspace
