@@ -219,6 +219,16 @@
   when: ansible_os_family == "RedHat"
   register: postgresql_systemd_custom_conf
 
+- name: PostgreSQL | Use the conf directory when starting the Postgres service | Debian
+  template:
+    src: etc_systemd_system_postgresql.service.d_custom.conf_Debian.j2
+    dest: "/lib/systemd/system/postgresql.service"
+  when: ansible_os_family == "Debian"
+  register: postgresql_systemd_custom_conf
+  notify:
+    - reload service daemon
+    - restart postgresql
+
 - name: PostgreSQL | Ensure the pid directory for PostgreSQL exists
   file:
     name: "{{ postgresql_pid_directory }}"

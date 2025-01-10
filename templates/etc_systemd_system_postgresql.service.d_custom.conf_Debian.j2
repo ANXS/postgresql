@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+# Systemd unit file override to specify user/group as well as separate config
+# and data directories.
+
+[Unit]
+Description={{ postgresql_service_description }}
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecReload=/bin/true
+RemainAfterExit=on
+
+[Install]
+WantedBy=multi-user.target
