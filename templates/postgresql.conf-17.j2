@@ -417,7 +417,7 @@ enable_group_by_reordering = {{ 'on' if postgresql_enable_group_by_reordering el
 
 # - Planner Cost Constants -
 
-eq_page_cost = {{ postgresql_seq_page_cost }}			# measured on an arbitrary scale
+seq_page_cost = {{ postgresql_seq_page_cost }}			# measured on an arbitrary scale
 random_page_cost = {{ postgresql_random_page_cost }}			# same scale as above
 cpu_tuple_cost = {{ postgresql_cpu_tuple_cost }}			# same scale as above
 cpu_index_tuple_cost = {{ postgresql_cpu_index_tuple_cost }}		# same scale as above
