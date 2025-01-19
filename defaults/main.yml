@@ -49,7 +49,7 @@ postgresql_postgis_release_compatibility:
   15: "3.2"
   16: "3.4"
   17: "3.5"
-  
+
 postgresql_ext_postgis_version: "{{ postgresql_postgis_release_compatibility.get(postgresql_version) }}"
 postgresql_ext_postgis_version_terse: "{{ postgresql_ext_postgis_version | replace('.','') }}"
 
@@ -217,22 +217,22 @@ postgresql_min_dynamic_shared_memory: 0MB       # (>= 14) (change requires resta
 postgresql_vacuum_buffer_usage_limit: "{{ '256kB' if postgresql_version is version_compare('16', '=') else '2MB' }}" # (>= 16) size of vacuum and analyze buffer access strategy ring;
                                                 # 0 to disable vacuum buffer access strategy;
                                                 # range 128kB to 16GB
-                                                
+
 # SLRU buffers (change requires restart)
-postgresql_commit_timestamp_buffers: 0		# (>= 17) memory for pg_commit_ts (0 = auto)
-postgresql_multixact_offset_buffers: 16		# (>= 17) memory for pg_multixact/offsets
-postgresql_multixact_member_buffers: 32		# (>= 17) memory for pg_multixact/members
-postgresql_notify_buffers: 16			# (>= 17) memory for pg_notify
-postgresql_serializable_buffers: 32		# (>= 17) memory for pg_serial
-postgresql_subtransaction_buffers: 0		# (>= 17) memory for pg_subtrans (0 = auto)
-postgresql_transaction_buffers: 0		# (>= 17) memory for pg_xact (0 = auto)
+postgresql_commit_timestamp_buffers: 0   # (>= 17) memory for pg_commit_ts
+postgresql_multixact_offset_buffers: 16       # (>= 17) memory for pg_multixact/offsets
+postgresql_multixact_member_buffers: 32       # (>= 17) memory for pg_multixact/members
+postgresql_notify_buffers: 16       # (>= 17) memory for pg_notify
+postgresql_serializable_buffers: 32       # (>= 17) memory for pg_serial
+postgresql_subtransaction_buffers: 0       # (>= 17) memory for pg_subtrans (0 = auto)
+postgresql_transaction_buffers: 0       # (>= 17) memory for pg_xact (0 = auto)
 
 # - Disk -
 
 # limits per-process temp file space in kB, or -1 for no limit (>= 9.2)
 postgresql_temp_file_limit: -1
 
-postgresql_max_notify_queue_pages: 1048576	# (>= 17)
+postgresql_max_notify_queue_pages: 1048576       # (>= 17)
 
 # - Kernel Resources -
 
@@ -258,7 +258,7 @@ postgresql_bgwriter_flush_after:    512kB  # measured in pages, 0 disables
 postgresql_backend_flush_after:              0   # (>= 9.6) 0 disables, default is 0
 postgresql_effective_io_concurrency:         1   # 1-1000; 0 disables prefetching
 postgresql_maintenance_io_concurrency:       10  # (>= 13)
-postgresql_io_combine_limit:		  128kB	 # (>= 17) usually 1-32 blocks (depends on OS)
+postgresql_io_combine_limit: 128kB       # (>= 17) usually 1-32 blocks (depends on OS)
 postgresql_max_worker_processes:             8   # (change requires restart)
 postgresql_max_parallel_workers_per_gather:  2   # (>= 9.6) taken from max_worker_processes
 postgresql_max_parallel_maintenance_workers: 2   # (>= 11) taken from max_parallel_workers
@@ -335,8 +335,8 @@ postgresql_recovery_target_timeline: "latest"      # (>= 12)
 postgresql_recovery_target_action: "pause"         # (>= 12)
 
 # - WAL Summarization -
-postgresql_summarize_wal: off		# (>= 17) run WAL summarizer process?
-postgresql_wal_summary_keep_time: 10d	# (>= 17) when to remove old summary files, 0 = never
+postgresql_summarize_wal: off       # (>= 17) run WAL summarizer process?
+postgresql_wal_summary_keep_time: 10d       # (>= 17) when to remove old summary files, 0 = never
 
 #------------------------------------------------------------------------------
 # REPLICATION
@@ -386,7 +386,7 @@ postgresql_wal_receiver_timeout: 60s
 # time to wait before retrying to retrieve WAL after a failed attempt
 postgresql_wal_retrieve_retry_interval: 5s # (>= 9.5)
 postgresql_recovery_min_apply_delay: 0             # (>= 12)
-postgresql_sync_replication_slots: off	# (>= 17) enables slot synchronization on the physical standby from the primary
+postgresql_sync_replication_slots: off       # (>= 17) enables slot synchronization on the physical standby from the primary
 
 # - Subscribers - (>= 10)
 # These settings are ignored on a publisher.
@@ -685,7 +685,7 @@ postgresql_default_transaction_deferrable: off
 postgresql_session_replication_role:       "origin"
 
 postgresql_statement_timeout:                     0           # in milliseconds, 0 is disabled
-postgresql_transaction_timeout:                   0	      # (>= 17) in milliseconds, 0 is disabled
+postgresql_transaction_timeout:                   0           # (>= 17) in milliseconds, 0 is disabled
 postgresql_lock_timeout:                          0           # in milliseconds, 0 is disabled (>= 9.3)
 postgresql_idle_in_transaction_session_timeout:   0           # in milliseconds, 0 is disabled (>= 9.6)
 postgresql_idle_session_timeout:                  0           # in milliseconds, 0 is disabled (>= 14)
@@ -701,7 +701,7 @@ postgresql_xmlbinary:    "base64"
 postgresql_xmloption:    "content"
 postgresql_gin_pending_list_limit: 4MB  # (>= 9.5)
 postgresql_createrole_self_grant: '' # (>= 16) 'set', 'inherit' or 'set, inherit'
-postgresql_event_triggers: on	# (>= 17)
+postgresql_event_triggers: on       # (>= 17)
 
 # - Locale and Formatting -
 
