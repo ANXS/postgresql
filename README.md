@@ -43,7 +43,7 @@ An example how to include this role as a task:
           vars:
             postgresql_users:
               - name: abc
-                password: abc
+                pass: abc
       become: true
 ```
 
