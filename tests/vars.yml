@@ -1,4 +1,5 @@
 ---
+postgresql_data_directory: /data/postgresql
 postgresql_port: 5433
 
 postgresql_databases:
