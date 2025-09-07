@@ -16,6 +16,10 @@
     - "../vars/empty.yml"
   tags: [always]
 
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: apt
+
 - import_tasks: install_apt.yml
   when: ansible_pkg_mgr == "apt"
   tags: [postgresql, postgresql-install]

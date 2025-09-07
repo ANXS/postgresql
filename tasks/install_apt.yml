@@ -7,19 +7,40 @@
     pkg: ca-certificates
     state: present
 
+- name: PostgreSQL | Add PostgreSQL repository (deb822)
+  ansible.builtin.deb822_repository:
+    name: postgresql
+    types: ["deb"]
+    uris: ["{{ postgresql_apt_repository_url }}"]
+    suites: ["{{ ansible_distribution_release }}-pgdg"]
+    components: ["main", "{{ postgresql_version }}"]
+    signed_by: "{{ postgresql_apt_key_url }}"
+    state: present
+  when:
+    - postgresql_install_repository
+    - ansible_facts.packages.apt is defined
+    - ansible_facts.packages.apt[0].version is version('2.4', '>=')
+
 - name: PostgreSQL | Add PostgreSQL repository apt-key | apt
   apt_key:
     id: "{{ postgresql_apt_key_id }}"
     url: "{{ postgresql_apt_key_url }}"
     state: present
     keyring: /etc/apt/trusted.gpg.d/postgresql.gpg
-  when: postgresql_apt_key_url and postgresql_apt_key_id and postgresql_install_repository
+  when:
+    - postgresql_apt_key_url
+    - postgresql_apt_key_id
+    - postgresql_install_repository
+    - ansible_facts.packages.apt[0].version is version('2.4', '<')
 
 - name: PostgreSQL | Add PostgreSQL repository | apt
   apt_repository:
     repo: "{{ postgresql_apt_repository }}"
     state: present
-  when: postgresql_apt_repository | default('') != '' and postgresql_install_repository
+  when:
+   - postgresql_apt_repository | default('') != ''
+   - postgresql_install_repository
+   - ansible_facts.packages.apt[0].version is version('2.4', '<')
 
 - name: PostgreSQL | Add PostgreSQL repository preferences | apt
   template:
