@@ -1,0 +1,6 @@
+---
+# PostgreSQL vars for Debian Trixie (13)
+
+postgresql_ext_postgis_deps:
+  - "postgresql-{{postgresql_version}}-postgis-3"
+  - "postgresql-{{postgresql_version}}-postgis-3-scripts"

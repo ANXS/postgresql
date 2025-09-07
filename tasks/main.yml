@@ -30,6 +30,10 @@
         - "{{ role_path }}/vars"
   tags: [always]
 
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: apt
+
 # --- Installers par famille/distro ---
 - name: Install on APT-based systems
   ansible.builtin.import_tasks: install_apt.yml

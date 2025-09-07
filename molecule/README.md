@@ -14,6 +14,8 @@ The default distribution is ubuntu2204. You can override th with setting the env
 * fedora40
 * debian11
 * debian12
+=======
+* debian13
 * ubuntu2204
 * ubuntu2404
 
@@ -45,6 +47,7 @@ The playbooks read variables from two files. One common vars file, and one with 
 $ ls -1 tests/ | grep vars
 vars.Debian.11.yml
 vars.Debian.12.yml
+vars.Debian.13.yml
 vars.Fedora.40.yml
 vars.Ubuntu.22.yml
 vars.Ubuntu.24.yml
