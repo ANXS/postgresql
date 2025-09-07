@@ -70,7 +70,7 @@
 # Put your actual configuration here
 # ----------------------------------
 
-# MAPNAME       SYSTEM-USERNAME         PG-USERNAME
+# MAPNAME       SYSTEM-USERNAME         PG-USERNAME (and DATABASE-USERNAME from PG18)
 {% for pg_ident in postgresql_pg_ident %}
 {% if pg_ident.comment is defined %}
 # {{ pg_ident.comment }}
