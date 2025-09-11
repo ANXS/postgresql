@@ -29,3 +29,4 @@
   become_user: "{{postgresql_admin_user}}"
   with_items: "{{postgresql_user_privileges}}"
   when: postgresql_users|length > 0 and item.type is defined
+  
