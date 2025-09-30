@@ -5,8 +5,8 @@
   vars_files:
     - ./vars.yml
     - ./vars.{{ ansible_distribution }}.{{ ansible_distribution_major_version }}.yml
-  roles:
-    - postgresql
   # roles:
-  #   - role: ../../
+  #   - postgresql
+  roles:
+    - role: ../../
 
