@@ -96,7 +96,7 @@ client_connection_check_interval = {{ postgresql_client_connection_check_interva
 
 authentication_timeout = {{ postgresql_authentication_timeout }}		# 1s-600s
 password_encryption = {{ postgresql_password_encryption }}	# scram-sha-256 or md5
-scram_iterations = {{ posgresql_scram_iterations }}
+scram_iterations = {{ postgresql_scram_iterations }}
 db_user_namespace = {{ 'on' if postgresql_db_user_namespace else 'off' }}
 
 # GSSAPI using Kerberos
