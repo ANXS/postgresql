@@ -74,7 +74,7 @@ An example how to include this role as a task:
 
 ```yaml
 # Basic settings
-postgresql_version: 17
+postgresql_version: 18
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"

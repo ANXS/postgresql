@@ -8,6 +8,38 @@ lint: |
 #  yamllint .
 #  ansible-lint
 platforms:
+  - name: postgresql-13
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+  - name: postgresql-14
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+  - name: postgresql-15
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+  - name: postgresql-16
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
   - name: postgresql-17
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-debian11}-ansible:latest"
     volumes:
@@ -34,6 +66,14 @@ provisioner:
     converge: ${MOLECULE_PLAYBOOK:-../../tests/playbook.yml}
   inventory:
     host_vars:
+      postgresql-13:
+        postgresql_version: 13
+      postgresql-14:
+        postgresql_version: 14
+      postgresql-15:
+        postgresql_version: 15
+      postgresql-16:
+        postgresql_version: 16
       postgresql-17:
         postgresql_version: 17
       postgresql-18:
