@@ -96,7 +96,7 @@ client_connection_check_interval = {{ postgresql_client_connection_check_interva
 
 authentication_timeout = {{ postgresql_authentication_timeout }}		# 1s-600s
 password_encryption = {{ postgresql_password_encryption }}	# scram-sha-256 or md5
-scram_iterations = {{ posgresql_scram_iterations }}
+scram_iterations = {{ postgresql_scram_iterations }}
 md5_password_warnings = {{ 'on' if postgresql_md5_password_warnings else 'off' }}
 oauth_validator_libraries = '{{ postgresql_oauth_validator_libraries }}'	# comma-separated list of trusted validator modules
 
@@ -178,9 +178,8 @@ transaction_buffers = {{ postgresql_transaction_buffers }}		# memory for pg_xact
 
 temp_file_limit = {{ postgresql_temp_file_limit }}			# limits per-process temp file space
 					# in kilobytes, or -1 for no limit
-
+					
 file_copy_method = {{ postgresql_file_copy_method }}		# copy, clone (if supported by OS)
-
 max_notify_queue_pages = {{ postgresql_max_notify_queue_pages }}	# limits the number of SLRU pages allocated
 					# for NOTIFY / LISTEN queue
 
@@ -391,8 +390,7 @@ sync_replication_slots = {{ 'on' if postgresql_sync_replication_slots else 'off'
 
 # These settings are ignored on a publisher.
 
-max_active_replication_origins = {{ postgresql_max_active_replication_origins }}	# max number of active replication origins
-					# (change requires restart)
+max_active_replication_origins = {{ postgresql_max_active_replication_origins }}
 max_logical_replication_workers = {{ postgresql_max_logical_replication_workers }}	# taken from max_worker_processes
 					# (change requires restart)
 max_sync_workers_per_subscription = {{ postgresql_max_sync_workers_per_subscription }}	# taken from max_logical_replication_workers
@@ -427,8 +425,8 @@ enable_seqscan = {{ 'on' if postgresql_enable_seqscan else 'off' }}
 enable_sort = {{ 'on' if postgresql_enable_sort else 'off' }}
 enable_tidscan = {{ 'on' if postgresql_enable_tidscan else 'off' }}
 enable_group_by_reordering = {{ 'on' if postgresql_enable_group_by_reordering else 'off' }}
-enable_distinct_reordering = {{ 'on' if postgresql_enable_distinct_reordering 'off' }}
-enable_self_join_elimination = {{ 'on' if postgresql_enable_self_join_elimination 'off' }}
+enable_distinct_reordering = {{ 'on' if postgresql_enable_distinct_reordering else 'off' }}
+enable_self_join_elimination = {{ 'on' if postgresql_enable_self_join_elimination else 'off' }}
 
 # - Planner Cost Constants -
 
@@ -592,9 +590,7 @@ log_autovacuum_min_duration = {{ postgresql_log_autovacuum_min_duration }}	# log
 					# actions running at least this number
 					# of milliseconds.
 log_checkpoints = {{ 'on' if postgresql_log_checkpoints else 'off' }}
-log_connections = {{ 'on' if postgresql_log_connections else 'off' }}	# log aspects of connection setup
-          # options include receipt, authentication, authorization,
-          # setup_durations, and all to log all of these aspects
+log_connections = {{ 'on' if postgresql_log_connections else 'off' }}
 log_disconnections = {{ 'on' if postgresql_log_disconnections else 'off' }}
 log_duration = {{ 'on' if postgresql_log_duration else 'off' }}
 log_error_verbosity = {{ postgresql_log_error_verbosity }}		# terse, default, or verbose messages
@@ -854,7 +850,6 @@ synchronize_seqscans = {{ 'on' if postgresql_synchronize_seqscans else 'off' }}
 
 transform_null_equals = {{ 'on' if postgresql_transform_null_equals else 'off' }}
 allow_alter_system = {{ 'on' if postgresql_allow_alter_system else 'off' }}
-
 
 #------------------------------------------------------------------------------
 # ERROR HANDLING
