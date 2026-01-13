@@ -174,8 +174,6 @@
     {% if (postgresql_wal_segsize | default('')) | length > 0 and postgresql_version is version('11', '>=') -%}
     --wal-segsize={{ postgresql_wal_segsize | quote }}
     {%- endif -%}
-  args:
-    warn: false
   when:
     - ansible_facts['os_family'] == 'RedHat'
     - (postgresql_cluster_reset | default(false)) | bool
