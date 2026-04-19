@@ -87,8 +87,6 @@
   become_user: "{{ postgresql_service_user }}"
   ansible.builtin.shell: >-
     pg_dropcluster {{ postgresql_version }} {{ postgresql_cluster_name }}
-  args:
-    warn: false
   when:
     - ansible_facts['os_family'] == 'Debian'
     - (postgresql_cluster_reset | default(false)) | bool
@@ -116,8 +114,6 @@
     {% if (postgresql_wal_directory | default('')) | length > 0 and postgresql_version is version('10', '>=') -%}
     --waldir={{ postgresql_wal_directory | quote }}
     {%- endif -%}
-  args:
-    warn: false
   when:
     - ansible_facts['os_family'] == 'Debian'
     - (postgresql_cluster_reset | default(false)) | bool
@@ -126,8 +122,6 @@
 - name: PostgreSQL | Update systemd | Debian
   become: true
   ansible.builtin.command: systemctl daemon-reload
-  args:
-    warn: false
   when:
     - ansible_facts['os_family'] == 'Debian'
     - (postgresql_cluster_reset | default(false)) | bool
@@ -174,8 +168,6 @@
     {% if (postgresql_wal_segsize | default('')) | length > 0 and postgresql_version is version('11', '>=') -%}
     --wal-segsize={{ postgresql_wal_segsize | quote }}
     {%- endif -%}
-  args:
-    warn: false
   when:
     - ansible_facts['os_family'] == 'RedHat'
     - (postgresql_cluster_reset | default(false)) | bool
