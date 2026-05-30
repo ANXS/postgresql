@@ -838,6 +838,7 @@ postgresql_install_repository: true
 # APT settings
 postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+postgresql_apt_repository_url: "https://apt.postgresql.org/pub/repos/apt"
 # postgresql_apt_keyring: "/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg"
 
 # repsoitory base
