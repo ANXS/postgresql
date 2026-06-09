@@ -20,5 +20,24 @@
     login_port: "{{ postgresql_port }}"
   become: yes
   become_user: "{{ postgresql_admin_user }}"
-  loop: "{{ postgresql_user_privileges | default([]) }}"
+  loop: "{{ postgresql_user_privileges | default([]) | rejectattr('schema', 'defined') }}"
+  when: (postgresql_user_privileges | default([])) | length > 0
+
+# Grant schema-level privileges
+- name: PostgreSQL | Grant schema privileges
+  community.postgresql.postgresql_privs:
+    type: schema
+    objs: "{{ item.schema }}"
+    login_db: "{{ item.db }}"               # database to grant on
+    roles: "{{ item.name }}"          # role receiving privileges
+    privs: "{{ item.privs | default('ALL') }}"
+    grant_option: "{{ item.grant_option | default(omit) }}"
+    state: present
+    login_user: "{{ postgresql_admin_user }}"
+    login_password: "{{ postgresql_admin_password | default(omit) }}"
+    login_host: "{{ item.host | default(omit) }}"
+    login_port: "{{ postgresql_port }}"
+  become: yes
+  become_user: "{{ postgresql_admin_user }}"
+  loop: "{{ postgresql_user_privileges | default([]) | selectattr('schema', 'defined') }}"
   when: (postgresql_user_privileges | default([])) | length > 0
