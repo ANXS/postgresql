@@ -7,14 +7,13 @@ This directory is the home of the test playbooks:
 
 ## Molecule
 
-The default tested versions are postgresql 12, 13, 14, 15 and 16 on Debian 11. Linting is disabled for the tests.
+The default tested versions are postgresql 13, 14, 15, 16, 17 and 18 on Debian 11. Linting is disabled for the tests.
 
 The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 
 * fedora40
 * debian11
 * debian12
-=======
 * debian13
 * ubuntu2204
 * ubuntu2404
@@ -34,7 +33,7 @@ Prior to the testing, molecule runs the prepare.yml playbook to:
 * Create a user called `ansible`, with the default group membership of either `wheel` (CentOS, Fedora), or `sudo` (Debian, ubuntu)
 * Install a couple of packages that Jeff Geerling did not install in his container images, that are needed in order to test the role properly
 
-The main file ./molecule/default/molecule.yml sets up versions to test from 12 to 16.
+The main file ./molecule/default/molecule.yml sets up versions to test from 13 to 18.
 
 ## Tests
 
