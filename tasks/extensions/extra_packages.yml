@@ -2,27 +2,34 @@
 
 - include_vars: "../../vars/extra_packages.yml"
 
-# keys
-- name: PostgreSQL | Extensions | Add repo keys | apt
-  apt_key:
-    id: "{{ item.value.id }}"
-    url: "{{ item.value.url }}"
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/{{ item.value.id }}.gpg
-  loop: "{{ postgresql_ext_extra_packages.apt_keys | default({}) | dict2items  }}"
-  when:
-    - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
-
 # repositories
+# The deprecated apt_key/apt_repository modules are replaced by
+# deb822_repository, which downloads the key referenced by signed_by and
+# stores ASCII-armored keys with the correct .asc extension.
 - name: PostgreSQL | Extensions | Add repos | apt
-  apt_repository:
-    repo: "{{ item.value }}"
+  ansible.builtin.deb822_repository:
+    name: "{{ item.key }}"
+    types: "{{ item.value.types | default(['deb']) }}"
+    uris: "{{ item.value.uris }}"
+    suites: "{{ item.value.suites }}"
+    components: "{{ item.value.components | default(['main']) }}"
+    signed_by: "{{ item.value.signed_by | default(omit) }}"
     state: present
   loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
+  register: postgresql_ext_apt_repos
+
+# deb822_repository does not refresh the package lists, and the package task
+# below uses cache_valid_time, which may skip a refresh on a fresh host.
+- name: PostgreSQL | Extensions | Refresh apt cache | apt
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - postgresql_ext_extra_packages is defined
+    - ansible_facts['os_family'] == "Debian"
+    - postgresql_ext_apt_repos is changed
 - name: PostgreSQL | Extensions | Add repos | RHEL
   yum_repository:
     name: "{{ item.value.name }}"
@@ -33,7 +40,7 @@
   loop: "{{ postgresql_ext_extra_packages.yum_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"
 
 # packages
 - name: PostgreSQL | Extensions | Add packages | apt
@@ -44,7 +51,7 @@
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 - name: PostgreSQL | Extensions | Add packages | RHEL
   yum:
     name: "{{ postgresql_ext_extra_packages.names }}"
@@ -52,4 +59,4 @@
     update_cache: yes
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"

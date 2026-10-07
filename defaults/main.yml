@@ -865,19 +865,21 @@ postgresql_install_repository: true
 postgresql_apt_key_id: "ACCC4CF8"
 postgresql_apt_key_url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
 postgresql_apt_repository_url: "https://apt.postgresql.org/pub/repos/apt"
-# postgresql_apt_keyring: "/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg"
+# deb822_repository stores the signed-by key next to the repository name
+postgresql_apt_keyring: "/etc/apt/keyrings/pgdg.asc"
 
-# repsoitory base
+# repository base
 postgresql_apt_repo_base: "https://apt.postgresql.org/pub/repos/apt"
-postgresql_apt_repo_components: "main"
+postgresql_apt_repo_components:
+  - main
 
 # (codename + -pgdg)
 postgresql_apt_suite: "{{ ansible_facts['distribution_release'] | default('') }}-pgdg"
 
-# Ligne de dépôt finale (utilise les variables ci-dessus)
+# Full repository line (kept for consumers of the previous variable)
 postgresql_apt_repository: >-
   deb [signed-by={{ postgresql_apt_keyring }}]
-  {{ postgresql_apt_repo_base }} {{ postgresql_apt_suite }} {{ postgresql_apt_repo_components }}
+  {{ postgresql_apt_repo_base }} {{ postgresql_apt_suite }} {{ postgresql_apt_repo_components | join(' ') }}
 
 # Pin-Priority of PGDG repository
 postgresql_apt_pin_enabled: true
@@ -888,11 +890,11 @@ postgresql_yum_repository_url: "http://yum.postgresql.org"
 postgresql_pgdg_repository_url: "https://download.postgresql.org/pub/repos/yum"
 
 # YUM (RedHat, CentOS, etc.) baseurl/gpgkey
-postgresql_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/{{ ansible_os_family | lower }}/rhel-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+postgresql_yum_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/{{ ansible_facts['os_family'] | lower }}/rhel-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}"
 postgresql_yum_repository_gpgkey: "{{ postgresql_pgdg_repository_url }}/keys/PGDG-RPM-GPG-KEY-RHEL"
 
 # DNF (Fedora) baseurl/gpgkey
-postgresql_dnf_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/fedora/fedora-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}"
+postgresql_dnf_repository_baseurl: "{{ postgresql_yum_repository_url }}/{{ postgresql_version }}/fedora/fedora-{{ ansible_facts['distribution_major_version'] }}-{{ ansible_facts['architecture'] }}"
 postgresql_dnf_repository_gpgkey: "{{ postgresql_yum_repository_gpgkey }}"
 
 postgresql_apt_dependencies: ["python3-psycopg2", "locales"]

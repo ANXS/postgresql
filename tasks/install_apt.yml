@@ -2,18 +2,19 @@
 # Purpose: Install PostgreSQL from PGDG on Debian/Ubuntu in a future-proof way
 # Notes:
 # - No use of deprecated top-level facts (uses ansible_facts[...] instead)
-# - No use of deprecated apt_key (uses a keyring + signed-by)
-# - Uses HTTPS and proper keyring location to satisfy apt-secure
+# - No use of the deprecated apt_key/apt_repository modules; the PGDG
+#   repository is managed with deb822_repository (apt >= 2.4, i.e. Debian
+#   12+ / Ubuntu 22.04+)
+# - Uses HTTPS and a signed-by keyring to satisfy apt-secure
 # - Adds default_release only when the PGDG repository is configured
 
-# --- Pre-reqs for HTTPS and key handling ---
-# We need CA certs, curl and gnupg to fetch and dearmor the repo key.
+# --- Pre-reqs for HTTPS and deb822 support ---
+# deb822_repository downloads the repository key and writes the .sources file
+# itself; it only needs python3-debian on the target host.
 - name: Ensure APT HTTPS/key prerequisites are present
   ansible.builtin.apt:
     name:
       - ca-certificates
-      - curl
-      - gnupg
       - lsb-release
       - python3-debian
     state: present
@@ -21,46 +22,56 @@
   when: ansible_facts['pkg_mgr'] == 'apt'
 
 # --- Derive the PGDG suite from the host codename ---
-# Examples: bookworm -> bookworm-pgdg, bullseye -> bullseye-pgdg, jammy -> jammy-pgdg, noble -> noble-pgdg
+# Examples: bookworm -> bookworm-pgdg, trixie -> trixie-pgdg, jammy -> jammy-pgdg, noble -> noble-pgdg
 - name: Compute PGDG suite from distribution codename
   ansible.builtin.set_fact:
     postgresql_apt_suite: "{{ ansible_facts['distribution_release'] }}-pgdg"
   when: ansible_facts['pkg_mgr'] == 'apt'
 
-# --- Install the PGDG key into a keyring file ---
-# This avoids deprecated apt_key usage and works with newer apt-secure expectations.
-- name: Install PGDG keyring (dearmor GPG key into a file)
-  ansible.builtin.shell: |
-    install -d -m 0755 /usr/share/postgresql-common/pgdg
-    curl -fsSL {{ postgresql_apt_key_url }} \
-      | gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
-  args:
-    creates: /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
-  when: ansible_facts['pkg_mgr'] == 'apt'
-
-# --- Remove old repository file ---
-# We use a new repo file in next task
+# --- Remove old repository files ---
+# Earlier versions of this role wrote a one-line entry to pgdg.list (or an
+# auto-named sources.list file). deb822_repository writes pgdg.sources, so
+# remove the legacy files to avoid defining the same repository twice.
 - name: PostgreSQL | Remove old PostgreSQL repository | apt
-  apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
+  loop:
+    - pgdg.list
+    - apt_postgresql_org_pub_repos_apt.list
+    - apt_postgresql_org_pub_repos_apt.sources
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_install_repository | default(true)) | bool
 
 # --- Add the PGDG APT repository (HTTPS + signed-by) ---
-# We explicitly build the repo line to ensure the correct suite and signed-by usage.
+# deb822_repository downloads the ASCII-armored key, stores it with the .asc
+# extension and references it through Signed-By.
 - name: Add PGDG APT repository
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg]
-      {{ postgresql_apt_repo_base }}
-      {{ postgresql_apt_suite }} main
-    filename: pgdg
+  ansible.builtin.deb822_repository:
+    name: pgdg
+    types:
+      - deb
+    uris: "{{ postgresql_apt_repo_base }}"
+    suites: "{{ postgresql_apt_suite }}"
+    components: "{{ postgresql_apt_repo_components }}"
+    signed_by: "{{ postgresql_apt_key_url }}"
     state: present
+  register: postgresql_apt_pgdg_repo
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_install_repository | default(true)) | bool
+
+# deb822_repository does not refresh the package lists. The install tasks
+# below use cache_valid_time, which may skip a refresh on a fresh host, so
+# refresh explicitly whenever the repository definition changed.
+- name: Refresh APT cache after adding the PGDG repository
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - (postgresql_install_repository | default(true)) | bool
+    - postgresql_apt_pgdg_repo is changed
 
 # --- Optional pinning (preferences) ---
 - name: Add APT preferences for PGDG (pinning)

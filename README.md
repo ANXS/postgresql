@@ -10,7 +10,7 @@ Ansible role which installs and configures PostgreSQL, extensions, databases and
 
 #### Installation
 
-This has been tested on Ansible 2.4.0 and higher.
+This role requires ansible-core 2.15 or higher.
 
 To install:
 

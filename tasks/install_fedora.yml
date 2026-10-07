@@ -15,7 +15,7 @@
       - name: PIP install psycopg2-binary on Fedora 33 only if postgresql version < 10
         pip:
           name: psycopg2-binary
-        when: postgresql_version_terse | int <= 96 and postgresql_version_terse | int >= 90 and ansible_distribution == 'Fedora' and ansible_distribution_major_version
+        when: postgresql_version_terse | int <= 96 and postgresql_version_terse | int >= 90 and ansible_facts['distribution'] == 'Fedora' and ansible_facts['distribution_major_version']
 
       - name: PostgreSQL | Add yum Repository | dnf
         yum_repository:
