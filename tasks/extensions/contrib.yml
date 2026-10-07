@@ -6,7 +6,7 @@
     state: present
     update_cache: yes
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
   notify:
     - restart postgresql
 
@@ -14,7 +14,7 @@
   yum:
     name: "postgresql{{ postgresql_version_terse }}-contrib"
     state: present
-  when: ansible_pkg_mgr == "yum" and ansible_distribution == "RedHat"
+  when: ansible_facts['pkg_mgr'] == "yum" and ansible_facts['distribution'] == "RedHat"
   notify:
     - restart postgresql
 
@@ -22,6 +22,6 @@
   dnf:
     name: "postgresql{{postgresql_version_terse}}-contrib"
     state: present
-  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  when: ansible_facts['pkg_mgr'] == "dnf" and ansible_facts['distribution'] == "Fedora"
   notify:
     - restart postgresql

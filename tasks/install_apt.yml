@@ -2,7 +2,9 @@
 # Purpose: Install PostgreSQL from PGDG on Debian/Ubuntu in a future-proof way
 # Notes:
 # - No use of deprecated top-level facts (uses ansible_facts[...] instead)
-# - No use of deprecated apt_key (uses a keyring + signed-by)
+# - No use of the deprecated apt_key module (uses a keyring + signed-by)
+# - No use of the deprecated apt_repository module (writes the sources.list
+#   entry directly so that apt < 2.4 / Debian 11 keeps working)
 # - Uses HTTPS and proper keyring location to satisfy apt-secure
 # - Adds default_release only when PGDG suite is available
 
@@ -39,25 +41,32 @@
   when: ansible_facts['pkg_mgr'] == 'apt'
 
 # --- Remove old repository file ---
-# We use a new repo file in next task
+# Earlier versions of this role wrote an auto-named one-line sources.list
+# entry. We now manage the repository in /etc/apt/sources.list.d/pgdg.list,
+# so remove the legacy file to avoid defining the same repository twice.
 - name: PostgreSQL | Remove old PostgreSQL repository | apt
-  apt_repository:
-    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main {{ postgresql_version }}"
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
+  loop:
+    - apt_postgresql_org_pub_repos_apt.list
+    - apt_postgresql_org_pub_repos_apt.sources
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_install_repository | default(true)) | bool
 
 # --- Add the PGDG APT repository (HTTPS + signed-by) ---
-# We explicitly build the repo line to ensure the correct suite and signed-by usage.
+# The deprecated apt_repository module is replaced by writing the one-line
+# sources.list entry directly. This keeps working on apt < 2.4 (Debian 11),
+# which does not understand deb822 .sources files yet.
 - name: Add PGDG APT repository
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg]
-      {{ postgresql_apt_repo_base }}
-      {{ postgresql_apt_suite }} main
-    filename: pgdg
-    state: present
+  ansible.builtin.copy:
+    content: |
+      deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] {{ postgresql_apt_repo_base }} {{ postgresql_apt_suite }} {{ postgresql_apt_repo_components }}
+    dest: /etc/apt/sources.list.d/pgdg.list
+    owner: root
+    group: root
+    mode: "0644"
   when:
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_install_repository | default(true)) | bool

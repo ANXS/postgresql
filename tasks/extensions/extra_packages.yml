@@ -3,26 +3,35 @@
 - include_vars: "../../vars/extra_packages.yml"
 
 # keys
+# The deprecated apt_key module is replaced by downloading the key into the
+# trusted keyring directly. apt accepts ASCII armored keys, and the repository
+# definitions below reference this keyring through signed-by.
 - name: PostgreSQL | Extensions | Add repo keys | apt
-  apt_key:
-    id: "{{ item.value.id }}"
+  ansible.builtin.get_url:
     url: "{{ item.value.url }}"
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/{{ item.value.id }}.gpg
-  loop: "{{ postgresql_ext_extra_packages.apt_keys | default({}) | dict2items  }}"
+    dest: "/etc/apt/trusted.gpg.d/{{ item.value.id }}.gpg"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ postgresql_ext_extra_packages.apt_keys | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 
 # repositories
+# The deprecated apt_repository module is replaced by writing the one-line
+# sources.list entry verbatim, which also keeps apt < 2.4 (Debian 11) working.
 - name: PostgreSQL | Extensions | Add repos | apt
-  apt_repository:
-    repo: "{{ item.value }}"
-    state: present
+  ansible.builtin.copy:
+    content: "{{ item.value }}\n"
+    dest: "/etc/apt/sources.list.d/{{ item.key }}.list"
+    owner: root
+    group: root
+    mode: "0644"
   loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 - name: PostgreSQL | Extensions | Add repos | RHEL
   yum_repository:
     name: "{{ item.value.name }}"
@@ -33,7 +42,7 @@
   loop: "{{ postgresql_ext_extra_packages.yum_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"
 
 # packages
 - name: PostgreSQL | Extensions | Add packages | apt
@@ -44,7 +53,7 @@
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 - name: PostgreSQL | Extensions | Add packages | RHEL
   yum:
     name: "{{ postgresql_ext_extra_packages.names }}"
@@ -52,4 +61,4 @@
     update_cache: yes
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"
