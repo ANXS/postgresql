@@ -63,6 +63,7 @@ An example how to include this role as a task:
 | Rockylinux 9.x            | :no_entry: | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |     :warning:      |     :warning:      |
 | Ubuntu 22.04.x            | :no_entry: | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Ubuntu 24.04.x            | :no_entry: | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Ubuntu 26.04.x            | :no_entry: | :no_entry: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 
 - :white_check_mark: - works fine

@@ -51,6 +51,7 @@ jobs:
           - distro: debian13
           - distro: ubuntu2204
           - distro: ubuntu2404
+          - distro: ubuntu2604
 
     steps:
       - name: Check out the codebase.

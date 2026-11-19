@@ -16,6 +16,7 @@ The default distribution is debian12. You can override th with setting the envir
 * debian13
 * ubuntu2204
 * ubuntu2404
+* ubuntu2604
 
 Manual execution of the molecule tests with the distro of your liking. Examples:
 
@@ -48,6 +49,7 @@ vars.Debian.13.yml
 vars.Fedora.40.yml
 vars.Ubuntu.22.yml
 vars.Ubuntu.24.yml
+vars.Ubuntu.26.yml
 vars.yml
 ```
 

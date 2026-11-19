@@ -25,6 +25,7 @@ galaxy_info:
         - focal
         - jammy
         - noble
+        - resolute
 
     - name: Fedora
       versions:
