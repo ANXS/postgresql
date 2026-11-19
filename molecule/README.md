@@ -9,10 +9,9 @@ This directory is the home of the test playbooks:
 
 The default tested versions are postgresql 12, 13, 14, 15 and 16 on Debian 11. Linting is disabled for the tests.
 
-The default distribution is ubuntu2204. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
+The default distribution is debian12. You can override th with setting the environment variable MOLECULE_DISTRO to one of:
 
 * fedora40
-* debian11
 * debian12
 =======
 * debian13
@@ -23,7 +22,7 @@ Manual execution of the molecule tests with the distro of your liking. Examples:
 
 ```bash
 MOLECULE_DISTRO=rockylinux9 molecule converge
-MOLECULE_DISTRO=debian11 molecule converge
+MOLECULE_DISTRO=debian12 molecule converge
 MOLECULE_DISTRO=ubuntu2204 molecule converge
 ```
 
@@ -45,7 +44,6 @@ The playbooks read variables from two files. One common vars file, and one with 
 
 ```bash
 $ ls -1 tests/ | grep vars
-vars.Debian.11.yml
 vars.Debian.12.yml
 vars.Debian.13.yml
 vars.Fedora.40.yml
