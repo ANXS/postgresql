@@ -78,6 +78,11 @@ postgresql_version: 17
 postgresql_encoding: "UTF-8"
 postgresql_locale: "en_US.UTF-8"
 postgresql_ctype: "en_US.UTF-8"
+# PostgreSQL 18 initdb enables data checksums by default: with false, the role passes --no-data-checksums
+# when it creates the cluster (postgresql_cluster_reset: true). pg_upgrade needs the same setting on both
+# clusters. The cluster created by the Debian/Ubuntu package itself follows
+# /etc/postgresql-common/createcluster.conf (initdb_options), not this variable.
+postgresql_data_checksums: false
 
 postgresql_admin_user: "postgres"
 postgresql_default_auth_method: "peer"

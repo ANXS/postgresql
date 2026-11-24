@@ -4,7 +4,7 @@
 # - No use of deprecated top-level facts (uses ansible_facts[...] instead)
 # - No use of deprecated apt_key (uses a keyring + signed-by)
 # - Uses HTTPS and proper keyring location to satisfy apt-secure
-# - Adds default_release only when PGDG suite is available
+# - Adds default_release only when the PGDG repository is configured
 
 # --- Pre-reqs for HTTPS and key handling ---
 # We need CA certs, curl and gnupg to fetch and dearmor the repo key.
@@ -84,8 +84,10 @@
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_apt_dependencies | default([])) | length > 0
 
-# --- Install PostgreSQL packages from PGDG ---
-# Use default_release only if we know the suite; this avoids "invalid APT::Default-Release" errors.
+# --- Install PostgreSQL packages ---
+# Pin the PGDG suite with default_release only when the PGDG repository is configured: with
+# postgresql_install_repository: false (distribution packages), APT does not know the suite and fails with
+# "The value '<codename>-pgdg' is invalid for APT::Default-Release".
 - name: Install PostgreSQL server/client/contrib
   ansible.builtin.apt:
     name:
@@ -97,7 +99,9 @@
     cache_valid_time: "{{ apt_cache_valid_time | default(3600) }}"
     default_release: >-
       {{ postgresql_default_release
-         | default(postgresql_apt_suite | default(omit)) }}
+         | default(postgresql_apt_suite
+                   if (postgresql_install_repository | default(true)) | bool
+                   else omit) }}
   environment: "{{ postgresql_env | default({}) }}"
   when: ansible_facts['pkg_mgr'] == 'apt'
 
