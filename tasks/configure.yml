@@ -104,16 +104,18 @@
     --
     {% if (postgresql_data_checksums | default(false)) | bool and postgresql_version is version('9.3', '>=') -%}
     --data-checksums
-    {%- endif -%}
+    {% elif postgresql_version is version('18', '>=') -%}
+    --no-data-checksums
+    {% endif -%}
     {% if (postgresql_pwfile | default('')) | length > 0 -%}
     --pwfile={{ postgresql_pwfile | quote }}
-    {%- endif -%}
+    {% endif -%}
     {% if (postgresql_wal_directory | default('')) | length > 0 and postgresql_version is version('10', '<') -%}
     --xlogdir={{ postgresql_wal_directory | quote }}
-    {%- endif -%}
+    {% endif -%}
     {% if (postgresql_wal_directory | default('')) | length > 0 and postgresql_version is version('10', '>=') -%}
     --waldir={{ postgresql_wal_directory | quote }}
-    {%- endif -%}
+    {% endif -%}
   when:
     - ansible_facts['os_family'] == 'Debian'
     - (postgresql_cluster_reset | default(false)) | bool
@@ -155,19 +157,21 @@
     --encoding={{ postgresql_encoding | quote }}
     {% if (postgresql_data_checksums | default(false)) | bool and postgresql_version is version('9.3', '>=') -%}
     --data-checksums
-    {%- endif -%}
+    {% elif postgresql_version is version('18', '>=') -%}
+    --no-data-checksums
+    {% endif -%}
     {% if (postgresql_pwfile | default('')) | length > 0 -%}
     --pwfile={{ postgresql_pwfile | quote }}
-    {%- endif -%}
+    {% endif -%}
     {% if (postgresql_wal_directory | default('')) | length > 0 and postgresql_version is version('10', '<') -%}
     --xlogdir={{ postgresql_wal_directory | quote }}
-    {%- endif -%}
+    {% endif -%}
     {% if (postgresql_wal_directory | default('')) | length > 0 and postgresql_version is version('10', '>=') -%}
     --waldir={{ postgresql_wal_directory | quote }}
-    {%- endif -%}
+    {% endif -%}
     {% if (postgresql_wal_segsize | default('')) | length > 0 and postgresql_version is version('11', '>=') -%}
     --wal-segsize={{ postgresql_wal_segsize | quote }}
-    {%- endif -%}
+    {% endif -%}
   when:
     - ansible_facts['os_family'] == 'RedHat'
     - (postgresql_cluster_reset | default(false)) | bool
