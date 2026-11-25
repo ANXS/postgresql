@@ -1,4 +1,5 @@
 ---
+role_name_check: 1  # Galaxy namespace is "ANXS" (uppercase), which ansible-compat rejects
 dependency:
   name: galaxy
 driver:
