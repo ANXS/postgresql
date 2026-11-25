@@ -1,0 +1,34 @@
+---
+# Imports a new role version on Ansible Galaxy when a version tag is pushed.
+# Requires a GALAXY_API_KEY secret (repository or organization).
+#
+# Galaxy clones the repository itself, so no checkout is needed. Its namespace
+# is "ANXS" (case sensitive), which is why meta/main.yml uses that value.
+
+name: Release
+'on':
+  push:
+    tags:
+      - 'v*'
+
+permissions: {}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python.
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+
+      - name: Install Ansible.
+        run: pip install ansible-core
+
+      - name: Import the tag on Galaxy.
+        run: >-
+          ansible-galaxy role import
+          --api-key "${{ secrets.GALAXY_API_KEY }}"
+          --branch "${{ github.ref_name }}"
+          ANXS postgresql
