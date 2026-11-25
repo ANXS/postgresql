@@ -102,7 +102,8 @@
     -d {{ postgresql_data_directory | quote }}
     {{ postgresql_version | quote }} {{ postgresql_cluster_name | quote }}
     --
-    {% if (postgresql_data_checksums | default(false)) | bool and postgresql_version is version('9.3', '>=') -%}
+    {% if (postgresql_data_checksums | default(none)) is none or postgresql_data_checksums == '' -%}
+    {% elif postgresql_data_checksums | bool -%}
     --data-checksums
     {% elif postgresql_version is version('18', '>=') -%}
     --no-data-checksums
@@ -155,7 +156,8 @@
     -D {{ postgresql_data_directory | quote }}
     --locale={{ postgresql_locale | quote }}
     --encoding={{ postgresql_encoding | quote }}
-    {% if (postgresql_data_checksums | default(false)) | bool and postgresql_version is version('9.3', '>=') -%}
+    {% if (postgresql_data_checksums | default(none)) is none or postgresql_data_checksums == '' -%}
+    {% elif postgresql_data_checksums | bool -%}
     --data-checksums
     {% elif postgresql_version is version('18', '>=') -%}
     --no-data-checksums
