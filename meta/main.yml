@@ -22,7 +22,6 @@ galaxy_info:
 
     - name: Ubuntu
       versions:
-        - focal
         - jammy
         - noble
         - resolute

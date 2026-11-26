@@ -1,5 +1,10 @@
 ---
 # This file defines (optional) repos and packages - uncomment necessary lines
+#
+# apt_repositories entries are deb822 mappings (uris, suites, components,
+# signed_by, types). The one-line "deb ..." format used by earlier releases is
+# rejected with a migration message. apt_keys is only used as a fallback for
+# signed_by.
 
 # postgresql_ext_extra_packages:
 #   names:

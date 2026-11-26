@@ -3,23 +3,10 @@
 # Notes:
 # - No use of deprecated top-level facts (uses ansible_facts[...] instead)
 # - No use of the deprecated apt_key/apt_repository modules; the PGDG
-#   repository is managed with deb822_repository (apt >= 2.4, i.e. Debian
-#   12+ / Ubuntu 22.04+)
+#   repository is managed with deb822_repository (.sources files are
+#   understood by every distribution in the test matrix)
 # - Uses HTTPS and a signed-by keyring to satisfy apt-secure
 # - Adds default_release only when the PGDG repository is configured
-
-# --- Pre-reqs for HTTPS and deb822 support ---
-# deb822_repository downloads the repository key and writes the .sources file
-# itself; it only needs python3-debian on the target host.
-- name: Ensure APT HTTPS/key prerequisites are present
-  ansible.builtin.apt:
-    name:
-      - ca-certificates
-      - lsb-release
-      - python3-debian
-    state: present
-    update_cache: true
-  when: ansible_facts['pkg_mgr'] == 'apt'
 
 # --- Derive the PGDG suite from the host codename ---
 # Examples: bookworm -> bookworm-pgdg, trixie -> trixie-pgdg, jammy -> jammy-pgdg, noble -> noble-pgdg
@@ -28,11 +15,58 @@
     postgresql_apt_suite: "{{ ansible_facts['distribution_release'] }}-pgdg"
   when: ansible_facts['pkg_mgr'] == 'apt'
 
-# --- Remove old repository files ---
-# Earlier versions of this role wrote a one-line entry to pgdg.list (or an
-# auto-named sources.list file). deb822_repository writes pgdg.sources, so
-# remove the legacy files to avoid defining the same repository twice.
-- name: PostgreSQL | Remove old PostgreSQL repository | apt
+# --- Remove old repository definitions ---
+# Earlier versions of this role (or a manual setup) may define PGDG in
+# /etc/apt/sources.list or in any *.list file. deb822_repository writes
+# pgdg.sources; leaving a legacy definition in place makes apt fail with
+# "Conflicting values set for option Signed-By". Remove every PGDG deb line,
+# wherever it lives, then drop the legacy files this role used to create.
+- name: Find legacy PGDG apt source lists
+  ansible.builtin.find:
+    paths: /etc/apt
+    patterns:
+      - sources.list
+      - "*.list"
+    recurse: true
+    file_type: file
+    read_whole_file: true
+    contains: "apt.postgresql.org/pub/repos/apt"
+  register: postgresql_apt_pgdg_legacy
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - (postgresql_install_repository | default(true)) | bool
+
+- name: Remove legacy PGDG entries from apt source lists
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: '^\s*(deb|deb-src)\s+(\[[^\]]*\]\s+)?https?://apt\.postgresql\.org/pub/repos/apt/?(\s|$)'
+    state: absent
+  loop: "{{ postgresql_apt_pgdg_legacy.files | default([]) }}"
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - (postgresql_install_repository | default(true)) | bool
+
+- name: Check for source lists emptied by the PGDG cleanup
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  loop: "{{ postgresql_apt_pgdg_legacy.files | default([]) }}"
+  register: postgresql_apt_pgdg_legacy_stat
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - (postgresql_install_repository | default(true)) | bool
+
+- name: Remove source lists emptied by the PGDG cleanup
+  ansible.builtin.file:
+    path: "{{ item.item.path }}"
+    state: absent
+  loop: "{{ postgresql_apt_pgdg_legacy_stat.results | default([]) }}"
+  when:
+    - ansible_facts['pkg_mgr'] == 'apt'
+    - (postgresql_install_repository | default(true)) | bool
+    - item.stat is defined
+    - item.stat.size == 0
+
+- name: PostgreSQL | Remove old PostgreSQL repository files | apt
   ansible.builtin.file:
     path: "/etc/apt/sources.list.d/{{ item }}"
     state: absent
@@ -44,6 +78,20 @@
     - ansible_facts['pkg_mgr'] == 'apt'
     - (postgresql_install_repository | default(true)) | bool
 
+# --- Pre-reqs for HTTPS and deb822 support ---
+# deb822_repository downloads the repository key and writes the .sources file
+# itself; it only needs python3-debian on the target host. This runs after the
+# cleanup above so a pre-existing conflicting definition cannot break it.
+- name: Ensure APT HTTPS/key prerequisites are present
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - lsb-release
+      - python3-debian
+    state: present
+    update_cache: true
+  when: ansible_facts['pkg_mgr'] == 'apt'
+
 # --- Add the PGDG APT repository (HTTPS + signed-by) ---
 # deb822_repository downloads the ASCII-armored key, stores it with the .asc
 # extension and references it through Signed-By.
@@ -54,7 +102,7 @@
       - deb
     uris: "{{ postgresql_apt_repo_base }}"
     suites: "{{ postgresql_apt_suite }}"
-    components: "{{ postgresql_apt_repo_components }}"
+    components: "{{ [postgresql_apt_repo_components] | flatten }}"
     signed_by: "{{ postgresql_apt_key_url }}"
     state: present
   register: postgresql_apt_pgdg_repo
