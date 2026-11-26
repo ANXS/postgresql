@@ -7,7 +7,7 @@ galaxy_info:
   namespace: ANXS
   role_name: postgresql
   description: "Install and configure PostgreSQL, dependencies, extensions, databases and users."
-  min_ansible_version: 2.12.0
+  min_ansible_version: 2.15.0
   license: MIT
 
   platforms:
@@ -22,7 +22,6 @@ galaxy_info:
 
     - name: Ubuntu
       versions:
-        - focal
         - jammy
         - noble
         - resolute

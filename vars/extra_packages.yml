@@ -1,15 +1,21 @@
 ---
 # This file defines (optional) repos and packages - uncomment necessary lines
+#
+# apt_repositories entries are deb822 mappings (uris, suites, components,
+# signed_by, types). The one-line "deb ..." format used by earlier releases is
+# rejected with a migration message. apt_keys is only used as a fallback for
+# signed_by.
 
 # postgresql_ext_extra_packages:
 #   names:
 #     - pgadmin4-server
 #   apt_repositories:
-#     depot-pgadmin: "deb [signed-by=/etc/apt/trusted.gpg.d/8881B2A8210976F2.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/jammy pgadmin4 main"
-#   apt_keys:
 #     depot-pgadmin:
-#       id: "8881B2A8210976F2"
-#       url: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
+#       uris: "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_facts['distribution_release'] }}"
+#       suites: "pgadmin4"
+#       components:
+#         - main
+#       signed_by: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
 #   yum_repositories:
 #     depot-pgadmin:
 #       name: pgadmin

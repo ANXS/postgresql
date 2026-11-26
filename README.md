@@ -10,7 +10,7 @@ Ansible role which installs and configures PostgreSQL, extensions, databases and
 
 #### Installation
 
-This has been tested on Ansible 2.4.0 and higher.
+This role requires ansible-core 2.15 or higher.
 
 To install:
 
@@ -138,6 +138,44 @@ postgresql_user_privileges:
     priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
     role_attr_flags: "CREATEDB" # role attribute flags
 ```
+
+#### Extra packages (optional)
+
+The role can add third-party APT/YUM repositories and install packages from them:
+
+```yaml
+postgresql_ext_install_extra_packages: true
+postgresql_ext_extra_packages:
+  names:
+    - pgadmin4-server
+  apt_repositories:
+    depot-pgadmin:
+      uris: "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_facts['distribution_release'] }}"
+      suites: "pgadmin4"
+      components:
+        - main
+      signed_by: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
+  yum_repositories:
+    depot-pgadmin:
+      name: pgadmin
+      description: pgAdmin 4
+      url: "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/yum/redhat/rhel-9-x86_64"
+      gpgkey: "https://www.pgadmin.org/static/packages_pgadmin_org.pub"
+```
+
+APT repositories are deb822-style mappings managed by `deb822_repository`:
+
+- `uris` (required): repository base URL.
+- `suites` (required): distribution suite.
+- `components` (optional, default `["main"]`).
+- `signed_by` (recommended): URL or local path to the signing key. ASCII-armored
+  keys are stored as `.asc` under `/etc/apt/keyrings`.
+- `types` (optional, default `["deb"]`).
+
+The old one-line format (`depot-pgadmin: "deb [...] https://... jammy pgadmin4 main"`)
+is no longer accepted; the role stops with a migration message. The old
+`apt_keys` map is still used as a fallback source for `signed_by`, but new
+configurations should set `signed_by` directly.
 
 There's a lot more knobs and bolts to set, which you can find in the [defaults/main.yml](./defaults/main.yml)
 

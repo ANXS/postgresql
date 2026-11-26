@@ -2,27 +2,103 @@
 
 - include_vars: "../../vars/extra_packages.yml"
 
-# keys
-- name: PostgreSQL | Extensions | Add repo keys | apt
-  apt_key:
-    id: "{{ item.value.id }}"
-    url: "{{ item.value.url }}"
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/{{ item.value.id }}.gpg
-  loop: "{{ postgresql_ext_extra_packages.apt_keys | default({}) | dict2items  }}"
+# repositories
+# The one-line "deb ..." format used by earlier releases cannot be represented
+# as deb822 fields without fragile parsing, so fail early with a migration
+# message instead of failing inside the module.
+- name: PostgreSQL | Extensions | Validate apt repository definitions | apt
+  ansible.builtin.assert:
+    that:
+      - item.value is mapping
+    fail_msg: >-
+      postgresql_ext_extra_packages.apt_repositories['{{ item.key }}'] uses the
+      removed one-line format. Define it as a mapping instead, e.g.
+      {uris: 'https://...', suites: '...', components: ['main'],
+      signed_by: 'https://.../key.pub'}. See the "Extra packages" section of
+      the README.
+  loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 
-# repositories
+# Earlier releases used apt_repository, which wrote a filename derived from the
+# URI (e.g. ftp_postgresql_org_pub_pgadmin_pgadmin4_apt_jammy.list); the first
+# revision of this PR wrote <name>.list. Either would conflict with the new
+# .sources file ("Conflicting values set for option Signed-By"), so remove
+# them before adding the repository.
+- name: PostgreSQL | Extensions | Remove legacy repository files | apt
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item.key }}.list"
+    state: absent
+  loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
+  when:
+    - postgresql_ext_extra_packages is defined
+    - ansible_facts['os_family'] == "Debian"
+
+- name: PostgreSQL | Extensions | Remove legacy apt_repository files | apt
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ postgresql_ext_legacy_repo_name }}.list"
+    state: absent
+  loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
+  vars:
+    postgresql_ext_legacy_repo_uri: >-
+      {{ (item.value.uris if item.value.uris is string else item.value.uris[0])
+         if item.value is mapping
+         else (item.value | trim | regex_replace('\[[^\]]*\]', '')
+               | regex_replace('^\s*deb(?:-src)?\s+', '') | split() | first) }}
+    postgresql_ext_legacy_repo_name: >-
+      {{ postgresql_ext_legacy_repo_uri | trim
+         | regex_replace('^\w+://', '')
+         | regex_replace('^[^@]*@', '')
+         | regex_replace('[^a-zA-Z0-9]', ' ')
+         | trim
+         | regex_replace('\s+', '_') }}
+  when:
+    - postgresql_ext_extra_packages is defined
+    - ansible_facts['os_family'] == "Debian"
+    - postgresql_ext_legacy_repo_uri | length > 0
+
+# Earlier releases stored the key in /etc/apt/trusted.gpg.d/<id>.gpg. Those
+# keys are not needed anymore: signed_by either points at the module-managed
+# .asc keyring or falls back to the URL in apt_keys below.
+- name: PostgreSQL | Extensions | Remove legacy repository keys | apt
+  ansible.builtin.file:
+    path: "/etc/apt/trusted.gpg.d/{{ item.value.id | default(item.key) }}.gpg"
+    state: absent
+  loop: "{{ postgresql_ext_extra_packages.apt_keys | default({}) | dict2items }}"
+  when:
+    - postgresql_ext_extra_packages is defined
+    - ansible_facts['os_family'] == "Debian"
+
+# deb822_repository downloads the key referenced by signed_by and stores it
+# with the correct extension (.asc for ASCII-armored keys). apt_keys is kept
+# as a deprecated fallback for existing configurations.
 - name: PostgreSQL | Extensions | Add repos | apt
-  apt_repository:
-    repo: "{{ item.value }}"
+  ansible.builtin.deb822_repository:
+    name: "{{ item.key }}"
+    types: "{{ item.value.types | default(['deb']) }}"
+    uris: "{{ item.value.uris }}"
+    suites: "{{ item.value.suites }}"
+    components: "{{ item.value.components | default(['main']) }}"
+    signed_by: >-
+      {{ item.value.signed_by
+         | default((postgresql_ext_extra_packages.apt_keys | default({})).get(item.key, {}).get('url', omit)) }}
     state: present
   loop: "{{ postgresql_ext_extra_packages.apt_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
+  register: postgresql_ext_apt_repos
+
+# deb822_repository does not refresh the package lists, and the package task
+# below uses cache_valid_time, which may skip a refresh on a fresh host.
+- name: PostgreSQL | Extensions | Refresh apt cache | apt
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - postgresql_ext_extra_packages is defined
+    - ansible_facts['os_family'] == "Debian"
+    - postgresql_ext_apt_repos is changed
 - name: PostgreSQL | Extensions | Add repos | RHEL
   yum_repository:
     name: "{{ item.value.name }}"
@@ -33,7 +109,7 @@
   loop: "{{ postgresql_ext_extra_packages.yum_repositories | default({}) | dict2items }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"
 
 # packages
 - name: PostgreSQL | Extensions | Add packages | apt
@@ -44,7 +120,7 @@
     cache_valid_time: "{{ apt_cache_valid_time | default (3600) }}"
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
 - name: PostgreSQL | Extensions | Add packages | RHEL
   yum:
     name: "{{ postgresql_ext_extra_packages.names }}"
@@ -52,4 +128,4 @@
     update_cache: yes
   when:
     - postgresql_ext_extra_packages is defined
-    - ansible_os_family == "RedHat"
+    - ansible_facts['os_family'] == "RedHat"
