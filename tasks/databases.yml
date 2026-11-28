@@ -25,7 +25,7 @@
   become: yes
   become_user: "{{ postgresql_admin_user }}"
   community.postgresql.postgresql_ext:
-    db: "{{ item.0.db }}"
+    login_db: "{{ item.0.db }}"
     login_user: "{{ postgresql_service_user }}"
     login_port: "{{ postgresql_port }}"
     name: "{{ item.1 }}"

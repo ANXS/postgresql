@@ -9,6 +9,13 @@ postgresql_databases:
     owner: baz
     state: absent
 
+# Covers tasks/databases.yml "Add extensions to the databases" (postgresql_ext): pg_trgm is a contrib
+# extension, shipped with the server package.
+postgresql_database_extensions:
+  - db: foobar
+    extensions:
+      - pg_trgm
+
 postgresql_users:
   - name: baz
     pass: SCRAM-SHA-256$4096:En1EXwWCRrgFjvDuZ3m5WQ==$Bt4eGQmfMdiTeuz3ZArSBN4XOq+r4VRKW1HZIyxbhUo=:PMAr9udG0/5+5c+36BDO37XFgr/jMDoulhYVwy3haXc=
